@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required, logout_user
 from sqlalchemy import delete, func, or_
 
@@ -7,6 +7,58 @@ from app.account.forms import ChangePasswordForm, DeleteAccountForm, ProfileForm
 from app.extensions import db
 from app.models import SetPartProgress, User, utcnow
 from app.services.mail import MailService, MailServiceError
+
+
+ONBOARDING_STEPS = {
+    1: {
+        "eyebrow": "Willkommen bei BrickHoard",
+        "title": "Dein Konto ist startklar",
+        "lead": "In wenigen Schritten lernst du die wichtigsten Funktionen kennen.",
+        "symbol": "✓",
+    },
+    2: {
+        "eyebrow": "Deine Sammlung verbinden",
+        "title": "Rebrickable einrichten",
+        "lead": "BrickHoard liest deine privaten Setlisten über deinen eigenen Rebrickable-Zugang.",
+        "symbol": "↻",
+    },
+    3: {
+        "eyebrow": "Sets auswählen",
+        "title": "Deine Setlisten öffnen",
+        "lead": "Nach der Verbindung findest du alle Listen und Sets direkt in BrickHoard.",
+        "symbol": "▦",
+    },
+    4: {
+        "eyebrow": "Loslegen",
+        "title": "Teile prüfen und sortieren",
+        "lead": "Für jedes Set stehen dir Checkliste, Großsortierung und Fehlteile-Übersicht zur Verfügung.",
+        "symbol": "◆",
+    },
+}
+
+
+@bp.get("/setup")
+@bp.get("/setup/<int:step>")
+@login_required
+def onboarding(step: int = 1):
+    if step not in ONBOARDING_STEPS:
+        abort(404)
+    return render_template(
+        "account/onboarding.html",
+        step=step,
+        total_steps=len(ONBOARDING_STEPS),
+        setup=ONBOARDING_STEPS[step],
+    )
+
+
+@bp.post("/setup/finish")
+@login_required
+def finish_onboarding():
+    user = db.session.get(User, current_user.id)
+    user.onboarding_pending = False
+    db.session.commit()
+    flash("Setup abgeschlossen. Willkommen in deinem BrickHoard-Dashboard!", "success")
+    return redirect(url_for("main.dashboard"))
 
 
 @bp.route("/settings/account", methods=["GET", "POST"])

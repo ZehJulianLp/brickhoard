@@ -252,6 +252,7 @@ def register_cli(app: Flask) -> None:
             "is_admin": "BOOLEAN NOT NULL DEFAULT 0",
             "is_enabled": "BOOLEAN NOT NULL DEFAULT 1",
             "must_change_password": "BOOLEAN NOT NULL DEFAULT 0",
+            "onboarding_pending": "BOOLEAN NOT NULL DEFAULT 0",
             "email_verified_at": "DATETIME",
             "confirmation_sent_at": "DATETIME",
             "password_reset_sent_at": "DATETIME",

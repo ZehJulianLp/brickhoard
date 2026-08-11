@@ -71,6 +71,7 @@ def register():
                 username=username,
                 email=email,
                 is_admin=is_first_user,
+                onboarding_pending=True,
                 email_verified_at=None,
             )
             user.set_password(form.password.data)
@@ -112,6 +113,8 @@ def login():
                 return redirect(url_for("account.account_settings"))
             if user.email_verified_at is None:
                 return redirect(url_for("auth.verification_required"))
+            if user.onboarding_pending:
+                return redirect(url_for("account.onboarding", step=1))
             next_url = request.args.get("next")
             if next_url and _is_safe_next_url(next_url):
                 return redirect(next_url)
@@ -219,7 +222,11 @@ def confirm_email(token: str):
     else:
         flash("Deine E-Mail-Adresse ist bereits bestätigt.", "info")
     if current_user.is_authenticated and current_user.id == user.id:
-        return redirect(url_for("main.dashboard"))
+        return redirect(
+            url_for("account.onboarding", step=1)
+            if user.onboarding_pending
+            else url_for("main.dashboard")
+        )
     return redirect(url_for("auth.login"))
 
 

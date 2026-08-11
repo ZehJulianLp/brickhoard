@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Setup {{ step }} von {{ total_steps }} – BrickHoard{% endblock %}
+{% block content %}
+<section class="onboarding-shell">
+  <header class="onboarding-header">
+    <div>
+      <span class="eyebrow">Einrichtung · Schritt {{ step }} von {{ total_steps }}</span>
+      <h1>BrickHoard einrichten</h1>
+    </div>
+    <form method="post" action="{{ url_for('account.finish_onboarding') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-link text-secondary" type="submit">Setup überspringen</button>
+    </form>
+  </header>
+
+  <ol class="onboarding-progress" aria-label="Setup-Fortschritt">
+    {% for number in range(1, total_steps + 1) %}
+      <li class="{{ 'is-active' if number == step else ('is-done' if number < step else '') }}" aria-current="{{ 'step' if number == step else 'false' }}">
+        <a href="{{ url_for('account.onboarding', step=number) }}"><span>{{ '✓' if number < step else number }}</span><small>{{ ['Konto', 'Rebrickable', 'Setlisten', 'Sortieren'][number - 1] }}</small></a>
+      </li>
+    {% endfor %}
+  </ol>
+
+  <article class="onboarding-card">
+    <div class="onboarding-symbol" aria-hidden="true">{{ setup.symbol }}</div>
+    <div class="onboarding-copy">
+      <span class="eyebrow">{{ setup.eyebrow }}</span>
+      <h2>{{ setup.title }}</h2>
+      <p class="onboarding-lead">{{ setup.lead }}</p>
+
+      {% if step == 1 %}
+        <ul class="setup-checklist">
+          <li><strong>Benutzername:</strong> {{ current_user.username }}</li>
+          <li><strong>E-Mail:</strong> {{ current_user.email }}</li>
+          <li><strong>Status:</strong> {{ 'E-Mail bestätigt' if current_user.email_verified_at else 'Bestätigung noch offen' }}</li>
+        </ul>
+        <p>Du kannst Profildaten, Passwort und dieses Setup später jederzeit unter <strong>Konto</strong> verwalten.</p>
+      {% elif step == 2 %}
+        <ol class="setup-instructions">
+          <li>Erstelle in deinen Rebrickable-Einstellungen einen persönlichen API-Key.</li>
+          <li>Übernimm zusätzlich deinen User Token für den Zugriff auf private Listen.</li>
+          <li>Speichere beide Werte in BrickHoard und teste die Verbindung.</li>
+        </ol>
+        <div class="setup-note"><strong>Sicher gespeichert:</strong> Zugangsdaten werden verschlüsselt abgelegt. Dein Rebrickable-Passwort wird bei automatischer Token-Erzeugung nicht gespeichert.</div>
+        <a class="btn btn-outline-dark" href="{{ url_for('sets.rebrickable_settings') }}" target="_blank" rel="noopener">Rebrickable in neuem Tab einrichten ↗</a>
+      {% elif step == 3 %}
+        <ol class="setup-instructions">
+          <li>Lege auf Rebrickable mindestens eine Setliste an und füge Sets hinzu.</li>
+          <li>Öffne in BrickHoard den Bereich <strong>Setlisten</strong>.</li>
+          <li>Wähle ein Set aus, um Details und Teileinventar zu laden.</li>
+        </ol>
+        {% if current_user.has_rebrickable_credentials %}
+          <div class="setup-note setup-note-success"><strong>Verbindung vorhanden.</strong> Du kannst deine Setlisten jetzt öffnen.</div>
+          <a class="btn btn-outline-dark" href="{{ url_for('sets.lists') }}" target="_blank" rel="noopener">Setlisten in neuem Tab öffnen ↗</a>
+        {% else %}
+          <div class="setup-note"><strong>Noch nicht verbunden.</strong> Das ist kein Problem – du kannst das Setup trotzdem fortsetzen und die Verbindung später nachholen.</div>
+        {% endif %}
+      {% else %}
+        <div class="setup-feature-grid">
+          <div><strong>Checkliste</strong><span>Gefundene Mengen und Teilestatus direkt am Set pflegen.</span></div>
+          <div><strong>Großsortierung</strong><span>Ein Teil nach dem anderen mit großer Abbildung bearbeiten.</span></div>
+          <div><strong>Fehlteile</strong><span>Offene Teile über einzelne Sets oder die ganze Sammlung bündeln.</span></div>
+        </div>
+        <p>Dein Fortschritt wird automatisch in deinem BrickHoard-Konto gespeichert. Du bist bereit.</p>
+      {% endif %}
+    </div>
+  </article>
+
+  <footer class="onboarding-actions">
+    <div>{% if step > 1 %}<a class="btn btn-outline-dark" href="{{ url_for('account.onboarding', step=step - 1) }}">← Zurück</a>{% endif %}</div>
+    {% if step < total_steps %}
+      <a class="btn btn-accent" href="{{ url_for('account.onboarding', step=step + 1) }}">Weiter zu Schritt {{ step + 1 }} →</a>
+    {% else %}
+      <form method="post" action="{{ url_for('account.finish_onboarding') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-accent" type="submit">Setup abschließen →</button>
+      </form>
+    {% endif %}
+  </footer>
+</section>
+{% endblock %}
