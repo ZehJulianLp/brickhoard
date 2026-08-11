@@ -400,6 +400,28 @@ const setAccessibilityMode = (enabled) => {
 setAccessibilityMode(localStorage.getItem('brickshelf-accessibility') === '1');
 document.querySelectorAll('#display-mode-toggle, #accessibility-toggle').forEach((button) => button.addEventListener('click', () => setAccessibilityMode(!document.body.classList.contains('accessibility-mode'))));
 
+const themeToggle = document.querySelector('#theme-toggle');
+const themePreference = window.matchMedia('(prefers-color-scheme: dark)');
+const applyTheme = (theme, persist = false) => {
+  const dark = theme === 'dark';
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.documentElement.dataset.bsTheme = dark ? 'dark' : 'light';
+  document.querySelector('#theme-color')?.setAttribute('content', dark ? '#091317' : '#172b35');
+  if (themeToggle) {
+    themeToggle.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    themeToggle.querySelector('.theme-toggle-icon').textContent = dark ? '☀' : '◐';
+    themeToggle.querySelector('.theme-toggle-label').textContent = dark ? 'Hellmodus' : 'Darkmode';
+  }
+  if (persist) localStorage.setItem('brickhoard-theme', dark ? 'dark' : 'light');
+};
+applyTheme(document.documentElement.dataset.theme || 'light');
+themeToggle?.addEventListener('click', () => {
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+});
+themePreference.addEventListener?.('change', (event) => {
+  if (!localStorage.getItem('brickhoard-theme')) applyTheme(event.matches ? 'dark' : 'light');
+});
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js'));
 }

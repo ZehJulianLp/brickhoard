@@ -14,6 +14,8 @@ def test_public_home_has_complete_search_metadata(client):
     assert '<meta name="twitter:card" content="summary">' in response.text
     assert '<script type="application/ld+json">' in response.text
     assert '"WebApplication"' in response.text
+    assert 'id="theme-toggle"' in response.text
+    assert "localStorage.getItem('brickhoard-theme')" in response.text
 
 
 def test_private_and_auth_pages_are_noindex(client):
