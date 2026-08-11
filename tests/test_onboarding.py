@@ -49,9 +49,12 @@ def test_setup_can_be_skipped_and_marks_it_complete(client, app, user):
 
 def test_existing_user_can_restart_all_setup_steps(logged_in_client):
     account = logged_in_client.get("/settings/account")
+    connection_step = logged_in_client.get("/setup/2")
     last_step = logged_in_client.get("/setup/4")
 
     assert "Setup starten" in account.text
+    assert "Dein persönlicher Rebrickable API-Key" in connection_step.text
+    assert "Speichern, testen und weiter" in connection_step.text
     assert last_step.status_code == 200
     assert "Schritt 4 von 4" in last_step.text
     assert "Setup abschließen" in last_step.text
@@ -59,3 +62,37 @@ def test_existing_user_can_restart_all_setup_steps(logged_in_client):
 
 def test_unknown_setup_step_returns_not_found(logged_in_client):
     assert logged_in_client.get("/setup/5").status_code == 404
+
+
+def test_rebrickable_credentials_can_be_entered_inside_setup(
+    logged_in_client, app, user, monkeypatch
+):
+    class FakeRebrickableService:
+        def __init__(self, api_key, user_token):
+            assert api_key == "setup-api-key"
+            assert user_token == "setup-user-token"
+
+        def test_connection(self):
+            return {"username": "setup-sammler"}
+
+    monkeypatch.setattr(
+        "app.account.routes.RebrickableService", FakeRebrickableService
+    )
+    response = logged_in_client.post(
+        "/setup/2",
+        data={
+            "rebrickable_username": "setup-sammler",
+            "api_key": "setup-api-key",
+            "user_token": "setup-user-token",
+            "save": "Speichern, testen und weiter",
+        },
+    )
+
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/setup/3")
+    with app.app_context():
+        db.session.expire_all()
+        saved_user = db.session.get(User, user)
+        assert saved_user.rebrickable_username == "setup-sammler"
+        assert saved_user.rebrickable_api_key == "setup-api-key"
+        assert saved_user.rebrickable_user_token == "setup-user-token"

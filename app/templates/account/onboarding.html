@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from '_forms.html' import render_field %}
 {% block title %}Setup {{ step }} von {{ total_steps }} – BrickHoard{% endblock %}
 {% block content %}
 <section class="onboarding-shell">
@@ -38,11 +39,24 @@
       {% elif step == 2 %}
         <ol class="setup-instructions">
           <li>Erstelle in deinen Rebrickable-Einstellungen einen persönlichen API-Key.</li>
-          <li>Übernimm zusätzlich deinen User Token für den Zugriff auf private Listen.</li>
-          <li>Speichere beide Werte in BrickHoard und teste die Verbindung.</li>
+          <li>Trage API-Key und User Token direkt hier ein.</li>
+          <li>BrickHoard testet die Verbindung und führt dich automatisch weiter.</li>
         </ol>
         <div class="setup-note"><strong>Sicher gespeichert:</strong> Zugangsdaten werden verschlüsselt abgelegt. Dein Rebrickable-Passwort wird bei automatischer Token-Erzeugung nicht gespeichert.</div>
-        <a class="btn btn-outline-dark" href="{{ url_for('sets.rebrickable_settings') }}" target="_blank" rel="noopener">Rebrickable in neuem Tab einrichten ↗</a>
+        <form method="post" class="onboarding-credentials" novalidate>
+          {{ rebrickable_form.hidden_tag() }}
+          {{ render_field(rebrickable_form.rebrickable_username) }}
+          {{ render_field(rebrickable_form.api_key, ('API-Key bereits gespeichert – leer lassen, um ihn beizubehalten.' if has_api_key else 'Zu finden bei Rebrickable unter Settings → API.')) }}
+          {{ render_field(rebrickable_form.user_token, ('User Token bereits gespeichert – leer lassen, um ihn beizubehalten.' if has_token else 'Für deine privaten Setlisten erforderlich.')) }}
+          {{ rebrickable_form.save(class='btn btn-accent', value='Speichern, testen und weiter →') }}
+          <details class="setup-token-generator">
+            <summary>User Token automatisch erzeugen</summary>
+            <p class="small text-secondary mt-3">Wenn du noch keinen Token hast, kann BrickHoard ihn einmalig mit deinem Rebrickable-Login anfordern.</p>
+            {{ render_field(rebrickable_form.rebrickable_login) }}
+            {{ render_field(rebrickable_form.rebrickable_password) }}
+            {{ rebrickable_form.generate_token(class='btn btn-outline-dark') }}
+          </details>
+        </form>
       {% elif step == 3 %}
         <ol class="setup-instructions">
           <li>Lege auf Rebrickable mindestens eine Setliste an und füge Sets hinzu.</li>

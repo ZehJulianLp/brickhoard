@@ -1,4 +1,4 @@
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, logout_user
 from sqlalchemy import delete, func, or_
 
@@ -7,6 +7,8 @@ from app.account.forms import ChangePasswordForm, DeleteAccountForm, ProfileForm
 from app.extensions import db
 from app.models import SetPartProgress, User, utcnow
 from app.services.mail import MailService, MailServiceError
+from app.services.rebrickable import RebrickableAPIError, RebrickableService
+from app.sets.forms import RebrickableSettingsForm
 
 
 ONBOARDING_STEPS = {
@@ -38,16 +40,95 @@ ONBOARDING_STEPS = {
 
 
 @bp.get("/setup")
-@bp.get("/setup/<int:step>")
+@bp.route("/setup/<int:step>", methods=["GET", "POST"])
 @login_required
 def onboarding(step: int = 1):
     if step not in ONBOARDING_STEPS:
         abort(404)
+    rebrickable_form = None
+    if step == 2:
+        rebrickable_form = RebrickableSettingsForm()
+        if request.method == "GET":
+            rebrickable_form.rebrickable_username.data = current_user.rebrickable_username
+        if rebrickable_form.validate_on_submit():
+            api_key = (
+                rebrickable_form.api_key.data.strip()
+                if rebrickable_form.api_key.data
+                else None
+            )
+            user_token = (
+                rebrickable_form.user_token.data.strip()
+                if rebrickable_form.user_token.data
+                else None
+            )
+            effective_api_key = (
+                api_key
+                or current_user.rebrickable_api_key
+                or current_app.config.get("REBRICKABLE_API_KEY", "")
+            )
+
+            if rebrickable_form.generate_token.data:
+                login_name = (
+                    rebrickable_form.rebrickable_login.data.strip()
+                    if rebrickable_form.rebrickable_login.data
+                    else ""
+                )
+                password = rebrickable_form.rebrickable_password.data or ""
+                if not effective_api_key or not login_name or not password:
+                    flash(
+                        "Für die automatische Token-Erzeugung werden API-Key, Rebrickable-Login und Passwort benötigt.",
+                        "warning",
+                    )
+                else:
+                    try:
+                        generated_token = RebrickableService(
+                            effective_api_key
+                        ).generate_user_token(login_name, password)
+                        if api_key:
+                            current_user.rebrickable_api_key = api_key
+                        current_user.rebrickable_user_token = generated_token
+                        current_user.rebrickable_username = login_name
+                        db.session.commit()
+                        flash(
+                            "User Token erzeugt und Verbindung gespeichert. Dein Rebrickable-Passwort wurde nicht gespeichert.",
+                            "success",
+                        )
+                        return redirect(url_for("account.onboarding", step=3))
+                    except RebrickableAPIError as error:
+                        flash(str(error), "danger")
+            else:
+                effective_token = user_token or current_user.rebrickable_user_token
+                if not effective_api_key or not effective_token:
+                    flash("Bitte trage API-Key und User Token ein.", "warning")
+                else:
+                    try:
+                        profile = RebrickableService(
+                            effective_api_key, effective_token
+                        ).test_connection()
+                        if api_key:
+                            current_user.rebrickable_api_key = api_key
+                        if user_token:
+                            current_user.rebrickable_user_token = user_token
+                        current_user.rebrickable_username = (
+                            rebrickable_form.rebrickable_username.data.strip() or None
+                        )
+                        db.session.commit()
+                        display_name = profile.get("username") or "Rebrickable-Benutzer"
+                        flash(
+                            f"Verbindung erfolgreich: {display_name} wurde erkannt.",
+                            "success",
+                        )
+                        return redirect(url_for("account.onboarding", step=3))
+                    except RebrickableAPIError as error:
+                        flash(str(error), "danger")
     return render_template(
         "account/onboarding.html",
         step=step,
         total_steps=len(ONBOARDING_STEPS),
         setup=ONBOARDING_STEPS[step],
+        rebrickable_form=rebrickable_form,
+        has_api_key=bool(current_user.rebrickable_api_key),
+        has_token=bool(current_user.rebrickable_user_token),
     )
 
 
