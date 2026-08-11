@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Kontakt – BrickHoard{% endblock %}
+{% block meta_description %}Kontaktiere den Betreiber von BrickHoard per E-Mail bei Fragen zu deinem Konto, Datenschutz oder der LEGO-Sammlungsverwaltung.{% endblock %}
+{% block content %}
+<article class="legal-page panel-card mx-auto">
+  <span class="eyebrow">Kontakt</span>
+  <h1 class="mt-2">So erreichst du BrickHoard</h1>
+  <p>Bei Fragen zur App, deinem Konto, E-Mails oder zum Datenschutz erreichst du den Betreiber direkt per E-Mail.</p>
+  <p><a class="btn btn-accent" href="mailto:{{ config.LEGAL_CONTACT_EMAIL }}">E-Mail an {{ config.LEGAL_CONTACT_EMAIL }}</a></p>
+  <p class="small text-secondary mb-0">Beim Versand einer E-Mail werden deine Absenderadresse, der Nachrichteninhalt und technische Zustellinformationen verarbeitet. Details findest du in der <a href="{{ url_for('main.privacy') }}">Datenschutzerklärung</a>.</p>
+</article>
+{% endblock %}

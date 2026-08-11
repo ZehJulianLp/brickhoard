@@ -30,6 +30,9 @@ BrickHoard ist ein unabhängiges Fanprojekt und steht in keiner Verbindung zur L
 - gespeicherte Zustände wie „fehlt sicher“, „falsche Farbe“ und „Alternative vorhanden“
 - globale Großansicht, Wiedereinstieg ins letzte Projekt und druckbare Sortierbögen
 - responsive Bootstrap-5-Oberfläche und benutzerfreundliche Fehlerseiten
+- technische SEO-Basis mit Canonicals, Open Graph, Twitter Cards und strukturierten Daten
+- öffentliche `robots.txt` und XML-Sitemap bei gleichzeitigem `noindex` für private Bereiche
+- öffentliche Kontakt-, Datenschutz- und Impressumsseiten
 
 ## Technik und Architektur
 
@@ -76,6 +79,12 @@ MAIL_USERNAME=brickhoard@example.de
 MAIL_PASSWORD=dein-smtp-app-passwort
 MAIL_DEFAULT_SENDER=BrickHoard <brickhoard@example.de>
 EMAIL_LINK_BASE_URLS=http://localhost:5000,https://brickhoard.example.de
+PUBLIC_BASE_URL=https://brickhoard.example.de
+
+LEGAL_OPERATOR_NAME=Vorname Nachname
+LEGAL_POSTAL_ADDRESS=Straße Hausnummer|PLZ Ort|Deutschland
+LEGAL_CONTACT_EMAIL=brickhoard@example.de
+PRIVACY_LAST_UPDATED=11. August 2026
 ```
 
 Die echte `.env` ist über `.gitignore` ausgeschlossen.

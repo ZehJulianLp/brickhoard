@@ -11,6 +11,7 @@ from flask_login import current_user
 from flask_wtf.csrf import CSRFError
 from dotenv import load_dotenv
 from sqlalchemy import func, inspect, or_, text
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.extensions import csrf, db, login_manager
 
@@ -18,6 +19,7 @@ from app.extensions import csrf, db, login_manager
 def create_app(test_config: dict | None = None) -> Flask:
     load_dotenv()
     app = Flask(__name__, instance_relative_config=True)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
 
     app.config.from_mapping(
@@ -53,6 +55,21 @@ def create_app(test_config: dict | None = None) -> Flask:
             os.getenv("PASSWORD_RESET_TOKEN_MAX_AGE", "3600")
         ),
         MAIL_RESEND_COOLDOWN=int(os.getenv("MAIL_RESEND_COOLDOWN", "60")),
+        PUBLIC_BASE_URL=os.getenv(
+            "PUBLIC_BASE_URL", "https://brickhoard.julianverse.de"
+        ).rstrip("/"),
+        LEGAL_OPERATOR_NAME=os.getenv("LEGAL_OPERATOR_NAME", "Julian"),
+        LEGAL_POSTAL_ADDRESS=tuple(
+            line.strip()
+            for line in os.getenv("LEGAL_POSTAL_ADDRESS", "").split("|")
+            if line.strip()
+        ),
+        LEGAL_CONTACT_EMAIL=os.getenv(
+            "LEGAL_CONTACT_EMAIL", "brickhoard@julianverse.de"
+        ),
+        PRIVACY_LAST_UPDATED=os.getenv(
+            "PRIVACY_LAST_UPDATED", "11. August 2026"
+        ),
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_SECURE=os.getenv("FLASK_ENV") == "production",
@@ -87,6 +104,78 @@ def create_app(test_config: dict | None = None) -> Flask:
     register_cli(app)
     register_error_handlers(app)
     configure_logging(app)
+
+    indexable_endpoints = {
+        "main.index",
+        "main.contact",
+        "main.privacy",
+        "main.imprint",
+    }
+
+    @app.context_processor
+    def inject_seo_metadata():
+        endpoint = request.endpoint or ""
+        is_indexable = endpoint in indexable_endpoints
+        public_base_url = app.config["PUBLIC_BASE_URL"]
+        canonical_url = (
+            f"{public_base_url}{url_for(endpoint)}" if is_indexable else None
+        )
+        structured_data = None
+        if endpoint == "main.index":
+            structured_data = [
+                {
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    "name": "BrickHoard",
+                    "url": f"{public_base_url}/",
+                    "inLanguage": "de-DE",
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "WebApplication",
+                    "name": "BrickHoard",
+                    "url": f"{public_base_url}/",
+                    "applicationCategory": "LifestyleApplication",
+                    "operatingSystem": "Web",
+                    "inLanguage": "de-DE",
+                    "description": (
+                        "Private Web-App zum Verwalten von LEGO-Setlisten, "
+                        "Sortierfortschritten und Fehlteilen mit Rebrickable."
+                    ),
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "EUR",
+                    },
+                    "featureList": [
+                        "LEGO-Setlisten verwalten",
+                        "Teile sortieren und Fortschritt speichern",
+                        "Fehlteile erkennen und exportieren",
+                        "Rebrickable-Sammlungen anbinden",
+                    ],
+                },
+            ]
+        return {
+            "seo_canonical_url": canonical_url,
+            "seo_is_indexable": is_indexable,
+            "seo_public_base_url": public_base_url,
+            "seo_social_image_url": (
+                f"{public_base_url}{url_for('static', filename='img/icon-512.png')}"
+            ),
+            "seo_structured_data": structured_data,
+        }
+
+    @app.after_request
+    def add_search_engine_headers(response):
+        endpoint = request.endpoint or ""
+        if endpoint not in indexable_endpoints and endpoint not in {
+            "main.robots_txt",
+            "main.sitemap_xml",
+            "main.service_worker",
+            "static",
+        }:
+            response.headers.setdefault("X-Robots-Tag", "noindex, nofollow")
+        return response
 
     @app.before_request
     def require_forced_password_change():

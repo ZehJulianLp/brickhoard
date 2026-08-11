@@ -12,5 +12,6 @@
     {{ render_field(form.password_repeat) }}
     {{ form.submit(class='btn btn-accent w-100') }}
   </form>
+  <p class="small text-secondary mt-3 mb-0">Wie deine Kontodaten verarbeitet werden, erfährst du in der <a href="{{ url_for('main.privacy') }}">Datenschutzerklärung</a>.</p>
 </div>
 {% endblock %}

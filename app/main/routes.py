@@ -1,4 +1,4 @@
-from flask import current_app, flash, redirect, render_template, send_from_directory, url_for
+from flask import Response, current_app, flash, redirect, render_template, send_from_directory, url_for
 from flask_login import current_user, login_required
 
 from app.extensions import db
@@ -19,6 +19,55 @@ def index():
     if current_user.is_authenticated:
         return redirect(url_for("main.dashboard"))
     return render_template("main/index.html")
+
+
+@bp.get("/kontakt")
+def contact():
+    return render_template("main/contact.html")
+
+
+@bp.get("/datenschutz")
+def privacy():
+    return render_template("main/privacy.html")
+
+
+@bp.get("/impressum")
+def imprint():
+    return render_template("main/imprint.html")
+
+
+@bp.get("/robots.txt")
+def robots_txt():
+    public_base_url = current_app.config["PUBLIC_BASE_URL"]
+    body = "\n".join(
+        [
+            "User-agent: *",
+            "Allow: /",
+            "Disallow: /account/",
+            "Disallow: /admin/",
+            "Disallow: /dashboard",
+            "Disallow: /lists",
+            "Disallow: /search",
+            "Disallow: /sets/",
+            "Disallow: /settings/",
+            f"Sitemap: {public_base_url}/sitemap.xml",
+            "",
+        ]
+    )
+    return Response(body, mimetype="text/plain", headers={"Cache-Control": "public, max-age=3600"})
+
+
+@bp.get("/sitemap.xml")
+def sitemap_xml():
+    public_base_url = current_app.config["PUBLIC_BASE_URL"]
+    urls = [
+        (f"{public_base_url}{url_for('main.index')}", "1.0"),
+        (f"{public_base_url}{url_for('main.contact')}", "0.5"),
+        (f"{public_base_url}{url_for('main.privacy')}", "0.3"),
+        (f"{public_base_url}{url_for('main.imprint')}", "0.3"),
+    ]
+    xml = render_template("main/sitemap.xml", urls=urls)
+    return Response(xml, mimetype="application/xml", headers={"Cache-Control": "public, max-age=3600"})
 
 
 @bp.get("/dashboard")

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Impressum – BrickHoard{% endblock %}
+{% block meta_description %}Anbieterkennzeichnung und Kontaktinformationen für BrickHoard.{% endblock %}
+{% block content %}
+<article class="legal-page panel-card mx-auto">
+  <span class="eyebrow">Rechtliches</span>
+  <h1 class="mt-2">Impressum</h1>
+  <h2>Angaben zum Anbieter</h2>
+  <address>
+    <strong>{{ config.LEGAL_OPERATOR_NAME }}</strong><br>
+    {% for line in config.LEGAL_POSTAL_ADDRESS %}{{ line }}<br>{% endfor %}
+  </address>
+  <h2>Kontakt</h2>
+  <p>E-Mail: <a href="mailto:{{ config.LEGAL_CONTACT_EMAIL }}">{{ config.LEGAL_CONTACT_EMAIL }}</a></p>
+  <h2>Hinweis zum Projekt</h2>
+  <p>BrickHoard ist ein unabhängiges Fanprojekt und steht in keiner Verbindung zur LEGO Group oder zu Rebrickable. Die genannten Marken und Produktnamen gehören den jeweiligen Rechteinhabern.</p>
+</article>
+{% endblock %}

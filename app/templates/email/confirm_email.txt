@@ -8,3 +8,7 @@ bitte bestätige deine E-Mail-Adresse für BrickHoard. Der Link ist {{ expires_h
 {% endfor %}Falls du diesen Account nicht erstellt hast, kannst du diese Nachricht ignorieren.
 
 Dein BrickHoard
+
+Kontakt: {{ config.LEGAL_CONTACT_EMAIL }}
+Datenschutz: {{ config.PUBLIC_BASE_URL }}/datenschutz
+Impressum: {{ config.PUBLIC_BASE_URL }}/impressum
