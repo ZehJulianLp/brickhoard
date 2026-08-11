@@ -242,7 +242,7 @@ if (sortAssistant) {
   const orderSelect = document.querySelector('#sort-assistant-order');
   const orderStorageKey = `brickshelf-sort-order:${sortAssistant.dataset.setNumber}`;
   const naturalCompare = new Intl.Collator('de', {numeric: true, sensitivity: 'base'}).compare;
-  const applyCardOrder = (order) => {
+  const applyCardOrder = (order, preserveCurrent = true) => {
     const currentItemKey = cards[currentIndex]?.dataset.itemKey;
     const [criterion, direction = 'asc'] = order.split('-');
     cards.sort((left, right) => {
@@ -269,8 +269,12 @@ if (sortAssistant) {
       }
       return direction === 'desc' ? -comparison : comparison;
     });
-    const preservedIndex = cards.findIndex((card) => card.dataset.itemKey === currentItemKey);
-    currentIndex = preservedIndex >= 0 ? preservedIndex : 0;
+    if (preserveCurrent) {
+      const preservedIndex = cards.findIndex((card) => card.dataset.itemKey === currentItemKey);
+      currentIndex = preservedIndex >= 0 ? preservedIndex : 0;
+    } else {
+      currentIndex = 0;
+    }
   };
   const savedOrder = localStorage.getItem(orderStorageKey);
   if (savedOrder && [...orderSelect.options].some((option) => option.value === savedOrder)) {
@@ -369,7 +373,7 @@ if (sortAssistant) {
     }
   });
   orderSelect.addEventListener('change', () => {
-    applyCardOrder(orderSelect.value);
+    applyCardOrder(orderSelect.value, false);
     localStorage.setItem(orderStorageKey, orderSelect.value);
     showCard(currentIndex);
   });
