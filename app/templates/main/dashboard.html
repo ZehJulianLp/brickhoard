@@ -1,24 +1,127 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard – BrickHoard{% endblock %}
 {% block content %}
-<div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
-  <div><span class="eyebrow">Dashboard</span><h1 class="mt-2 mb-0">Hallo, {{ current_user.username }}!</h1></div>
-  <a class="btn btn-outline-dark" href="{{ url_for('sets.rebrickable_settings') }}">Verbindung verwalten</a>
-</div>
-
-{% if current_user.has_rebrickable_credentials %}
-  <div class="status-banner status-ok mb-4"><strong>Rebrickable ist eingerichtet.</strong> Deine privaten Listen können geladen werden.</div>
-{% else %}
-  <div class="status-banner status-warning mb-4">
-    <strong>Noch nicht verbunden.</strong> Hinterlege API-Key und User Token, um deine Setlisten zu sehen.
-    <a href="{{ url_for('sets.rebrickable_settings') }}">Jetzt einrichten</a>
+<section class="cockpit-hero">
+  <div>
+    <span class="eyebrow">Collection Cockpit</span>
+    <h1>Hallo, {{ current_user.username }}.</h1>
+    <p>Deine Sammlung, Sortierprojekte und Fehlteile auf einen Blick.</p>
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      {% if resume_project %}<a class="btn btn-accent" href="{{ url_for('sets.sort_assistant', set_number=resume_project.set_number) }}">Weitersortieren</a>{% endif %}
+      <a class="btn btn-outline-light" href="{{ url_for('sets.search') }}">Set suchen</a>
+    </div>
   </div>
-{% endif %}
+  <div class="cockpit-connection connection-{{ rebrickable_state }}">
+    <span class="connection-dot" aria-hidden="true"></span>
+    <div>
+      {% if rebrickable_state == 'connected' %}
+        <strong>Rebrickable verbunden</strong><small>Deine Setlisten sind erreichbar.</small>
+      {% elif rebrickable_state == 'error' %}
+        <strong>Verbindung gestört</strong><small>Lokale Fortschritte bleiben verfügbar.</small>
+      {% else %}
+        <strong>Rebrickable einrichten</strong><small>Verbinde deine persönliche Sammlung.</small>
+      {% endif %}
+    </div>
+    <a href="{{ url_for('sets.rebrickable_settings') }}" aria-label="Rebrickable-Verbindung verwalten">→</a>
+  </div>
+</section>
 
-<div class="row g-4">
-  <div class="col-sm-6"><div class="metric-card"><span>Setlisten</span><strong>{{ list_count if list_count is not none else '–' }}</strong></div></div>
-  <div class="col-sm-6"><div class="metric-card"><span>Sets in Listen</span><strong>{{ set_count if set_count is not none else '–' }}</strong><small>Summe der von Rebrickable gemeldeten Listeneinträge</small></div></div>
+<section class="dashboard-metrics" aria-label="Sammlungskennzahlen">
+  <article class="cockpit-metric metric-gold">
+    <span class="metric-label">Sets in Listen</span>
+    <strong>{{ set_count if set_count is not none else '–' }}</strong>
+    <small>{{ list_count if list_count is not none else 'Keine' }} Rebrickable-Setlisten</small>
+  </article>
+  <article class="cockpit-metric metric-blue">
+    <span class="metric-label">Sortierprojekte</span>
+    <strong>{{ project_count }}</strong>
+    <small>{{ active_projects }} aktiv · {{ completed_projects }} vollständig</small>
+  </article>
+  <article class="cockpit-metric metric-green">
+    <span class="metric-label">Teile gefunden</span>
+    <strong>{{ total_found }}</strong>
+    <small>von {{ total_required }} erfassten Teilen</small>
+  </article>
+  <article class="cockpit-metric metric-red">
+    <span class="metric-label">Noch fehlend</span>
+    <strong>{{ total_missing }}</strong>
+    <small>über alle lokalen Projekte</small>
+  </article>
+</section>
+
+<div class="dashboard-primary-grid">
+  {% if resume_project %}
+    <section class="continue-project-card">
+      <div class="continue-project-top">
+        <div>
+          <span class="eyebrow">Zuletzt bearbeitet</span>
+          <h2>Set {{ resume_project.set_number }}</h2>
+        </div>
+        <span class="project-percent">{{ resume_project.percent }}%</span>
+      </div>
+      <div class="continue-progress" role="progressbar" aria-label="Sortierfortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ resume_project.percent }}">
+        <span style="width: {{ resume_project.percent }}%"></span>
+      </div>
+      <div class="continue-project-bottom">
+        <p><strong>{{ resume_project.found }}</strong> von {{ resume_project.required }} Teilen gefunden{% if resume_project.missing %} · <span>{{ resume_project.missing }} fehlen</span>{% endif %}</p>
+        <a class="btn btn-accent" href="{{ url_for('sets.sort_assistant', set_number=resume_project.set_number) }}">Weitersortieren</a>
+      </div>
+    </section>
+  {% else %}
+    <section class="dashboard-empty-project">
+      <div class="empty-brick" aria-hidden="true"></div>
+      <div><span class="eyebrow">Bereit, wenn du es bist</span><h2>Starte dein erstes Sortierprojekt</h2><p>Öffne ein Set aus deiner Sammlung und beginne, die vorhandenen Teile abzuhaken.</p></div>
+      <a class="btn btn-accent" href="{{ url_for('sets.lists') }}">Set auswählen</a>
+    </section>
+  {% endif %}
+
+  <section class="health-card">
+    <div class="health-copy">
+      <span class="eyebrow">Collection Health</span>
+      <h2>Dein Teilefortschritt</h2>
+    </div>
+    <div class="health-ring" style="--health: {{ collection_percent }}" role="img" aria-label="{{ collection_percent }} Prozent Gesamtfortschritt">
+      <div><strong>{{ collection_percent }}%</strong><span>gefunden</span></div>
+    </div>
+    <dl class="health-facts">
+      <div><dt>Vollständig</dt><dd>{{ completed_projects }}</dd></div>
+      <div><dt>In Arbeit</dt><dd>{{ active_projects }}</dd></div>
+      <div><dt>Fehlteile</dt><dd>{{ total_missing }}</dd></div>
+    </dl>
+  </section>
 </div>
-{% if resume_project %}<section class="resume-card mt-4"><div><span class="eyebrow">Zuletzt bearbeitet</span><h2 class="h4 mt-2 mb-1">Set {{ resume_project.set_number }}</h2><p class="text-secondary mb-0">{{ resume_project.found }} von {{ resume_project.required }} Teilen · {{ resume_project.percent }} %</p></div><a class="btn btn-accent" href="{{ url_for('sets.sort_assistant', set_number=resume_project.set_number) }}">Weitersortieren</a></section>{% endif %}
-<div class="mt-4"><a class="btn btn-accent" href="{{ url_for('sets.lists') }}">Setlisten öffnen</a></div>
+
+<div class="dashboard-secondary-grid">
+  <section class="recent-projects-card">
+    <div class="section-heading-row">
+      <div><span class="eyebrow">Deine Werkbank</span><h2>Letzte Projekte</h2></div>
+      <a href="{{ url_for('sets.lists') }}">Alle Sets →</a>
+    </div>
+    {% if recent_projects %}
+      <div class="recent-project-list">
+        {% for project in recent_projects %}
+          <a class="recent-project" href="{{ url_for('sets.sort_assistant', set_number=project.set_number) }}">
+            <span class="recent-project-index">{{ '%02d'|format(loop.index) }}</span>
+            <span class="recent-project-copy"><strong>Set {{ project.set_number }}</strong><small>{{ project.found }} / {{ project.required }} Teile{% if project.updated_at %} · {{ project.updated_at.strftime('%d.%m.%Y') }}{% endif %}</small></span>
+            <span class="recent-project-progress"><i style="width: {{ project.percent }}%"></i></span>
+            <span class="recent-project-value">{{ project.percent }}%</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-secondary mb-0">Noch keine lokalen Projekte. Dein zuletzt bearbeitetes Set erscheint hier automatisch.</p>
+    {% endif %}
+  </section>
+
+  <section class="quick-actions-card">
+    <span class="eyebrow">Direkt loslegen</span>
+    <h2>Schnelle Aktionen</h2>
+    <div class="quick-action-list">
+      <a href="{{ url_for('sets.search') }}"><span>⌕</span><div><strong>Sammlung durchsuchen</strong><small>Sets über alle Listen finden</small></div><b>→</b></a>
+      <a href="{{ url_for('sets.all_missing_parts') }}"><span>!</span><div><strong>Fehlteile öffnen</strong><small>Bedarf bündeln und exportieren</small></div><b>→</b></a>
+      <a href="{{ url_for('sets.lists') }}"><span>▦</span><div><strong>Setlisten ansehen</strong><small>Rebrickable-Sammlung öffnen</small></div><b>→</b></a>
+      <a href="{{ url_for('sets.rebrickable_settings') }}"><span>↻</span><div><strong>Verbindung prüfen</strong><small>API-Key und Token verwalten</small></div><b>→</b></a>
+    </div>
+  </section>
+</div>
 {% endblock %}

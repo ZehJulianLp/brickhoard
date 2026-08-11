@@ -75,44 +75,80 @@ def sitemap_xml():
 def dashboard():
     list_count = None
     set_count = None
-    resume_project = None
+    rebrickable_state = "missing"
     if current_user.has_rebrickable_credentials:
+        rebrickable_state = "connected"
         try:
             lists = service_for_current_user().get_user_set_lists()
             list_count = lists["count"]
             set_count = sum(int(item.get("num_sets") or 0) for item in lists["results"])
         except RebrickableAPIError as exc:
+            rebrickable_state = "error"
             flash(str(exc), "warning")
-    latest_progress = db.session.scalar(
-        db.select(SetPartProgress)
-        .where(SetPartProgress.user_id == current_user.id)
-        .order_by(SetPartProgress.updated_at.desc())
+
+    progress_rows = list(
+        db.session.scalars(
+            db.select(SetPartProgress)
+            .where(SetPartProgress.user_id == current_user.id)
+            .order_by(SetPartProgress.updated_at.desc())
+        )
     )
-    if latest_progress:
-        project_rows = list(
-            db.session.scalars(
-                db.select(SetPartProgress).where(
-                    SetPartProgress.user_id == current_user.id,
-                    SetPartProgress.set_number == latest_progress.set_number,
-                )
-            )
+    projects_by_set: dict[str, dict] = {}
+    for row in progress_rows:
+        project = projects_by_set.setdefault(
+            row.set_number,
+            {
+                "set_number": row.set_number,
+                "found": 0,
+                "required": 0,
+                "missing": 0,
+                "updated_at": row.updated_at,
+            },
         )
-        required = sum(max(row.required_quantity, 0) for row in project_rows)
-        found = sum(
-            min(max(row.found_quantity, 0), max(row.required_quantity, 0))
-            for row in project_rows
-        )
-        resume_project = {
-            "set_number": latest_progress.set_number,
-            "found": found,
-            "required": required,
-            "percent": round(found / required * 100) if required else 0,
-        }
+        required = max(row.required_quantity, 0)
+        found = min(max(row.found_quantity, 0), required)
+        project["required"] += required
+        project["found"] += found
+        project["missing"] += max(required - found, 0)
+        if row.updated_at and (
+            project["updated_at"] is None or row.updated_at > project["updated_at"]
+        ):
+            project["updated_at"] = row.updated_at
+
+    projects = sorted(
+        projects_by_set.values(),
+        key=lambda project: project["updated_at"],
+        reverse=True,
+    )
+    for project in projects:
+        required = project["required"]
+        project["percent"] = round(project["found"] / required * 100) if required else 0
+        project["is_complete"] = required > 0 and project["found"] >= required
+
+    total_required = sum(project["required"] for project in projects)
+    total_found = sum(project["found"] for project in projects)
+    total_missing = sum(project["missing"] for project in projects)
+    collection_percent = (
+        round(total_found / total_required * 100) if total_required else 0
+    )
+    completed_projects = sum(project["is_complete"] for project in projects)
+    active_projects = len(projects) - completed_projects
+    resume_project = projects[0] if projects else None
+
     return render_template(
         "main/dashboard.html",
         list_count=list_count,
         set_count=set_count,
+        rebrickable_state=rebrickable_state,
         resume_project=resume_project,
+        recent_projects=projects[:4],
+        project_count=len(projects),
+        active_projects=active_projects,
+        completed_projects=completed_projects,
+        total_required=total_required,
+        total_found=total_found,
+        total_missing=total_missing,
+        collection_percent=collection_percent,
     )
 
 

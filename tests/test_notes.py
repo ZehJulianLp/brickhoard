@@ -206,6 +206,10 @@ def test_part_status_note_and_dashboard_resume_are_saved(logged_in_client, app, 
     dashboard = logged_in_client.get("/dashboard")
     assert "Set 4559-1" in dashboard.text
     assert "Weitersortieren" in dashboard.text
+    assert "Collection Health" in dashboard.text
+    assert ">1</strong> von 4 Teilen gefunden" in dashboard.text
+    assert "3 fehlen" in dashboard.text
+    assert "25%" in dashboard.text
 
     position = logged_in_client.post(
         "/sets/4559-1/sort-position", json={"item_key": "inventory:88"}
