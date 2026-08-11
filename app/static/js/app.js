@@ -236,9 +236,47 @@ if (checklist) {
 
 const sortAssistant = document.querySelector('#sort-assistant');
 if (sortAssistant) {
-  const cards = [...sortAssistant.querySelectorAll('.sort-card')];
+  let cards = [...sortAssistant.querySelectorAll('.sort-card')];
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
   let currentIndex = Number(sortAssistant.dataset.startIndex) || 0;
+  const orderSelect = document.querySelector('#sort-assistant-order');
+  const orderStorageKey = `brickshelf-sort-order:${sortAssistant.dataset.setNumber}`;
+  const naturalCompare = new Intl.Collator('de', {numeric: true, sensitivity: 'base'}).compare;
+  const applyCardOrder = (order) => {
+    const currentItemKey = cards[currentIndex]?.dataset.itemKey;
+    const [criterion, direction = 'asc'] = order.split('-');
+    cards.sort((left, right) => {
+      if (criterion === 'original') {
+        return Number(left.dataset.originalIndex) - Number(right.dataset.originalIndex);
+      }
+      if (criterion === 'open' || criterion === 'done') {
+        const leftDone = Number(left.querySelector('.sort-found').value) >= Number(left.dataset.required) ? 1 : 0;
+        const rightDone = Number(right.querySelector('.sort-found').value) >= Number(right.dataset.required) ? 1 : 0;
+        if (leftDone !== rightDone) return criterion === 'open' ? leftDone - rightDone : rightDone - leftDone;
+        return Number(left.dataset.originalIndex) - Number(right.dataset.originalIndex);
+      }
+      let comparison;
+      if (criterion === 'quantity') {
+        comparison = Number(left.dataset.quantity) - Number(right.dataset.quantity);
+      } else {
+        const dataKey = criterion === 'part'
+          ? 'partNumber'
+          : (criterion === 'name' ? 'partName' : 'colorName');
+        comparison = naturalCompare(left.dataset[dataKey], right.dataset[dataKey]);
+      }
+      if (comparison === 0) {
+        comparison = Number(left.dataset.originalIndex) - Number(right.dataset.originalIndex);
+      }
+      return direction === 'desc' ? -comparison : comparison;
+    });
+    const preservedIndex = cards.findIndex((card) => card.dataset.itemKey === currentItemKey);
+    currentIndex = preservedIndex >= 0 ? preservedIndex : 0;
+  };
+  const savedOrder = localStorage.getItem(orderStorageKey);
+  if (savedOrder && [...orderSelect.options].some((option) => option.value === savedOrder)) {
+    orderSelect.value = savedOrder;
+  }
+  applyCardOrder(orderSelect.value);
   const localPosition = localStorage.getItem(`brickshelf-sort-position:${sortAssistant.dataset.setNumber}`);
   const localIndex = cards.findIndex((card) => card.dataset.itemKey === localPosition);
   if (localIndex >= 0) currentIndex = localIndex;
@@ -329,6 +367,11 @@ if (sortAssistant) {
       const candidate = (currentIndex + offset) % cards.length;
       if (Number(cards[candidate].querySelector('.sort-found').value) < Number(cards[candidate].dataset.required)) { showCard(candidate); break; }
     }
+  });
+  orderSelect.addEventListener('change', () => {
+    applyCardOrder(orderSelect.value);
+    localStorage.setItem(orderStorageKey, orderSelect.value);
+    showCard(currentIndex);
   });
   window.addEventListener('online', () => {
     const queued = JSON.parse(localStorage.getItem('brickshelf-progress-queue') || '{}');

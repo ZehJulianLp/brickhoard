@@ -4,10 +4,26 @@
 <div id="sort-assistant" class="sort-assistant" data-set-number="{{ set_number }}" data-start-index="{{ start_index }}" data-position-url="{{ url_for('sets.save_sort_position', set_number=set_number) }}">
   <header class="sort-header"><div><a class="back-link" href="{{ url_for('sets.set_detail', set_number=set_number) }}">← Setdetails</a><span class="eyebrow d-block mt-3">Sortiermodus</span><h1 class="h3 mt-1">{{ set_data.name or set_number }}</h1></div><div class="d-flex flex-wrap gap-2"><button id="accessibility-toggle" class="btn btn-outline-dark" type="button">Großansicht</button><a class="btn btn-outline-dark" href="{{ url_for('sets.sorting_sheet', set_number=set_number) }}">Drucken</a></div></header>
   <div class="sort-progress"><div class="progress"><div id="sort-progress-bar" class="progress-bar"></div></div><strong id="sort-progress-label"></strong></div>
+  <div class="sort-order-control">
+    <label for="sort-assistant-order"><span>Reihenfolge</span><small>Wie in der Teile-Checkliste</small></label>
+    <select id="sort-assistant-order" class="form-select">
+      <option value="original">Rebrickable-Reihenfolge</option>
+      <option value="part-asc">Teilenummer aufsteigend</option>
+      <option value="part-desc">Teilenummer absteigend</option>
+      <option value="name-asc">Bezeichnung A–Z</option>
+      <option value="name-desc">Bezeichnung Z–A</option>
+      <option value="color-asc">Farbe A–Z</option>
+      <option value="color-desc">Farbe Z–A</option>
+      <option value="quantity-desc">Menge: höchste zuerst</option>
+      <option value="quantity-asc">Menge: niedrigste zuerst</option>
+      <option value="open-first">Offene zuerst</option>
+      <option value="done-first">Erledigte zuerst</option>
+    </select>
+  </div>
   <div class="sort-toolbar"><button id="sort-prev" class="btn btn-outline-dark btn-lg" type="button">← Zurück</button><span id="sort-position" class="fw-bold"></span><button id="sort-next" class="btn btn-outline-dark btn-lg" type="button">Weiter →</button><button id="sort-next-open" class="btn btn-accent btn-lg" type="button">Nächstes offenes Teil</button></div>
   <div class="sort-cards">
   {% for entry in parts %}{% set part = entry.part or {} %}{% set color = entry.color or {} %}
-    <article class="sort-card {{ '' if loop.index0 == start_index else 'd-none' }}" data-index="{{ loop.index0 }}" data-item-key="{{ entry.progress_key }}" data-required="{{ entry.quantity or 0 }}" data-url="{{ url_for('sets.save_part_progress', set_number=set_number) }}" data-status="{{ entry.progress_status }}">
+    <article class="sort-card {{ '' if loop.index0 == start_index else 'd-none' }}" data-original-index="{{ loop.index0 }}" data-item-key="{{ entry.progress_key }}" data-required="{{ entry.quantity or 0 }}" data-quantity="{{ entry.quantity or 0 }}" data-part-number="{{ part.part_num or '' }}" data-part-name="{{ (part.name or '')|lower }}" data-color-name="{{ color.name or 'Unbekannte Farbe' }}" data-url="{{ url_for('sets.save_part_progress', set_number=set_number) }}" data-status="{{ entry.progress_status }}">
       <div class="sort-part-image">{% if part.part_img_url %}<img src="{{ part.part_img_url }}" alt="{{ part.name }} in {{ color.name }}">{% else %}<div class="image-placeholder">Kein Bild</div>{% endif %}</div>
       <div class="sort-part-info"><span class="eyebrow">{{ part.part_num or '–' }} · {{ color.name or 'Unbekannte Farbe' }}</span><h2>{{ part.name or 'Unbekanntes Teil' }}</h2>{% if entry.is_spare %}<span class="badge text-bg-warning">Ersatzteil</span>{% endif %}
         <div class="sort-counter"><button class="sort-step" type="button" data-delta="-1">−</button><input class="sort-found" type="number" min="0" max="{{ entry.quantity or 0 }}" value="{{ entry.found_quantity }}" inputmode="numeric"><span>/ {{ entry.quantity or 0 }}</span><button class="sort-step" type="button" data-delta="1">+</button></div>

@@ -303,6 +303,10 @@ def test_set_page_renders_quantity_controls_and_part_images(
     assert sort_page.status_code == 200
     assert "Nächstes offenes Teil" in sort_page.text
     assert "Alle 12 gefunden" in sort_page.text
+    assert 'id="sort-assistant-order"' in sort_page.text
+    assert 'value="open-first"' in sort_page.text
+    assert 'data-part-number="3001"' in sort_page.text
+    assert 'data-color-name="Red"' in sort_page.text
 
     print_page = logged_in_client.get("/sets/10194-1/sorting-sheet?group=type")
     assert print_page.status_code == 200
