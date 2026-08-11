@@ -54,7 +54,9 @@ def test_existing_user_can_restart_all_setup_steps(logged_in_client):
 
     assert "Setup starten" in account.text
     assert "Dein persönlicher Rebrickable API-Key" in connection_step.text
-    assert "Speichern, testen und weiter" in connection_step.text
+    assert "Rebrickable-Passwort" in connection_step.text
+    assert "Optional: vorhandenen User Token" in connection_step.text
+    assert "Verbinden und weiter" in connection_step.text
     assert last_step.status_code == 200
     assert "Schritt 4 von 4" in last_step.text
     assert "Setup abschließen" in last_step.text
@@ -81,10 +83,9 @@ def test_rebrickable_credentials_can_be_entered_inside_setup(
     response = logged_in_client.post(
         "/setup/2",
         data={
-            "rebrickable_username": "setup-sammler",
             "api_key": "setup-api-key",
             "user_token": "setup-user-token",
-            "save": "Speichern, testen und weiter",
+            "save": "Verbinden und weiter",
         },
     )
 
@@ -96,3 +97,37 @@ def test_rebrickable_credentials_can_be_entered_inside_setup(
         assert saved_user.rebrickable_username == "setup-sammler"
         assert saved_user.rebrickable_api_key == "setup-api-key"
         assert saved_user.rebrickable_user_token == "setup-user-token"
+
+
+def test_setup_generates_token_from_rebrickable_login(
+    logged_in_client, app, user, monkeypatch
+):
+    class FakeRebrickableService:
+        def __init__(self, api_key):
+            assert api_key == "setup-api-key"
+
+        def generate_user_token(self, login_name, password):
+            assert login_name == "brickfan@example.com"
+            assert password == "rebrickable-passwort"
+            return "automatically-generated-token"
+
+    monkeypatch.setattr(
+        "app.account.routes.RebrickableService", FakeRebrickableService
+    )
+    response = logged_in_client.post(
+        "/setup/2",
+        data={
+            "rebrickable_login": "brickfan@example.com",
+            "rebrickable_password": "rebrickable-passwort",
+            "api_key": "setup-api-key",
+            "save": "Verbinden und weiter",
+        },
+    )
+
+    assert response.status_code == 302
+    assert response.headers["Location"].endswith("/setup/3")
+    with app.app_context():
+        db.session.expire_all()
+        saved_user = db.session.get(User, user)
+        assert saved_user.rebrickable_username == "brickfan@example.com"
+        assert saved_user.rebrickable_user_token == "automatically-generated-token"

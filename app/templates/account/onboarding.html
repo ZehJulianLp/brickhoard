@@ -38,24 +38,21 @@
         <p>Du kannst Profildaten, Passwort und dieses Setup später jederzeit unter <strong>Konto</strong> verwalten.</p>
       {% elif step == 2 %}
         <ol class="setup-instructions">
-          <li>Erstelle in deinen Rebrickable-Einstellungen einen persönlichen API-Key.</li>
-          <li>Trage API-Key und User Token direkt hier ein.</li>
-          <li>BrickHoard testet die Verbindung und führt dich automatisch weiter.</li>
+          <li>Trage deine normalen Rebrickable-Zugangsdaten ein.</li>
+          <li>BrickHoard erzeugt daraus automatisch den benötigten User Token.</li>
+          <li>Wenn du bereits einen Token hast, kannst du ihn optional direkt eintragen.</li>
         </ol>
-        <div class="setup-note"><strong>Sicher gespeichert:</strong> Zugangsdaten werden verschlüsselt abgelegt. Dein Rebrickable-Passwort wird bei automatischer Token-Erzeugung nicht gespeichert.</div>
+        <div class="setup-note"><strong>Dein Passwort wird nicht gespeichert.</strong> Es wird nur einmal an Rebrickable gesendet und sofort verworfen. API-Key und User Token werden verschlüsselt abgelegt.</div>
         <form method="post" class="onboarding-credentials" novalidate>
           {{ rebrickable_form.hidden_tag() }}
-          {{ render_field(rebrickable_form.rebrickable_username) }}
-          {{ render_field(rebrickable_form.api_key, ('API-Key bereits gespeichert – leer lassen, um ihn beizubehalten.' if has_api_key else 'Zu finden bei Rebrickable unter Settings → API.')) }}
-          {{ render_field(rebrickable_form.user_token, ('User Token bereits gespeichert – leer lassen, um ihn beizubehalten.' if has_token else 'Für deine privaten Setlisten erforderlich.')) }}
-          {{ rebrickable_form.save(class='btn btn-accent', value='Speichern, testen und weiter →') }}
-          <details class="setup-token-generator">
-            <summary>User Token automatisch erzeugen</summary>
-            <p class="small text-secondary mt-3">Wenn du noch keinen Token hast, kann BrickHoard ihn einmalig mit deinem Rebrickable-Login anfordern.</p>
-            {{ render_field(rebrickable_form.rebrickable_login) }}
-            {{ render_field(rebrickable_form.rebrickable_password) }}
-            {{ rebrickable_form.generate_token(class='btn btn-outline-dark') }}
+          {{ render_field(rebrickable_form.rebrickable_login, 'Dein Benutzername oder deine E-Mail-Adresse bei Rebrickable.') }}
+          {{ render_field(rebrickable_form.rebrickable_password, 'Nur zur Token-Erzeugung; wird niemals gespeichert.') }}
+          {{ render_field(rebrickable_form.api_key, ('API-Key bereits gespeichert – leer lassen, um ihn beizubehalten.' if has_api_key else ('Ein API-Key ist bereits für BrickHoard hinterlegt.' if has_global_api_key else 'Zu finden bei Rebrickable unter Settings → API.'))) }}
+          <details class="setup-token-generator"{% if has_token %} open{% endif %}>
+            <summary>Optional: vorhandenen User Token eintragen</summary>
+            <div class="mt-3">{{ render_field(rebrickable_form.user_token, ('User Token bereits gespeichert – leer lassen, um ihn beizubehalten.' if has_token else 'Überspringt die automatische Token-Erzeugung.')) }}</div>
           </details>
+          {{ rebrickable_form.save(class='btn btn-accent mt-3', value='Verbinden und weiter →') }}
         </form>
       {% elif step == 3 %}
         <ol class="setup-instructions">

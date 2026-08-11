@@ -48,8 +48,6 @@ def onboarding(step: int = 1):
     rebrickable_form = None
     if step == 2:
         rebrickable_form = RebrickableSettingsForm()
-        if request.method == "GET":
-            rebrickable_form.rebrickable_username.data = current_user.rebrickable_username
         if rebrickable_form.validate_on_submit():
             api_key = (
                 rebrickable_form.api_key.data.strip()
@@ -66,61 +64,53 @@ def onboarding(step: int = 1):
                 or current_user.rebrickable_api_key
                 or current_app.config.get("REBRICKABLE_API_KEY", "")
             )
+            login_name = (
+                rebrickable_form.rebrickable_login.data.strip()
+                if rebrickable_form.rebrickable_login.data
+                else ""
+            )
+            password = rebrickable_form.rebrickable_password.data or ""
 
-            if rebrickable_form.generate_token.data:
-                login_name = (
-                    rebrickable_form.rebrickable_login.data.strip()
-                    if rebrickable_form.rebrickable_login.data
-                    else ""
-                )
-                password = rebrickable_form.rebrickable_password.data or ""
-                if not effective_api_key or not login_name or not password:
-                    flash(
-                        "Für die automatische Token-Erzeugung werden API-Key, Rebrickable-Login und Passwort benötigt.",
-                        "warning",
+            if not effective_api_key:
+                flash("Bitte trage deinen Rebrickable API-Key ein.", "warning")
+            elif user_token:
+                try:
+                    profile = RebrickableService(
+                        effective_api_key, user_token
+                    ).test_connection()
+                    if api_key:
+                        current_user.rebrickable_api_key = api_key
+                    current_user.rebrickable_user_token = user_token
+                    current_user.rebrickable_username = (
+                        login_name or profile.get("username") or None
                     )
-                else:
-                    try:
-                        generated_token = RebrickableService(
-                            effective_api_key
-                        ).generate_user_token(login_name, password)
-                        if api_key:
-                            current_user.rebrickable_api_key = api_key
-                        current_user.rebrickable_user_token = generated_token
-                        current_user.rebrickable_username = login_name
-                        db.session.commit()
-                        flash(
-                            "User Token erzeugt und Verbindung gespeichert. Dein Rebrickable-Passwort wurde nicht gespeichert.",
-                            "success",
-                        )
-                        return redirect(url_for("account.onboarding", step=3))
-                    except RebrickableAPIError as error:
-                        flash(str(error), "danger")
+                    db.session.commit()
+                    flash("Rebrickable-Verbindung erfolgreich gespeichert.", "success")
+                    return redirect(url_for("account.onboarding", step=3))
+                except RebrickableAPIError as error:
+                    flash(str(error), "danger")
+            elif login_name and password:
+                try:
+                    generated_token = RebrickableService(
+                        effective_api_key
+                    ).generate_user_token(login_name, password)
+                    if api_key:
+                        current_user.rebrickable_api_key = api_key
+                    current_user.rebrickable_user_token = generated_token
+                    current_user.rebrickable_username = login_name
+                    db.session.commit()
+                    flash(
+                        "User Token automatisch erzeugt und sicher gespeichert. Dein Rebrickable-Passwort wurde verworfen.",
+                        "success",
+                    )
+                    return redirect(url_for("account.onboarding", step=3))
+                except RebrickableAPIError as error:
+                    flash(str(error), "danger")
             else:
-                effective_token = user_token or current_user.rebrickable_user_token
-                if not effective_api_key or not effective_token:
-                    flash("Bitte trage API-Key und User Token ein.", "warning")
-                else:
-                    try:
-                        profile = RebrickableService(
-                            effective_api_key, effective_token
-                        ).test_connection()
-                        if api_key:
-                            current_user.rebrickable_api_key = api_key
-                        if user_token:
-                            current_user.rebrickable_user_token = user_token
-                        current_user.rebrickable_username = (
-                            rebrickable_form.rebrickable_username.data.strip() or None
-                        )
-                        db.session.commit()
-                        display_name = profile.get("username") or "Rebrickable-Benutzer"
-                        flash(
-                            f"Verbindung erfolgreich: {display_name} wurde erkannt.",
-                            "success",
-                        )
-                        return redirect(url_for("account.onboarding", step=3))
-                    except RebrickableAPIError as error:
-                        flash(str(error), "danger")
+                flash(
+                    "Trage Rebrickable-Login und Passwort ein oder nutze optional einen vorhandenen User Token.",
+                    "warning",
+                )
     return render_template(
         "account/onboarding.html",
         step=step,
@@ -128,6 +118,7 @@ def onboarding(step: int = 1):
         setup=ONBOARDING_STEPS[step],
         rebrickable_form=rebrickable_form,
         has_api_key=bool(current_user.rebrickable_api_key),
+        has_global_api_key=bool(current_app.config.get("REBRICKABLE_API_KEY")),
         has_token=bool(current_user.rebrickable_user_token),
     )
 
