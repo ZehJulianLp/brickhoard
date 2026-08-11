@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard – BrickHoard{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+  <div><span class="eyebrow">Dashboard</span><h1 class="mt-2 mb-0">Hallo, {{ current_user.username }}!</h1></div>
+  <a class="btn btn-outline-dark" href="{{ url_for('sets.rebrickable_settings') }}">Verbindung verwalten</a>
+</div>
+
+{% if current_user.has_rebrickable_credentials %}
+  <div class="status-banner status-ok mb-4"><strong>Rebrickable ist eingerichtet.</strong> Deine privaten Listen können geladen werden.</div>
+{% else %}
+  <div class="status-banner status-warning mb-4">
+    <strong>Noch nicht verbunden.</strong> Hinterlege API-Key und User Token, um deine Setlisten zu sehen.
+    <a href="{{ url_for('sets.rebrickable_settings') }}">Jetzt einrichten</a>
+  </div>
+{% endif %}
+
+<div class="row g-4">
+  <div class="col-sm-6"><div class="metric-card"><span>Setlisten</span><strong>{{ list_count if list_count is not none else '–' }}</strong></div></div>
+  <div class="col-sm-6"><div class="metric-card"><span>Sets in Listen</span><strong>{{ set_count if set_count is not none else '–' }}</strong><small>Summe der von Rebrickable gemeldeten Listeneinträge</small></div></div>
+</div>
+{% if resume_project %}<section class="resume-card mt-4"><div><span class="eyebrow">Zuletzt bearbeitet</span><h2 class="h4 mt-2 mb-1">Set {{ resume_project.set_number }}</h2><p class="text-secondary mb-0">{{ resume_project.found }} von {{ resume_project.required }} Teilen · {{ resume_project.percent }} %</p></div><a class="btn btn-accent" href="{{ url_for('sets.sort_assistant', set_number=resume_project.set_number) }}">Weitersortieren</a></section>{% endif %}
+<div class="mt-4"><a class="btn btn-accent" href="{{ url_for('sets.lists') }}">Setlisten öffnen</a></div>
+{% endblock %}

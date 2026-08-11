@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}E-Mail bestätigen – BrickHoard{% endblock %}
+{% block content %}
+<div class="auth-card mx-auto text-center">
+  <span class="eyebrow">Fast geschafft</span>
+  <h1 class="h3 mt-2">Bestätige deine E-Mail-Adresse</h1>
+  <p class="text-secondary">Wir haben einen Bestätigungslink an <strong>{{ current_user.email }}</strong> geschickt. Danach kannst du deine Sammlung vollständig verwenden.</p>
+  <form method="post" action="{{ url_for('auth.resend_confirmation') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-accent w-100" type="submit">Bestätigung erneut senden</button>
+  </form>
+  <a class="btn btn-link mt-2" href="{{ url_for('account.account_settings') }}">E-Mail-Adresse korrigieren</a>
+</div>
+{% endblock %}

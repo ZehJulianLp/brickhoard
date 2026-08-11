@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}BrickHoard – deine Sets, Teile und Fortschritte{% endblock %}
+{% block content %}
+<section class="hero-panel p-4 p-md-5 overflow-hidden">
+  <div class="row align-items-center g-5">
+    <div class="col-lg-7">
+      <span class="eyebrow">Sammeln. Sortieren. Vervollständigen.</span>
+      <h1 class="display-4 fw-bold mt-3">Deine LEGO-Sammlung. Endlich an einem Ort.</h1>
+      <p class="lead text-secondary my-4">Behalte deine Sets im Blick, sortiere Teile Schritt für Schritt und erkenne sofort, was noch fehlt. BrickHoard begleitet dich vom ersten unsortierten Stein bis zum vollständigen Set.</p>
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-accent btn-lg" href="{{ url_for('auth.register') }}">Account erstellen</a>
+        <a class="btn btn-outline-dark btn-lg" href="{{ url_for('auth.login') }}">Anmelden</a>
+      </div>
+    </div>
+    <div class="col-lg-5" aria-hidden="true">
+      <div class="brick-stack">
+        <div class="demo-brick brick-red"></div>
+        <div class="demo-brick brick-gold"></div>
+        <div class="demo-brick brick-blue"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="row g-4 mt-3">
+  <div class="col-md-4"><div class="feature-card"><h2 class="h5">Alle Sets im Blick</h2><p>Durchsuche deine Setlisten und finde jedes Set schnell wieder – mit Bildern und allen wichtigen Angaben.</p></div></div>
+  <div class="col-md-4"><div class="feature-card"><h2 class="h5">Entspannt Teile sortieren</h2><p>Hake vorhandene Teile ab und setze später genau dort weiter, wo du aufgehört hast.</p></div></div>
+  <div class="col-md-4"><div class="feature-card"><h2 class="h5">Fehlteile sofort erkennen</h2><p>Sieh auf einen Blick, welche Teile noch fehlen, und exportiere eine übersichtliche Einkaufsliste.</p></div></div>
+</div>
+
+<section class="mt-5 pt-lg-4">
+  <div class="text-center mx-auto mb-4" style="max-width: 720px;">
+    <span class="eyebrow">So einfach geht’s</span>
+    <h2 class="display-6 fw-bold mt-2">Mehr Zeit für die Sets, weniger Zeit fürs Suchen</h2>
+    <p class="text-secondary">BrickHoard hilft dir dabei, auch große Sammlungen übersichtlich zu halten – am Computer, Tablet oder Smartphone.</p>
+  </div>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100 p-4">
+        <span class="badge text-bg-warning align-self-start mb-3">1</span>
+        <h3 class="h5">Sammlung verbinden</h3>
+        <p class="text-secondary mb-0">Hinterlege deinen Rebrickable-Zugang und übernimm deine vorhandenen Setlisten.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100 p-4">
+        <span class="badge text-bg-warning align-self-start mb-3">2</span>
+        <h3 class="h5">Set auswählen</h3>
+        <p class="text-secondary mb-0">Öffne ein Set und arbeite dich mit Bildern und Mengen durch die enthaltenen Teile.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100 p-4">
+        <span class="badge text-bg-warning align-self-start mb-3">3</span>
+        <h3 class="h5">Fortschritt behalten</h3>
+        <p class="text-secondary mb-0">Deine Häkchen bleiben erhalten. So kannst du jederzeit eine Pause machen und später weitermachen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

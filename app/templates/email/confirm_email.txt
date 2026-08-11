@@ -1,0 +1,10 @@
+Hallo {{ username }},
+
+bitte bestätige deine E-Mail-Adresse für BrickHoard. Der Link ist {{ expires_hours }} Stunden gültig.
+
+{% for link in confirmation_links %}{{ "Lokale Adresse" if "127.0.0.1" in link or "localhost" in link else "BrickHoard-Server" }}:
+{{ link }}
+
+{% endfor %}Falls du diesen Account nicht erstellt hast, kannst du diese Nachricht ignorieren.
+
+Dein BrickHoard

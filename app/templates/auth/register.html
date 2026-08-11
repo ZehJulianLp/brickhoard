@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% from '_forms.html' import render_field %}
+{% block title %}Registrieren – BrickHoard{% endblock %}
+{% block content %}
+<div class="auth-card mx-auto">
+  <h1 class="h2 mb-1">Dein BrickHoard</h1><p class="text-secondary mb-4">Erstelle deinen Account für deine Sammlung. Anschließend bestätigst du deine E-Mail-Adresse.</p>
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {{ render_field(form.username) }}
+    {{ render_field(form.email) }}
+    {{ render_field(form.password, 'Mindestens 8 Zeichen.') }}
+    {{ render_field(form.password_repeat) }}
+    {{ form.submit(class='btn btn-accent w-100') }}
+  </form>
+</div>
+{% endblock %}

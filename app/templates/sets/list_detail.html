@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ set_list.name }} – BrickHoard{% endblock %}
+{% block content %}
+<a class="back-link" href="{{ url_for('sets.lists') }}">← Alle Setlisten</a>
+<div class="mt-3 mb-4"><span class="eyebrow">Liste #{{ set_list.id }}</span><h1 class="mt-2">{{ set_list.name or 'Unbenannte Liste' }}</h1>{% if set_list.description %}<p class="text-secondary">{{ set_list.description }}</p>{% endif %}</div>
+{% if entries %}
+<div class="row g-4">
+  {% for entry in entries %}{% set brickset = entry.set or {} %}
+  <div class="col-sm-6 col-lg-4 col-xl-3"><article class="set-card h-100"><div class="set-image-wrap">{% if brickset.set_img_url %}<img src="{{ brickset.set_img_url }}" alt="{{ brickset.name }}" loading="lazy">{% else %}<div class="image-placeholder">Kein Bild</div>{% endif %}</div><div class="p-3 d-flex flex-column flex-grow-1"><span class="set-number">{{ brickset.set_num }}</span><h2 class="h6 mt-1">{{ brickset.name or 'Unbekanntes Set' }}</h2><dl class="set-facts"><div><dt>Jahr</dt><dd>{{ brickset.year or '–' }}</dd></div><div><dt>Teile</dt><dd>{{ brickset.num_parts or '–' }}</dd></div><div><dt>Thema</dt><dd>{% if brickset.theme_id %}#{{ brickset.theme_id }}{% else %}–{% endif %}</dd></div><div><dt>Menge</dt><dd>{{ entry.quantity or 1 }}</dd></div></dl><a class="stretched-link mt-auto" href="{{ url_for('sets.set_detail', set_number=brickset.set_num) }}">Details</a></div></article></div>
+  {% endfor %}
+</div>
+{% if pages > 1 %}<nav class="mt-5" aria-label="Seitennavigation"><ul class="pagination justify-content-center"><li class="page-item {{ 'disabled' if page <= 1 }}"><a class="page-link" href="{{ url_for('sets.list_detail', list_id=set_list.id, page=page-1) }}">Zurück</a></li><li class="page-item disabled"><span class="page-link">Seite {{ page }} von {{ pages }}</span></li><li class="page-item {{ 'disabled' if page >= pages }}"><a class="page-link" href="{{ url_for('sets.list_detail', list_id=set_list.id, page=page+1) }}">Weiter</a></li></ul></nav>{% endif %}
+{% else %}<div class="empty-state"><h2 class="h4">Diese Liste ist leer</h2><p>Rebrickable hat keine Sets für diese Liste geliefert.</p></div>{% endif %}
+{% endblock %}
+

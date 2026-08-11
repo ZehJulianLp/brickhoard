@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% from '_forms.html' import render_field %}
+{% block title %}Anmelden – BrickHoard{% endblock %}
+{% block content %}
+<div class="auth-card mx-auto">
+  <h1 class="h2 mb-1">Willkommen zurück</h1><p class="text-secondary mb-4">Melde dich bei deinem BrickHoard-Account an.</p>
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {{ render_field(form.identity) }}
+    {{ render_field(form.password) }}
+    <div class="form-check mb-4">{{ form.remember(class='form-check-input') }} {{ form.remember.label(class='form-check-label') }}</div>
+    {{ form.submit(class='btn btn-accent w-100') }}
+  </form>
+  <p class="small text-center mt-3 mb-0"><a href="{{ url_for('auth.forgot_password') }}">Passwort vergessen?</a></p>
+  <p class="small text-center mt-4 mb-0">Noch kein Account? <a href="{{ url_for('auth.register') }}">Registrieren</a></p>
+</div>
+{% endblock %}

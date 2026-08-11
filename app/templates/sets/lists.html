@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Setlisten – BrickHoard{% endblock %}
+{% block content %}
+<span class="eyebrow">Rebrickable</span><h1 class="mt-2 mb-4">Deine Setlisten</h1>
+{% if lists %}
+<div class="row g-4">
+  {% for item in lists %}
+  <div class="col-md-6 col-xl-4"><article class="list-card h-100"><div class="list-id">Liste #{{ item.id }}</div><h2 class="h4">{{ item.name or 'Unbenannte Liste' }}</h2><p class="text-secondary flex-grow-1">{{ item.description or 'Keine Beschreibung vorhanden.' }}</p><div class="d-flex align-items-center justify-content-between"><span class="badge text-bg-light">{{ item.num_sets or 0 }} Sets</span><a class="stretched-link" href="{{ url_for('sets.list_detail', list_id=item.id) }}">Öffnen <span aria-hidden="true">→</span></a></div></article></div>
+  {% endfor %}
+</div>
+{% else %}<div class="empty-state"><h2 class="h4">Keine Setlisten gefunden</h2><p>Für diesen Rebrickable-Benutzer wurden keine Setlisten gefunden.</p></div>{% endif %}
+{% endblock %}
+

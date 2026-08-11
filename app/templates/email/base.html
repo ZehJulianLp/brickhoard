@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}BrickHoard{% endblock %}</title>
+</head>
+<body style="margin:0;padding:0;background:#eef2f0;color:#172b35;font-family:Arial,Helvetica,sans-serif;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">{% block preheader %}{% endblock %}</div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#eef2f0;">
+    <tr>
+      <td align="center" style="padding:32px 12px;">
+        <table role="presentation" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:640px;">
+          <tr>
+            <td style="background:#172b35;border-radius:18px 18px 0 0;padding:28px 34px 24px;color:#ffffff;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">
+                    <span style="display:inline-block;width:18px;height:18px;background:#e8a317;border-radius:4px;vertical-align:-2px;margin-right:9px;box-shadow:7px -5px 0 -2px #f4c85a;"></span>BrickHoard
+                  </td>
+                  <td align="right" style="font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:#b9c7ca;">Dein digitales Setregal</td>
+                </tr>
+              </table>
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:28px;">
+                <tr>
+                  <td width="42" height="10" style="background:#d75a4a;border-radius:3px 0 0 3px;font-size:1px;line-height:1px;">&nbsp;</td>
+                  <td width="42" height="10" style="background:#e8a317;font-size:1px;line-height:1px;">&nbsp;</td>
+                  <td width="42" height="10" style="background:#3f7fa0;border-radius:0 3px 3px 0;font-size:1px;line-height:1px;">&nbsp;</td>
+                </tr>
+              </table>
+              <h1 style="margin:18px 0 8px;font-size:30px;line-height:1.2;letter-spacing:-0.6px;color:#ffffff;">{% block heading %}{% endblock %}</h1>
+              <p style="margin:0;color:#cbd6d8;font-size:16px;line-height:1.55;">{% block intro %}{% endblock %}</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#ffffff;padding:34px;border-radius:0 0 18px 18px;box-shadow:0 12px 32px rgba(23,43,53,0.10);">
+              {% block content %}{% endblock %}
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:24px 24px 0;color:#718087;font-size:12px;line-height:1.55;">
+              <p style="margin:0 0 7px;"><strong style="color:#51636b;">BrickHoard</strong> · Sammeln, sortieren und vervollständigen.</p>
+              <p style="margin:0;">BrickHoard ist ein unabhängiges Fanprojekt und steht in keiner Verbindung zur LEGO Group oder zu Rebrickable.</p>
+              <p style="margin:9px 0 0;">Diese Nachricht wurde automatisch versendet. Bitte antworte nicht darauf.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

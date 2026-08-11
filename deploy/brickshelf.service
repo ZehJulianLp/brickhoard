@@ -1,0 +1,15 @@
+[Unit]
+Description=BrickHoard in a GNU screen session
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/srvmgr/brickshelf
+ExecStart=/usr/bin/screen -L -Logfile /home/srvmgr/brickshelf/instance/screen.log -DmS BrickHoard /home/srvmgr/brickshelf/deploy/run-brickshelf.sh
+ExecStop=/usr/bin/screen -S BrickHoard -X quit
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

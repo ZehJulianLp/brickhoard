@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Sammlungssuche – BrickHoard{% endblock %}
+{% block content %}
+<span class="eyebrow">Alle Setlisten</span><h1 class="mt-2 mb-3">Sammlung durchsuchen</h1>
+<form class="search-hero mb-4" method="get" action="{{ url_for('sets.search') }}"><label class="visually-hidden" for="search-page-input">Setname oder Setnummer</label><input id="search-page-input" class="form-control form-control-lg" type="search" name="q" value="{{ query }}" maxlength="100" placeholder="Zum Beispiel Emerald Night oder 10194 …" autofocus required><button class="btn btn-accent btn-lg" type="submit">Suchen</button></form>
+{% if query %}
+  <div class="d-flex justify-content-between align-items-center mb-3"><p class="text-secondary mb-0"><strong>{{ count }}</strong> Treffer für „{{ query }}“</p></div>
+  {% if results %}
+  <div class="row g-4">
+    {% for entry in results %}{% set brickset = entry.set or {} %}
+    <div class="col-sm-6 col-lg-4 col-xl-3"><article class="set-card h-100"><div class="set-image-wrap">{% if brickset.set_img_url %}<img src="{{ brickset.set_img_url }}" alt="{{ brickset.name }}" loading="lazy">{% else %}<div class="image-placeholder">Kein Bild</div>{% endif %}</div><div class="p-3 d-flex flex-column flex-grow-1"><span class="set-number">{{ brickset.set_num }}</span><h2 class="h6 mt-1">{{ brickset.name or 'Unbekanntes Set' }}</h2><dl class="set-facts"><div><dt>Jahr</dt><dd>{{ brickset.year or '–' }}</dd></div><div><dt>Teile</dt><dd>{{ brickset.num_parts or '–' }}</dd></div><div><dt>Liste</dt><dd>#{{ entry.list_id or '–' }}</dd></div><div><dt>Menge</dt><dd>{{ entry.quantity or 1 }}</dd></div></dl><a class="stretched-link mt-auto" href="{{ url_for('sets.set_detail', set_number=brickset.set_num) }}">Set öffnen</a></div></article></div>
+    {% endfor %}
+  </div>
+  {% if pages > 1 %}<nav class="mt-5" aria-label="Suchergebnisse"><ul class="pagination justify-content-center"><li class="page-item {{ 'disabled' if page <= 1 }}"><a class="page-link" href="{{ url_for('sets.search', q=query, page=page-1) }}">Zurück</a></li><li class="page-item disabled"><span class="page-link">Seite {{ page }} von {{ pages }}</span></li><li class="page-item {{ 'disabled' if page >= pages }}"><a class="page-link" href="{{ url_for('sets.search', q=query, page=page+1) }}">Weiter</a></li></ul></nav>{% endif %}
+  {% else %}<div class="empty-state"><h2 class="h4">Kein passendes Set gefunden</h2><p>Prüfe die Schreibweise oder suche nach einem Teil des Namens beziehungsweise der Setnummer.</p></div>{% endif %}
+{% else %}<div class="empty-state"><h2 class="h4">Was suchst du?</h2><p>Die Suche berücksichtigt alle Sets aus sämtlichen deiner Rebrickable-Setlisten.</p></div>{% endif %}
+{% endblock %}

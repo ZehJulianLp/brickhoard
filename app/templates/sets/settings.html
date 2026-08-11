@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% from '_forms.html' import render_field %}
+{% block title %}Rebrickable-Einstellungen – BrickHoard{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-7">
+    <span class="eyebrow">Einstellungen</span><h1 class="mt-2">Rebrickable verbinden</h1>
+    <p class="text-secondary">Hier hinterlegst du deine eigenen Rebrickable-Zugangsdaten. Der persönliche API-Key autorisiert die Aufrufe; für deine privaten Setlisten verlangt Rebrickable zusätzlich deinen User Token. Andere BrickHoard-Benutzer haben keinen Zugriff darauf.</p>
+    <form method="post" class="panel-card mt-4" novalidate>
+      {{ form.hidden_tag() }}
+      {{ render_field(form.rebrickable_username) }}
+      {{ render_field(form.api_key, ('Dein persönlicher API-Key ist gespeichert – leer lassen, um ihn beizubehalten.' if has_api_key else ('Ein Betreiber-Key ist als Rückfall konfiguriert; dein eigener Key hat immer Vorrang.' if has_global_api_key else 'Zu finden in deinen persönlichen Rebrickable-Einstellungen.'))) }}
+      {% if has_api_key %}<div class="secret-status mb-3">Gespeichert: ••••••••••••</div><div class="form-check mb-3">{{ form.clear_api_key(class='form-check-input') }} {{ form.clear_api_key.label(class='form-check-label') }}</div>{% endif %}
+      {{ render_field(form.user_token, ('User Token gespeichert – leer lassen, um ihn beizubehalten.' if has_token else 'Wird für private Benutzerlisten benötigt.')) }}
+      {% if has_token %}<div class="secret-status mb-3">Gespeichert: ••••••••••••</div><div class="form-check mb-3">{{ form.clear_user_token(class='form-check-input') }} {{ form.clear_user_token.label(class='form-check-label') }}</div>{% endif %}
+      <div class="d-flex flex-wrap gap-2 mt-4">{{ form.save(class='btn btn-accent') }} {{ form.test(class='btn btn-outline-dark') }}</div>
+      <hr class="my-4">
+      <h2 class="h5">Noch keinen User Token?</h2>
+      <p class="small text-secondary">BrickHoard kann ihn über den offiziellen Rebrickable-Endpunkt erzeugen. Dein Rebrickable-Passwort wird nur für diese eine Anfrage verwendet und weder gespeichert noch protokolliert.</p>
+      {{ render_field(form.rebrickable_login) }}
+      {{ render_field(form.rebrickable_password) }}
+      {{ form.generate_token(class='btn btn-outline-dark') }}
+    </form>
+  </div>
+  <aside class="col-lg-5"><div class="info-card"><h2 class="h5">Wo finde ich die Werte?</h2><ol><li>Bei Rebrickable anmelden.</li><li>Unter <em>Settings → API</em> einen API-Key erzeugen.</li><li>Den persönlichen User Token aus dem API-Bereich übernehmen.</li></ol><p class="small mb-0">Geheimnisse werden verschlüsselt gespeichert und niemals vollständig im Formular angezeigt.</p></div></aside>
+</div>
+{% endblock %}

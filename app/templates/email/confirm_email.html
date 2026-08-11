@@ -1,0 +1,18 @@
+{% extends 'email/base.html' %}
+{% block title %}E-Mail-Adresse bestätigen – BrickHoard{% endblock %}
+{% block preheader %}Ein letzter Schritt, dann ist dein BrickHoard bereit.{% endblock %}
+{% block heading %}Willkommen im Regal, {{ username }}!{% endblock %}
+{% block intro %}Ein letzter Schritt, dann kannst du deine Sets, Teilelisten und Sortierfortschritte verwalten.{% endblock %}
+{% block content %}
+  <p style="margin:0 0 22px;font-size:16px;line-height:1.65;">Bitte bestätige, dass diese E-Mail-Adresse zu dir gehört. Verwende dafür am besten den Server-Link:</p>
+  {% for link in confirmation_links if "localhost" not in link and "127.0.0.1" not in link %}
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:0 0 14px;"><tr><td align="center" style="background:#e8a317;border-radius:10px;"><a href="{{ link }}" style="display:block;padding:15px 20px;color:#172b35;text-decoration:none;font-size:16px;font-weight:700;">E-Mail-Adresse bestätigen&nbsp; →</a></td></tr></table>
+  {% endfor %}
+  <div style="margin:24px 0;padding:17px 19px;background:#f5f7f6;border-left:4px solid #3f7fa0;border-radius:7px;">
+    <p style="margin:0 0 4px;font-size:14px;font-weight:700;">Nur lokal am Entwicklungsrechner?</p>
+    <p style="margin:0 0 11px;color:#607078;font-size:13px;line-height:1.55;">Dann kannst du stattdessen diesen Link verwenden:</p>
+    {% for link in confirmation_links if "localhost" in link or "127.0.0.1" in link %}<a href="{{ link }}" style="color:#276984;font-size:13px;font-weight:700;">Lokal bestätigen</a>{% endfor %}
+  </div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:26px;border-top:1px solid #e2e8e5;"><tr><td style="padding-top:20px;color:#66757d;font-size:13px;line-height:1.6;"><strong style="color:#40545d;">Gut zu wissen:</strong> Dieser Link ist {{ expires_hours }} Stunden gültig. Falls du keinen BrickHoard-Account erstellt hast, musst du nichts tun.</td></tr></table>
+  <p style="margin:24px 0 0;color:#8a969b;font-size:11px;line-height:1.5;word-break:break-all;">Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:<br>{% for link in confirmation_links if "localhost" not in link and "127.0.0.1" not in link %}{{ link }}{% endfor %}</p>
+{% endblock %}
