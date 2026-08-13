@@ -29,10 +29,11 @@ def test_friend_request_acceptance_and_notification(logged_in_client, app, user)
     friend_id = _create_friend(app)
     response = logged_in_client.post(
         "/social/friends/request",
-        data={"identity": "freund"},
+        data={"username": "freund"},
         follow_redirects=True,
     )
     assert "Freundschaftsanfrage an freund gesendet" in response.text
+    assert "freund@example.com" not in response.text
     with app.app_context():
         friendship = db.session.scalar(db.select(Friendship))
         assert friendship.requester_id == user
@@ -48,6 +49,27 @@ def test_friend_request_acceptance_and_notification(logged_in_client, app, user)
     assert "seid jetzt Freunde" in accepted.text
     with app.app_context():
         assert db.session.get(Friendship, friendship_id).status == "accepted"
+
+
+def test_user_search_returns_only_usernames(logged_in_client, app):
+    _create_friend(app, username="Steinefreund", email="private@example.com")
+    response = logged_in_client.get("/social?q=steine")
+    assert response.status_code == 200
+    assert "Steinefreund" in response.text
+    assert "private@example.com" not in response.text
+    assert 'name="username" value="Steinefreund"' in response.text
+
+
+def test_email_address_cannot_be_used_to_add_friend(logged_in_client, app):
+    _create_friend(app, username="nurusername", email="privat@example.com")
+    response = logged_in_client.post(
+        "/social/friends/request",
+        data={"username": "privat@example.com"},
+        follow_redirects=True,
+    )
+    assert "Kein BrickHoard-Konto" in response.text
+    with app.app_context():
+        assert db.session.scalar(db.select(Friendship)) is None
 
 
 def test_project_share_sends_mail_and_collaborator_writes_owner_progress(
