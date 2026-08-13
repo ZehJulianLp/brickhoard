@@ -6,6 +6,87 @@ document.querySelectorAll('form').forEach((form) => {
   });
 });
 
+const friendSearch = document.querySelector('#friend-search');
+if (friendSearch) {
+  const results = document.querySelector('#friend-search-results');
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+  const stateLabels = {
+    friends: 'Bereits befreundet',
+    outgoing: 'Anfrage gesendet',
+    incoming: 'Anfrage von diesem Nutzer erhalten',
+    available: 'BrickHoard-Nutzer',
+  };
+  let searchTimer;
+  let searchRequest;
+  const showMessage = (message) => {
+    results.replaceChildren();
+    const text = document.createElement('p');
+    text.className = 'small text-secondary';
+    text.textContent = message;
+    results.append(text);
+  };
+  const renderUsers = (users) => {
+    results.replaceChildren();
+    if (!users.length) {
+      showMessage('Keine passenden Benutzernamen gefunden.');
+      return;
+    }
+    users.forEach((user) => {
+      const row = document.createElement('div');
+      row.className = 'social-row';
+      const copy = document.createElement('div');
+      const username = document.createElement('strong');
+      username.textContent = user.username;
+      const state = document.createElement('small');
+      state.textContent = stateLabels[user.state] || '';
+      copy.append(username, state);
+      row.append(copy);
+      if (user.state === 'available') {
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = friendSearch.dataset.requestUrl;
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = 'csrf_token';
+        csrf.value = csrfToken;
+        const target = document.createElement('input');
+        target.type = 'hidden';
+        target.name = 'username';
+        target.value = user.username;
+        const button = document.createElement('button');
+        button.type = 'submit';
+        button.className = 'btn btn-sm btn-outline-success';
+        button.textContent = 'Hinzufügen';
+        form.append(csrf, target, button);
+        row.append(form);
+      }
+      results.append(row);
+    });
+  };
+  friendSearch.addEventListener('input', () => {
+    window.clearTimeout(searchTimer);
+    searchRequest?.abort();
+    const query = friendSearch.value.trim();
+    if (query.length < 2) {
+      showMessage('Ab zwei Zeichen erscheinen passende Nutzer automatisch.');
+      return;
+    }
+    searchTimer = window.setTimeout(async () => {
+      searchRequest = new AbortController();
+      showMessage('Suche …');
+      try {
+        const url = new URL(friendSearch.dataset.searchUrl, window.location.origin);
+        url.searchParams.set('q', query);
+        const response = await fetch(url, {signal: searchRequest.signal, headers: {'Accept': 'application/json'}});
+        if (!response.ok) throw new Error('search failed');
+        renderUsers((await response.json()).results || []);
+      } catch (error) {
+        if (error.name !== 'AbortError') showMessage('Suche momentan nicht möglich.');
+      }
+    }, 250);
+  });
+}
+
 const checklist = document.querySelector('#parts-checklist');
 if (checklist) {
   const rows = [...checklist.querySelectorAll('.part-row')];

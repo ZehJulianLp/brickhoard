@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from flask import Response, abort, flash, redirect, render_template, request, url_for
+from flask import Response, abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import and_, delete, func, or_
 
@@ -45,32 +45,6 @@ def _accepted_friends(user_id: int) -> list[User]:
 @bp.get("/social")
 @login_required
 def center():
-    search_query = (request.args.get("q") or "").strip()[:80]
-    search_results: list[dict] = []
-    if len(search_query) >= 2:
-        escaped_query = (
-            search_query.lower()
-            .replace("\\", "\\\\")
-            .replace("%", "\\%")
-            .replace("_", "\\_")
-        )
-        users = list(
-            db.session.scalars(
-                db.select(User)
-                .where(
-                    User.id != current_user.id,
-                    User.is_enabled.is_(True),
-                    User.email_verified_at.is_not(None),
-                    func.lower(User.username).like(f"%{escaped_query}%", escape="\\"),
-                )
-                .order_by(User.username)
-                .limit(12)
-            )
-        )
-        search_results = [
-            {"user": user, "friendship": _friendship_between(current_user.id, user.id)}
-            for user in users
-        ]
     incoming_requests = list(
         db.session.scalars(
             db.select(Friendship)
@@ -114,9 +88,47 @@ def center():
         outgoing_shares=outgoing_shares,
         incoming_shares=incoming_shares,
         offers_received=offers_received,
-        search_query=search_query,
-        search_results=search_results,
     )
+
+
+@bp.get("/social/users/search")
+@login_required
+def search_users():
+    query = (request.args.get("q") or "").strip()[:80]
+    if len(query) < 2:
+        return jsonify({"results": []})
+    escaped_query = (
+        query.lower()
+        .replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")
+    )
+    users = list(
+        db.session.scalars(
+            db.select(User)
+            .where(
+                User.id != current_user.id,
+                User.is_enabled.is_(True),
+                User.email_verified_at.is_not(None),
+                func.lower(User.username).like(f"%{escaped_query}%", escape="\\"),
+            )
+            .order_by(User.username)
+            .limit(12)
+        )
+    )
+    results = []
+    for user in users:
+        friendship = _friendship_between(current_user.id, user.id)
+        if friendship is None:
+            state = "available"
+        elif friendship.status == "accepted":
+            state = "friends"
+        elif friendship.requester_id == current_user.id:
+            state = "outgoing"
+        else:
+            state = "incoming"
+        results.append({"username": user.username, "state": state})
+    return jsonify({"results": results})
 
 
 @bp.post("/social/friends/request")

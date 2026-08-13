@@ -53,11 +53,15 @@ def test_friend_request_acceptance_and_notification(logged_in_client, app, user)
 
 def test_user_search_returns_only_usernames(logged_in_client, app):
     _create_friend(app, username="Steinefreund", email="private@example.com")
-    response = logged_in_client.get("/social?q=steine")
+    center = logged_in_client.get("/social")
+    assert 'id="friend-search"' in center.text
+    assert 'data-search-url="/social/users/search"' in center.text
+    response = logged_in_client.get("/social/users/search?q=steine")
     assert response.status_code == 200
-    assert "Steinefreund" in response.text
+    assert response.json == {
+        "results": [{"state": "available", "username": "Steinefreund"}]
+    }
     assert "private@example.com" not in response.text
-    assert 'name="username" value="Steinefreund"' in response.text
 
 
 def test_email_address_cannot_be_used_to_add_friend(logged_in_client, app):
