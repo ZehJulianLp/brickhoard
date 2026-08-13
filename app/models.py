@@ -51,6 +51,8 @@ class User(UserMixin, db.Model):
     is_enabled = db.Column(db.Boolean, default=True, nullable=False)
     must_change_password = db.Column(db.Boolean, default=False, nullable=False)
     onboarding_pending = db.Column(db.Boolean, default=False, nullable=False)
+    profile_picture = db.Column(db.LargeBinary)
+    profile_picture_updated_at = db.Column(db.DateTime(timezone=True))
     email_verified_at = db.Column(db.DateTime(timezone=True), nullable=True)
     confirmation_sent_at = db.Column(db.DateTime(timezone=True))
     password_reset_sent_at = db.Column(db.DateTime(timezone=True))

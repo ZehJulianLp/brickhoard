@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 from wtforms import BooleanField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
@@ -11,6 +12,12 @@ class ProfileForm(FlaskForm):
         "E-Mail-Adresse", validators=[DataRequired(), Email(), Length(max=255)]
     )
     submit = SubmitField("Profildaten speichern")
+
+
+class ProfilePictureForm(FlaskForm):
+    picture = FileField("Neues Profilbild")
+    upload = SubmitField("Profilbild speichern")
+    remove = SubmitField("Profilbild entfernen")
 
 
 class ChangePasswordForm(FlaskForm):
@@ -35,4 +42,3 @@ class DeleteAccountForm(FlaskForm):
         validators=[DataRequired()],
     )
     submit = SubmitField("Konto endgültig löschen")
-

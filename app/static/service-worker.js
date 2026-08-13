@@ -1,4 +1,4 @@
-const STATIC_CACHE = 'brickshelf-static-v10';
+const STATIC_CACHE = 'brickshelf-static-v11';
 const PAGE_CACHE = 'brickshelf-pages-v1';
 const IMAGE_CACHE = 'brickshelf-images-v1';
 const OFFLINE_URL = '/static/offline.html';

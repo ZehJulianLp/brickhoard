@@ -1,3 +1,7 @@
+from io import BytesIO
+
+from PIL import Image
+
 from app.extensions import db
 from app.models import SetNote, SetPartProgress, User, utcnow
 
@@ -39,6 +43,55 @@ def test_user_can_update_profile(logged_in_client, app, user):
         saved = db.session.get(User, user)
         assert saved.username == "neuer-name"
         assert saved.email == "neu@example.com"
+
+
+def test_user_can_upload_and_remove_profile_picture(logged_in_client, app, user):
+    source = BytesIO()
+    Image.new("RGB", (900, 500), "#e69a2c").save(source, format="PNG")
+    source.seek(0)
+
+    upload = logged_in_client.post(
+        "/settings/account/profile-picture",
+        data={"picture": (source, "avatar.png"), "upload": "Profilbild speichern"},
+        content_type="multipart/form-data",
+        follow_redirects=True,
+    )
+    assert "Profilbild wurde gespeichert" in upload.text
+
+    picture = logged_in_client.get("/profile-picture")
+    assert picture.status_code == 200
+    assert picture.content_type == "image/webp"
+    with Image.open(BytesIO(picture.data)) as rendered:
+        assert rendered.size == (512, 512)
+        assert rendered.format == "WEBP"
+
+    with app.app_context():
+        saved = db.session.get(User, user)
+        assert saved.profile_picture
+        assert saved.profile_picture_updated_at is not None
+
+    remove = logged_in_client.post(
+        "/settings/account/profile-picture",
+        data={"remove": "Profilbild entfernen"},
+        follow_redirects=True,
+    )
+    assert "Profilbild wurde entfernt" in remove.text
+    assert logged_in_client.get("/profile-picture").status_code == 404
+
+
+def test_invalid_profile_picture_is_rejected(logged_in_client, app, user):
+    response = logged_in_client.post(
+        "/settings/account/profile-picture",
+        data={
+            "picture": (BytesIO(b"not-an-image"), "avatar.png"),
+            "upload": "Profilbild speichern",
+        },
+        content_type="multipart/form-data",
+        follow_redirects=True,
+    )
+    assert "gültiges JPG-, PNG- oder WebP-Bild" in response.text
+    with app.app_context():
+        assert db.session.get(User, user).profile_picture is None
 
 
 def test_user_can_delete_own_account_and_local_data(logged_in_client, app, user):

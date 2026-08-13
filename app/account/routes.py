@@ -1,9 +1,12 @@
-from flask import abort, current_app, flash, redirect, render_template, request, url_for
+from io import BytesIO
+
+from flask import Response, abort, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, logout_user
+from PIL import Image, ImageOps, UnidentifiedImageError
 from sqlalchemy import delete, func, or_
 
 from app.account import bp
-from app.account.forms import ChangePasswordForm, DeleteAccountForm, ProfileForm
+from app.account.forms import ChangePasswordForm, DeleteAccountForm, ProfileForm, ProfilePictureForm
 from app.extensions import db
 from app.models import SetPartProgress, User, utcnow
 from app.services.mail import MailService, MailServiceError
@@ -137,6 +140,7 @@ def finish_onboarding():
 @login_required
 def account_settings():
     profile_form = ProfileForm(obj=current_user)
+    picture_form = ProfilePictureForm()
     password_form = ChangePasswordForm()
     delete_form = DeleteAccountForm()
     if profile_form.validate_on_submit():
@@ -184,9 +188,64 @@ def account_settings():
     return render_template(
         "account/settings.html",
         profile_form=profile_form,
+        picture_form=picture_form,
         password_form=password_form,
         delete_form=delete_form,
     )
+
+
+@bp.post("/settings/account/profile-picture")
+@login_required
+def update_profile_picture():
+    form = ProfilePictureForm()
+    if not form.validate_on_submit():
+        flash("Das Profilbild konnte nicht verarbeitet werden.", "danger")
+        return redirect(url_for("account.account_settings"))
+    if form.remove.data:
+        current_user.profile_picture = None
+        current_user.profile_picture_updated_at = None
+        db.session.commit()
+        flash("Dein Profilbild wurde entfernt.", "info")
+        return redirect(url_for("account.account_settings"))
+
+    upload = form.picture.data
+    if upload is None or not upload.filename:
+        flash("Bitte wähle zuerst ein Bild aus.", "warning")
+        return redirect(url_for("account.account_settings"))
+    raw = upload.read(current_app.config["MAX_PROFILE_PICTURE_SIZE"] + 1)
+    if len(raw) > current_app.config["MAX_PROFILE_PICTURE_SIZE"]:
+        flash("Das Profilbild darf höchstens 5 MB groß sein.", "danger")
+        return redirect(url_for("account.account_settings"))
+    try:
+        with Image.open(BytesIO(raw)) as source:
+            source.verify()
+        with Image.open(BytesIO(raw)) as source:
+            image = ImageOps.exif_transpose(source).convert("RGB")
+            image = ImageOps.fit(image, (512, 512), method=Image.Resampling.LANCZOS)
+            output = BytesIO()
+            image.save(output, format="WEBP", quality=86, method=6)
+    except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError):
+        flash("Bitte lade ein gültiges JPG-, PNG- oder WebP-Bild hoch.", "danger")
+        return redirect(url_for("account.account_settings"))
+
+    current_user.profile_picture = output.getvalue()
+    current_user.profile_picture_updated_at = utcnow()
+    db.session.commit()
+    flash("Dein Profilbild wurde gespeichert.", "success")
+    return redirect(url_for("account.account_settings"))
+
+
+@bp.get("/profile-picture")
+@login_required
+def profile_picture():
+    if not current_user.profile_picture:
+        abort(404)
+    response = Response(current_user.profile_picture, mimetype="image/webp")
+    response.headers["Cache-Control"] = "private, max-age=86400"
+    if current_user.profile_picture_updated_at:
+        response.last_modified = current_user.profile_picture_updated_at
+        response.make_conditional(request)
+    return response
 
 
 @bp.post("/settings/account/password")

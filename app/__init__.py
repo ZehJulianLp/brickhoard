@@ -55,6 +55,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             os.getenv("PASSWORD_RESET_TOKEN_MAX_AGE", "3600")
         ),
         MAIL_RESEND_COOLDOWN=int(os.getenv("MAIL_RESEND_COOLDOWN", "60")),
+        MAX_PROFILE_PICTURE_SIZE=5 * 1024 * 1024,
         PUBLIC_BASE_URL=os.getenv(
             "PUBLIC_BASE_URL", "https://brickhoard.julianverse.de"
         ).rstrip("/"),
@@ -68,7 +69,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             "LEGAL_CONTACT_EMAIL", "brickhoard@julianverse.de"
         ),
         PRIVACY_LAST_UPDATED=os.getenv(
-            "PRIVACY_LAST_UPDATED", "11. August 2026"
+            "PRIVACY_LAST_UPDATED", "13. August 2026"
         ),
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
@@ -253,6 +254,8 @@ def register_cli(app: Flask) -> None:
             "is_enabled": "BOOLEAN NOT NULL DEFAULT 1",
             "must_change_password": "BOOLEAN NOT NULL DEFAULT 0",
             "onboarding_pending": "BOOLEAN NOT NULL DEFAULT 0",
+            "profile_picture": "BLOB",
+            "profile_picture_updated_at": "DATETIME",
             "email_verified_at": "DATETIME",
             "confirmation_sent_at": "DATETIME",
             "password_reset_sent_at": "DATETIME",

@@ -2,13 +2,16 @@
 {% block title %}Dashboard – BrickHoard{% endblock %}
 {% block content %}
 <section class="cockpit-hero">
-  <div>
+  <div class="dashboard-welcome">
+    {% if current_user.profile_picture %}<img class="profile-avatar profile-avatar-dashboard" src="{{ url_for('account.profile_picture', v=current_user.profile_picture_updated_at.isoformat()) }}" alt="Profilbild von {{ current_user.username }}">{% else %}<span class="profile-avatar profile-avatar-dashboard profile-avatar-fallback" aria-hidden="true">{{ current_user.username[:1]|upper }}</span>{% endif %}
+    <div>
     <span class="eyebrow">Collection Cockpit</span>
     <h1>Hallo, {{ current_user.username }}.</h1>
     <p>Deine Sammlung, Sortierprojekte und Fehlteile auf einen Blick.</p>
     <div class="d-flex flex-wrap gap-2 mt-4">
       {% if resume_project %}<a class="btn btn-accent" href="{{ url_for('sets.sort_assistant', set_number=resume_project.set_number) }}">Weitersortieren</a>{% endif %}
       <a class="btn btn-outline-light" href="{{ url_for('sets.search') }}">Set suchen</a>
+    </div>
     </div>
   </div>
   <div class="cockpit-connection connection-{{ rebrickable_state }}">
