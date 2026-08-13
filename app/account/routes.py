@@ -8,7 +8,7 @@ from sqlalchemy import delete, func, or_
 from app.account import bp
 from app.account.forms import ChangePasswordForm, DeleteAccountForm, ProfileForm, ProfilePictureForm
 from app.extensions import db
-from app.models import SetPartProgress, User, utcnow
+from app.models import Friendship, PartOffer, ProjectShare, SetPartProgress, User, utcnow
 from app.services.mail import MailService, MailServiceError
 from app.services.rebrickable import RebrickableAPIError, RebrickableService
 from app.sets.forms import RebrickableSettingsForm
@@ -294,6 +294,9 @@ def delete_account():
         return redirect(url_for("account.account_settings"))
     user_id = current_user.id
     user = db.session.get(User, user_id)
+    db.session.execute(delete(PartOffer).where(or_(PartOffer.project_owner_id == user_id, PartOffer.offered_by_id == user_id)))
+    db.session.execute(delete(ProjectShare).where(or_(ProjectShare.owner_id == user_id, ProjectShare.shared_with_id == user_id)))
+    db.session.execute(delete(Friendship).where(or_(Friendship.requester_id == user_id, Friendship.addressee_id == user_id)))
     db.session.execute(
         delete(SetPartProgress).where(SetPartProgress.user_id == user_id)
     )

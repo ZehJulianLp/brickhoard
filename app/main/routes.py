@@ -48,6 +48,7 @@ def robots_txt():
             "Disallow: /dashboard",
             "Disallow: /lists",
             "Disallow: /search",
+            "Disallow: /social",
             "Disallow: /sets/",
             "Disallow: /settings/",
             f"Sitemap: {public_base_url}/sitemap.xml",

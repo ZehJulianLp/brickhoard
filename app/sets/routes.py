@@ -5,15 +5,34 @@ import io
 import math
 import time
 
-from flask import Response, current_app, flash, jsonify, redirect, render_template, request, url_for
+from flask import Response, abort, current_app, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from app.extensions import db
 from app.main.routes import service_for_current_user
-from app.models import CachedInventoryPart, SetNote, SetPartProgress, utcnow
+from app.models import CachedInventoryPart, PartOffer, ProjectShare, SetNote, SetPartProgress, User, utcnow
 from app.services.rebrickable import RebrickableAPIError, RebrickableService
 from app.sets import bp
 from app.sets.forms import RebrickableSettingsForm, SetNoteForm
+
+
+def _project_context(set_number: str, *, require_edit: bool = False) -> tuple[User, ProjectShare | None]:
+    owner_id = request.args.get("owner", current_user.id, type=int)
+    if owner_id == current_user.id:
+        return current_user, None
+    share = db.session.scalar(
+        db.select(ProjectShare).where(
+            ProjectShare.owner_id == owner_id,
+            ProjectShare.shared_with_id == current_user.id,
+            ProjectShare.set_number == set_number,
+        )
+    )
+    if share is None or (require_edit and share.permission != "edit"):
+        abort(403)
+    owner = db.session.get(User, owner_id)
+    if owner is None or not owner.is_enabled:
+        abort(404)
+    return owner, share
 
 
 @bp.route("/settings/rebrickable", methods=["GET", "POST"])
@@ -172,15 +191,18 @@ def list_detail(list_id: int):
 @bp.route("/sets/<path:set_number>", methods=["GET", "POST"])
 @login_required
 def set_detail(set_number: str):
+    owner, project_share = _project_context(set_number, require_edit=request.method == "POST")
     note = db.session.scalar(
         db.select(SetNote).where(
-            SetNote.user_id == current_user.id, SetNote.set_number == set_number
+            SetNote.user_id == owner.id, SetNote.set_number == set_number
         )
     )
-    form = SetNoteForm(obj=note)
+    form = SetNoteForm(obj=note if owner.id == current_user.id else None)
     if form.validate_on_submit():
+        if project_share is not None:
+            abort(403)
         if note is None:
-            note = SetNote(user_id=current_user.id, set_number=set_number)
+            note = SetNote(user_id=owner.id, set_number=set_number)
             db.session.add(note)
         note.note = form.note.data or None
         note.storage_location = form.storage_location.data or None
@@ -195,16 +217,16 @@ def set_detail(set_number: str):
     set_data = None
     theme_name = None
     parts: list[dict] = []
-    api_key = current_user.rebrickable_api_key or current_app.config.get("REBRICKABLE_API_KEY", "")
+    api_key = owner.rebrickable_api_key or current_app.config.get("REBRICKABLE_API_KEY", "")
     if api_key:
-        service = RebrickableService(api_key, current_user.rebrickable_user_token)
+        service = RebrickableService(api_key, owner.rebrickable_user_token)
         try:
             set_data = service.get_set_details(set_number)
         except RebrickableAPIError as exc:
             flash(str(exc), "warning")
         try:
             parts = service.get_set_parts(set_number)
-            _enrich_parts_with_progress(parts, set_number)
+            _enrich_parts_with_progress(parts, set_number, owner.id)
         except RebrickableAPIError as exc:
             flash(str(exc), "warning")
         if set_data and set_data.get("theme_id"):
@@ -222,6 +244,8 @@ def set_detail(set_number: str):
         theme_name=theme_name,
         parts=parts,
         form=form,
+        project_owner=owner,
+        project_share=project_share,
     )
 
 
@@ -240,12 +264,13 @@ def _part_progress_key(entry: dict) -> str:
     )
 
 
-def _enrich_parts_with_progress(parts: list[dict], set_number: str) -> None:
+def _enrich_parts_with_progress(parts: list[dict], set_number: str, owner_id: int | None = None) -> None:
+    owner_id = owner_id or current_user.id
     progress_by_key = {
         progress.item_key: progress
         for progress in db.session.scalars(
             db.select(SetPartProgress).where(
-                SetPartProgress.user_id == current_user.id,
+                SetPartProgress.user_id == owner_id,
                 SetPartProgress.set_number == set_number,
             )
         )
@@ -331,6 +356,7 @@ def _part_type_group(name: str) -> str:
 @bp.post("/sets/<path:set_number>/parts/progress")
 @login_required
 def save_part_progress(set_number: str):
+    owner, _share = _project_context(set_number, require_edit=True)
     payload = request.get_json(silent=True) or {}
     item_key = str(payload.get("item_key") or "")
     required_quantity = payload.get("required_quantity", 1)
@@ -361,14 +387,14 @@ def save_part_progress(set_number: str):
 
     progress = db.session.scalar(
         db.select(SetPartProgress).where(
-            SetPartProgress.user_id == current_user.id,
+            SetPartProgress.user_id == owner.id,
             SetPartProgress.set_number == set_number,
             SetPartProgress.item_key == item_key,
         )
     )
     if progress is None:
         progress = SetPartProgress(
-            user_id=current_user.id,
+            user_id=owner.id,
             set_number=set_number,
             item_key=item_key,
         )
@@ -395,9 +421,38 @@ def save_part_progress(set_number: str):
     )
 
 
+@bp.get("/sets/<path:set_number>/parts/progress/state")
+@login_required
+def part_progress_state(set_number: str):
+    owner, _share = _project_context(set_number)
+    rows = list(
+        db.session.scalars(
+            db.select(SetPartProgress).where(
+                SetPartProgress.user_id == owner.id,
+                SetPartProgress.set_number == set_number,
+            )
+        )
+    )
+    return jsonify(
+        {
+            "items": [
+                {
+                    "item_key": row.item_key,
+                    "found_quantity": row.found_quantity,
+                    "required_quantity": row.required_quantity,
+                    "status": row.status,
+                    "part_note": row.part_note or "",
+                }
+                for row in rows
+            ]
+        }
+    )
+
+
 @bp.post("/sets/<path:set_number>/parts/progress/bulk")
 @login_required
 def save_part_progress_bulk(set_number: str):
+    owner, _share = _project_context(set_number, require_edit=True)
     payload = request.get_json(silent=True) or {}
     items = payload.get("items")
     if not isinstance(items, list) or not items or len(items) > 1000:
@@ -438,7 +493,7 @@ def save_part_progress_bulk(set_number: str):
         progress.item_key: progress
         for progress in db.session.scalars(
             db.select(SetPartProgress).where(
-                SetPartProgress.user_id == current_user.id,
+                SetPartProgress.user_id == owner.id,
                 SetPartProgress.set_number == set_number,
                 SetPartProgress.item_key.in_(keys),
             )
@@ -448,7 +503,7 @@ def save_part_progress_bulk(set_number: str):
         progress = existing.get(item["item_key"])
         if progress is None:
             progress = SetPartProgress(
-                user_id=current_user.id,
+                user_id=owner.id,
                 set_number=set_number,
                 item_key=item["item_key"],
             )
@@ -461,14 +516,15 @@ def save_part_progress_bulk(set_number: str):
     return jsonify({"saved": True, "count": len(normalized)})
 
 
-def _missing_parts(set_number: str) -> list[dict]:
-    api_key = current_user.rebrickable_api_key or current_app.config.get(
+def _missing_parts(set_number: str, owner: User | None = None) -> list[dict]:
+    owner = owner or current_user
+    api_key = owner.rebrickable_api_key or current_app.config.get(
         "REBRICKABLE_API_KEY", ""
     )
     if not api_key:
         raise RebrickableAPIError("Für die Teileliste wird ein Rebrickable-API-Key benötigt.")
     parts = RebrickableService(api_key).get_set_parts(set_number)
-    _enrich_parts_with_progress(parts, set_number)
+    _enrich_parts_with_progress(parts, set_number, owner.id)
     return [entry for entry in parts if entry["missing_quantity"] > 0]
 
 
@@ -667,8 +723,9 @@ def all_missing_parts_csv():
     )
 
 
-def _set_inventory(set_number: str) -> tuple[dict, list[dict]]:
-    api_key = current_user.rebrickable_api_key or current_app.config.get(
+def _set_inventory(set_number: str, owner: User | None = None) -> tuple[dict, list[dict]]:
+    owner = owner or current_user
+    api_key = owner.rebrickable_api_key or current_app.config.get(
         "REBRICKABLE_API_KEY", ""
     )
     if not api_key:
@@ -676,21 +733,22 @@ def _set_inventory(set_number: str) -> tuple[dict, list[dict]]:
     service = RebrickableService(api_key)
     set_data = service.get_set_details(set_number)
     parts = service.get_set_parts(set_number)
-    _enrich_parts_with_progress(parts, set_number)
+    _enrich_parts_with_progress(parts, set_number, owner.id)
     return set_data, parts
 
 
 @bp.get("/sets/<path:set_number>/sort")
 @login_required
 def sort_assistant(set_number: str):
+    owner, project_share = _project_context(set_number)
     try:
-        set_data, parts = _set_inventory(set_number)
+        set_data, parts = _set_inventory(set_number, owner)
     except RebrickableAPIError as exc:
         flash(str(exc), "danger")
-        return redirect(url_for("sets.set_detail", set_number=set_number))
+        return redirect(url_for("sets.set_detail", set_number=set_number, owner=(owner.id if project_share else None)))
     note = db.session.scalar(
         db.select(SetNote).where(
-            SetNote.user_id == current_user.id, SetNote.set_number == set_number
+            SetNote.user_id == owner.id, SetNote.set_number == set_number
         )
     )
     start_index = 0
@@ -709,23 +767,26 @@ def sort_assistant(set_number: str):
         set_data=set_data,
         parts=parts,
         start_index=start_index,
+        project_owner=owner,
+        project_share=project_share,
     )
 
 
 @bp.post("/sets/<path:set_number>/sort-position")
 @login_required
 def save_sort_position(set_number: str):
+    owner, _share = _project_context(set_number, require_edit=True)
     payload = request.get_json(silent=True) or {}
     item_key = str(payload.get("item_key") or "")
     if not item_key or len(item_key) > 180:
         return jsonify({"error": "Ungültige Sortierposition."}), 400
     note = db.session.scalar(
         db.select(SetNote).where(
-            SetNote.user_id == current_user.id, SetNote.set_number == set_number
+            SetNote.user_id == owner.id, SetNote.set_number == set_number
         )
     )
     if note is None:
-        note = SetNote(user_id=current_user.id, set_number=set_number)
+        note = SetNote(user_id=owner.id, set_number=set_number)
         db.session.add(note)
     note.last_sort_item_key = item_key
     db.session.commit()
@@ -735,14 +796,15 @@ def save_sort_position(set_number: str):
 @bp.get("/sets/<path:set_number>/sorting-sheet")
 @login_required
 def sorting_sheet(set_number: str):
+    owner, project_share = _project_context(set_number)
     group_by = request.args.get("group", "color")
     if group_by not in {"color", "type", "status"}:
         group_by = "color"
     try:
-        set_data, parts = _set_inventory(set_number)
+        set_data, parts = _set_inventory(set_number, owner)
     except RebrickableAPIError as exc:
         flash(str(exc), "danger")
-        return redirect(url_for("sets.set_detail", set_number=set_number))
+        return redirect(url_for("sets.set_detail", set_number=set_number, owner=(owner.id if project_share else None)))
     if group_by == "color":
         parts.sort(
             key=lambda entry: (
@@ -770,19 +832,27 @@ def sorting_sheet(set_number: str):
         set_data=set_data,
         parts=parts,
         group_by=group_by,
+        project_owner=owner,
+        project_share=project_share,
     )
 
 
 @bp.get("/sets/<path:set_number>/missing")
 @login_required
 def missing_parts(set_number: str):
+    owner, project_share = _project_context(set_number)
     try:
-        parts = _missing_parts(set_number)
+        parts = _missing_parts(set_number, owner)
     except RebrickableAPIError as exc:
         flash(str(exc), "danger")
         parts = []
     return render_template(
-        "sets/missing_parts.html", set_number=set_number, parts=parts
+        "sets/missing_parts.html",
+        set_number=set_number,
+        parts=parts,
+        project_owner=owner,
+        project_share=project_share,
+        offers=list(db.session.scalars(db.select(PartOffer).where(PartOffer.project_owner_id == owner.id, PartOffer.set_number == set_number))),
     )
 
 
@@ -794,11 +864,12 @@ def _safe_csv_value(value: object) -> str:
 @bp.get("/sets/<path:set_number>/missing.csv")
 @login_required
 def missing_parts_csv(set_number: str):
+    owner, _share = _project_context(set_number)
     try:
-        parts = _missing_parts(set_number)
+        parts = _missing_parts(set_number, owner)
     except RebrickableAPIError as exc:
         flash(str(exc), "danger")
-        return redirect(url_for("sets.set_detail", set_number=set_number))
+        return redirect(url_for("sets.set_detail", set_number=set_number, owner=(owner.id if _share else None)))
 
     output = io.StringIO()
     writer = csv.writer(output, delimiter=";")

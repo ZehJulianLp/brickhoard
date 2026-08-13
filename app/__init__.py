@@ -95,12 +95,14 @@ def create_app(test_config: dict | None = None) -> Flask:
     from app.admin import bp as admin_bp
     from app.main import bp as main_bp
     from app.sets import bp as sets_bp
+    from app.social import bp as social_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(account_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(main_bp)
     app.register_blueprint(sets_bp)
+    app.register_blueprint(social_bp)
 
     register_cli(app)
     register_error_handlers(app)
@@ -256,6 +258,8 @@ def register_cli(app: Flask) -> None:
             "onboarding_pending": "BOOLEAN NOT NULL DEFAULT 0",
             "profile_picture": "BLOB",
             "profile_picture_updated_at": "DATETIME",
+            "profile_is_public": "BOOLEAN NOT NULL DEFAULT 0",
+            "profile_bio": "VARCHAR(500)",
             "email_verified_at": "DATETIME",
             "confirmation_sent_at": "DATETIME",
             "password_reset_sent_at": "DATETIME",

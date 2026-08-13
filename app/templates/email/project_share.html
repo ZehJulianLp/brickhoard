@@ -1,0 +1,9 @@
+{% extends 'email/base.html' %}
+{% block title %}Sortierprojekt geteilt{% endblock %}
+{% block preheader %}{{ owner.username }} teilt LEGO-Set {{ set_number }} mit dir.{% endblock %}
+{% block heading %}Set {{ set_number }} wurde geteilt{% endblock %}
+{% block intro %}Hallo {{ username }}, {{ owner.username }} hat ein Sortierprojekt für dich freigegeben.{% endblock %}
+{% block content %}
+<p style="margin:0 0 20px;line-height:1.6;"><strong>Berechtigung:</strong> {{ "Gemeinsam sortieren" if permission == "edit" else "Nur ansehen" }}</p>
+{% for link in project_links %}<p style="margin:0 0 12px;"><a href="{{ link }}" style="display:inline-block;background:#f2ad3e;color:#172026;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:8px;">Projekt öffnen</a></p>{% endfor %}
+{% endblock %}

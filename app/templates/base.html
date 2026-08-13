@@ -66,6 +66,7 @@
             <li class="nav-item"><a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('sets.lists') }}">Setlisten</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('sets.all_missing_parts') }}">Fehlteile</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('social.center') }}">Freunde</a></li>
             <li class="nav-item"><a class="nav-link nav-profile-link" href="{{ url_for('account.account_settings') }}">{% if current_user.profile_picture %}<img class="profile-avatar profile-avatar-nav" src="{{ url_for('account.profile_picture', v=current_user.profile_picture_updated_at.isoformat()) }}" alt="">{% else %}<span class="profile-avatar profile-avatar-nav profile-avatar-fallback" aria-hidden="true">{{ current_user.username[:1]|upper }}</span>{% endif %}<span>Konto</span></a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('sets.rebrickable_settings') }}">Rebrickable</a></li>
             {% if current_user.is_admin %}<li class="nav-item"><a class="nav-link admin-nav-link" href="{{ url_for('admin.users') }}">Admin</a></li>{% endif %}

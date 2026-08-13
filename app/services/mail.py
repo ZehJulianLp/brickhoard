@@ -102,6 +102,35 @@ class MailService:
             expires_minutes=current_app.config["PASSWORD_RESET_TOKEN_MAX_AGE"] // 60,
         )
 
+    def send_friend_request(self, recipient: Any, requester: Any, social_path: str) -> None:
+        self.send_template(
+            recipient=recipient.email,
+            subject=f"{requester.username} möchte dich auf BrickHoard hinzufügen",
+            template="email/friend_request",
+            username=recipient.username,
+            requester=requester,
+            social_links=self._absolute_links(social_path),
+        )
+
+    def send_project_share(
+        self,
+        recipient: Any,
+        owner: Any,
+        set_number: str,
+        permission: str,
+        project_path: str,
+    ) -> None:
+        self.send_template(
+            recipient=recipient.email,
+            subject=f"{owner.username} teilt LEGO-Set {set_number} mit dir",
+            template="email/project_share",
+            username=recipient.username,
+            owner=owner,
+            set_number=set_number,
+            permission=permission,
+            project_links=self._absolute_links(project_path),
+        )
+
     def _absolute_links(self, path: str) -> list[str]:
         normalized_path = "/" + path.lstrip("/")
         return [f"{base_url}{normalized_path}" for base_url in current_app.config["EMAIL_LINK_BASE_URLS"]]

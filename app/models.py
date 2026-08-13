@@ -53,6 +53,8 @@ class User(UserMixin, db.Model):
     onboarding_pending = db.Column(db.Boolean, default=False, nullable=False)
     profile_picture = db.Column(db.LargeBinary)
     profile_picture_updated_at = db.Column(db.DateTime(timezone=True))
+    profile_is_public = db.Column(db.Boolean, default=False, nullable=False)
+    profile_bio = db.Column(db.String(500))
     email_verified_at = db.Column(db.DateTime(timezone=True), nullable=True)
     confirmation_sent_at = db.Column(db.DateTime(timezone=True))
     password_reset_sent_at = db.Column(db.DateTime(timezone=True))
@@ -153,6 +155,53 @@ class CachedInventoryPart(db.Model):
     is_spare = db.Column(db.Boolean, default=False, nullable=False)
     type_group = db.Column(db.String(80), nullable=False)
     cached_at = db.Column(db.DateTime(timezone=True), default=utcnow, nullable=False)
+
+
+class Friendship(db.Model):
+    __table_args__ = (UniqueConstraint("requester_id", "addressee_id"),)
+
+    id = db.Column(db.Integer, primary_key=True)
+    requester_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    addressee_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    status = db.Column(db.String(20), default="pending", nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False)
+    requester = db.relationship("User", foreign_keys=[requester_id])
+    addressee = db.relationship("User", foreign_keys=[addressee_id])
+
+    def other_user(self, user_id: int) -> User:
+        return self.addressee if self.requester_id == user_id else self.requester
+
+
+class ProjectShare(db.Model):
+    __table_args__ = (UniqueConstraint("owner_id", "shared_with_id", "set_number"),)
+
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    shared_with_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    set_number = db.Column(db.String(40), nullable=False, index=True)
+    permission = db.Column(db.String(20), default="view", nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=utcnow, nullable=False)
+    owner = db.relationship("User", foreign_keys=[owner_id])
+    shared_with = db.relationship("User", foreign_keys=[shared_with_id])
+
+
+class PartOffer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    project_owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    offered_by_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    set_number = db.Column(db.String(40), nullable=False, index=True)
+    item_key = db.Column(db.String(180), nullable=False)
+    part_number = db.Column(db.String(120), nullable=False)
+    part_name = db.Column(db.String(500), nullable=False)
+    color_name = db.Column(db.String(120), nullable=False)
+    quantity = db.Column(db.Integer, default=1, nullable=False)
+    message = db.Column(db.String(500))
+    status = db.Column(db.String(20), default="offered", nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False)
+    project_owner = db.relationship("User", foreign_keys=[project_owner_id])
+    offered_by = db.relationship("User", foreign_keys=[offered_by_id])
 
 
 @login_manager.user_loader

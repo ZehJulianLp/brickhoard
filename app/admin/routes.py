@@ -5,12 +5,12 @@ from functools import wraps
 
 from flask import Response, abort, flash, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import delete, func
+from sqlalchemy import delete, func, or_
 
 from app.admin import bp
 from app.admin.forms import AdminUserActionForm
 from app.extensions import db
-from app.models import SetPartProgress, User, utcnow
+from app.models import Friendship, PartOffer, ProjectShare, SetPartProgress, User, utcnow
 from app.services.mail import MailService, MailServiceError
 
 
@@ -177,6 +177,9 @@ def delete_user():
         flash("Der letzte Administrator kann nicht gelöscht werden.", "danger")
         return redirect(url_for("admin.users"))
     username = user.username
+    db.session.execute(delete(PartOffer).where(or_(PartOffer.project_owner_id == user.id, PartOffer.offered_by_id == user.id)))
+    db.session.execute(delete(ProjectShare).where(or_(ProjectShare.owner_id == user.id, ProjectShare.shared_with_id == user.id)))
+    db.session.execute(delete(Friendship).where(or_(Friendship.requester_id == user.id, Friendship.addressee_id == user.id)))
     db.session.execute(
         delete(SetPartProgress).where(SetPartProgress.user_id == user.id)
     )

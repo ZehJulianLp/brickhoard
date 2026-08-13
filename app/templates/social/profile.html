@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}{{ profile_user.username }} – BrickHoard-Profil{% endblock %}
+{% block content %}
+<section class="public-profile-card">
+  {% if profile_user.profile_picture %}<img class="profile-avatar public-profile-avatar" src="{{ url_for('social.public_profile_picture', username=profile_user.username, v=profile_user.profile_picture_updated_at.isoformat()) }}" alt="Profilbild von {{ profile_user.username }}">{% else %}<span class="profile-avatar public-profile-avatar profile-avatar-fallback">{{ profile_user.username[:1]|upper }}</span>{% endif %}
+  <div><span class="eyebrow">BrickHoard-Sammlerprofil</span><h1>{{ profile_user.username }}</h1><p>{{ profile_user.profile_bio or 'Sortiert, sammelt und vervollständigt LEGO-Sets mit BrickHoard.' }}</p>{% if current_user.is_authenticated and current_user.id != profile_user.id and not friendship %}<form method="post" action="{{ url_for('social.request_friend') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="identity" value="{{ profile_user.username }}"><button class="btn btn-accent">Als Freund hinzufügen</button></form>{% endif %}</div>
+</section>
+<section class="public-profile-stats"><article><strong>{{ project_count }}</strong><span>Sortierprojekte</span></article><article><strong>{{ complete_sets }}</strong><span>vollständig</span></article><article><strong>{{ found_parts }}</strong><span>Teile gefunden</span></article></section>
+{% endblock %}

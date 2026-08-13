@@ -118,6 +118,28 @@ if (checklist) {
   });
   updateProgress();
 
+  const syncSharedChecklist = async () => {
+    if (document.hidden || !navigator.onLine) return;
+    try {
+      const response = await fetch(checklist.dataset.stateUrl, {headers: {'Accept': 'application/json'}});
+      if (!response.ok) return;
+      const state = await response.json();
+      const byKey = new Map((state.items || []).map((item) => [item.item_key, item]));
+      const queued = readQueue();
+      rows.forEach((row) => {
+        const {count, input, statusSelect, required} = valuesForRow(row);
+        const item = byKey.get(count.dataset.itemKey);
+        const queueId = `${count.dataset.url}::${count.dataset.itemKey}`;
+        if (!item || row.contains(document.activeElement) || queued[queueId]) return;
+        input.value = String(Math.min(Math.max(Number(item.found_quantity) || 0, 0), required));
+        if (item.status) statusSelect.value = item.status;
+        updateRow(row);
+      });
+      updateProgress();
+    } catch (_error) {}
+  };
+  window.setInterval(syncSharedChecklist, 4000);
+
   document.querySelector('#part-search')?.addEventListener('input', (event) => {
     const query = event.target.value.trim().toLowerCase();
     checklist.querySelectorAll('.part-row').forEach((row) => {
@@ -239,8 +261,10 @@ if (sortAssistant) {
   let cards = [...sortAssistant.querySelectorAll('.sort-card')];
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
   let currentIndex = Number(sortAssistant.dataset.startIndex) || 0;
+  const readOnly = sortAssistant.dataset.readonly === '1';
+  const projectStorageSuffix = `${sortAssistant.dataset.ownerId}:${sortAssistant.dataset.setNumber}`;
   const orderSelect = document.querySelector('#sort-assistant-order');
-  const orderStorageKey = `brickshelf-sort-order:${sortAssistant.dataset.setNumber}`;
+  const orderStorageKey = `brickshelf-sort-order:${projectStorageSuffix}`;
   const naturalCompare = new Intl.Collator('de', {numeric: true, sensitivity: 'base'}).compare;
   const applyCardOrder = (order, preserveCurrent = true) => {
     const currentItemKey = cards[currentIndex]?.dataset.itemKey;
@@ -281,11 +305,12 @@ if (sortAssistant) {
     orderSelect.value = savedOrder;
   }
   applyCardOrder(orderSelect.value);
-  const localPosition = localStorage.getItem(`brickshelf-sort-position:${sortAssistant.dataset.setNumber}`);
+  const localPosition = localStorage.getItem(`brickshelf-sort-position:${projectStorageSuffix}`);
   const localIndex = cards.findIndex((card) => card.dataset.itemKey === localPosition);
   if (localIndex >= 0) currentIndex = localIndex;
   const savePosition = (card) => {
-    localStorage.setItem(`brickshelf-sort-position:${sortAssistant.dataset.setNumber}`, card.dataset.itemKey);
+    localStorage.setItem(`brickshelf-sort-position:${projectStorageSuffix}`, card.dataset.itemKey);
+    if (readOnly) return;
     fetch(sortAssistant.dataset.positionUrl, {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
@@ -364,6 +389,26 @@ if (sortAssistant) {
     card.querySelectorAll('[data-status]').forEach((button) => button.addEventListener('click', () => { setActiveStatus(card, button.dataset.status); saveCard(card); }));
     card.querySelector('.sort-note').addEventListener('input', () => { window.clearTimeout(timer); timer = window.setTimeout(() => saveCard(card), 500); });
   });
+  const syncSharedSort = async () => {
+    if (document.hidden || !navigator.onLine) return;
+    try {
+      const response = await fetch(sortAssistant.dataset.stateUrl, {headers: {'Accept': 'application/json'}});
+      if (!response.ok) return;
+      const state = await response.json();
+      const byKey = new Map((state.items || []).map((item) => [item.item_key, item]));
+      const queued = JSON.parse(localStorage.getItem('brickshelf-progress-queue') || '{}');
+      cards.forEach((card) => {
+        const item = byKey.get(card.dataset.itemKey);
+        const queueId = `${card.dataset.url}::${card.dataset.itemKey}`;
+        if (!item || card.contains(document.activeElement) || queued[queueId]) return;
+        card.querySelector('.sort-found').value = String(item.found_quantity || 0);
+        card.querySelector('.sort-note').value = item.part_note || '';
+        setActiveStatus(card, item.status || 'pending');
+      });
+      updateSortProgress();
+    } catch (_error) {}
+  };
+  window.setInterval(syncSharedSort, 4000);
   document.querySelector('#sort-prev').addEventListener('click', () => showCard(currentIndex - 1));
   document.querySelector('#sort-next').addEventListener('click', () => showCard(currentIndex + 1));
   document.querySelector('#sort-next-open').addEventListener('click', () => {

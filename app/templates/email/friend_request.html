@@ -1,0 +1,10 @@
+{% extends 'email/base.html' %}
+{% block title %}Neue Freundschaftsanfrage{% endblock %}
+{% block preheader %}{{ requester.username }} möchte dich auf BrickHoard hinzufügen.{% endblock %}
+{% block heading %}Neue Freundschaftsanfrage{% endblock %}
+{% block intro %}Hallo {{ username }}, {{ requester.username }} möchte dich als Freund hinzufügen.{% endblock %}
+{% block content %}
+<p style="margin:0 0 20px;line-height:1.6;">Als Freunde könnt ihr einzelne Sortierprojekte miteinander teilen und euch bei Fehlteilen helfen.</p>
+{% for link in social_links %}<p style="margin:0 0 12px;"><a href="{{ link }}" style="display:inline-block;background:#f2ad3e;color:#172026;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:8px;">Anfrage ansehen</a></p>{% endfor %}
+<p style="margin:20px 0 0;color:#667078;font-size:13px;">Wenn du diese Person nicht kennst, kannst du die Anfrage einfach ablehnen.</p>
+{% endblock %}

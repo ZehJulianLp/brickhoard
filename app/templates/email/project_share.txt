@@ -1,0 +1,8 @@
+Hallo {{ username }},
+
+{{ owner.username }} hat das Sortierprojekt für LEGO-Set {{ set_number }} mit dir geteilt.
+Berechtigung: {{ "Gemeinsam sortieren" if permission == "edit" else "Nur ansehen" }}
+
+Projekt öffnen:
+{% for link in project_links %}{{ link }}
+{% endfor %}
