@@ -125,6 +125,7 @@ def test_user_can_delete_own_account_and_local_data(logged_in_client, app, user)
 def test_non_admin_cannot_open_admin_center(logged_in_client):
     response = logged_in_client.get("/admin/users")
     assert response.status_code == 403
+    assert logged_in_client.get("/admin/users/1/profile-picture").status_code == 403
 
 
 def test_admin_can_reset_and_disable_user(client, app):
@@ -141,6 +142,8 @@ def test_admin_can_reset_and_disable_user(client, app):
             username="target",
             email="target@example.com",
             is_enabled=True,
+            profile_picture=b"fake-webp-image",
+            profile_picture_updated_at=utcnow(),
         )
         target.set_password("target-password")
         db.session.add_all([admin, target])
@@ -149,6 +152,12 @@ def test_admin_can_reset_and_disable_user(client, app):
     client.post(
         "/login", data={"identity": "admin", "password": "admin-password"}
     )
+    users_page = client.get("/admin/users")
+    assert f'/admin/users/{target_id}/profile-picture' in users_page.text
+    target_picture = client.get(f"/admin/users/{target_id}/profile-picture")
+    assert target_picture.status_code == 200
+    assert target_picture.content_type == "image/webp"
+    assert target_picture.data == b"fake-webp-image"
     reset = client.post(
         "/admin/users/reset-password", data={"user_id": str(target_id)}
     )

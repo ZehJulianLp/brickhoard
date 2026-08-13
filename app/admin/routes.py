@@ -3,7 +3,7 @@ from __future__ import annotations
 import secrets
 from functools import wraps
 
-from flask import abort, flash, make_response, redirect, render_template, url_for
+from flask import Response, abort, flash, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import delete, func
 
@@ -42,6 +42,20 @@ def users():
     return render_template(
         "admin/users.html", users=all_users, action_form=AdminUserActionForm()
     )
+
+
+@bp.get("/users/<int:user_id>/profile-picture")
+@admin_required
+def user_profile_picture(user_id: int):
+    user = db.session.get(User, user_id)
+    if user is None or not user.profile_picture:
+        abort(404)
+    response = Response(user.profile_picture, mimetype="image/webp")
+    response.headers["Cache-Control"] = "private, max-age=86400"
+    if user.profile_picture_updated_at:
+        response.last_modified = user.profile_picture_updated_at
+        response.make_conditional(request)
+    return response
 
 
 @bp.post("/users/toggle-enabled")
