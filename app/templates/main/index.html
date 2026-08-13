@@ -1,61 +1,174 @@
 {% extends 'base.html' %}
-{% block title %}BrickHoard – deine Sets, Teile und Fortschritte{% endblock %}
-{% block meta_description %}Verwalte deine LEGO-Sammlung, sortiere Set-Teile mit Fortschrittsanzeige und erkenne Fehlteile direkt – privat mit deiner Rebrickable-Sammlung.{% endblock %}
+{% block title %}BrickHoard – LEGO-Sets sortieren & Fehlteile finden{% endblock %}
+{% block meta_description %}Prüfe LEGO-Sets auf Vollständigkeit, sortiere Teile mit digitaler Checkliste und finde Fehlteile. Mit Rebrickable, Freunden und gemeinsamem Sortieren.{% endblock %}
 {% block content %}
-<section class="hero-panel p-4 p-md-5 overflow-hidden">
-  <div class="row align-items-center g-5">
-    <div class="col-lg-7">
-      <span class="eyebrow">Sammeln. Sortieren. Vervollständigen.</span>
-      <h1 class="display-4 fw-bold mt-3">Deine LEGO-Sammlung. Endlich an einem Ort.</h1>
-      <p class="lead text-secondary my-4">Behalte deine Sets im Blick, sortiere Teile Schritt für Schritt und erkenne sofort, was noch fehlt. BrickHoard begleitet dich vom ersten unsortierten Stein bis zum vollständigen Set.</p>
-      <div class="d-flex flex-wrap gap-2">
-        <a class="btn btn-accent btn-lg" href="{{ url_for('auth.register') }}">Account erstellen</a>
-        <a class="btn btn-outline-dark btn-lg" href="{{ url_for('auth.login') }}">Anmelden</a>
-      </div>
+<section class="landing-hero">
+  <div class="landing-hero-copy">
+    <span class="eyebrow">Dein digitaler Sortiertisch</span>
+    <h1>Vom Teilehaufen zum <span>vollständigen Set.</span></h1>
+    <p>BrickHoard macht aus deiner Rebrickable-Sammlung klare Sortierprojekte. Zähle Teile, speichere jeden Fortschritt und sieh sofort, was am Ende wirklich fehlt.</p>
+    <div class="landing-actions">
+      <a class="btn btn-accent btn-lg" href="{{ url_for('auth.register') }}">Kostenlos loslegen <span aria-hidden="true">→</span></a>
+      <a class="btn btn-outline-dark btn-lg" href="#so-funktionierts">So funktioniert’s</a>
     </div>
-    <div class="col-lg-5" aria-hidden="true">
-      <div class="brick-stack">
-        <div class="demo-brick brick-red"></div>
-        <div class="demo-brick brick-gold"></div>
-        <div class="demo-brick brick-blue"></div>
-      </div>
+    <ul class="landing-proof" aria-label="Vorteile von BrickHoard">
+      <li><span aria-hidden="true">✓</span> Kostenlos nutzbar</li>
+      <li><span aria-hidden="true">✓</span> Auf jedem Gerät</li>
+      <li><span aria-hidden="true">✓</span> Fortschritt bleibt gespeichert</li>
+    </ul>
+  </div>
+
+  <div class="landing-cockpit" role="img" aria-label="Beispiel eines Sortierprojekts mit 78 Prozent Fortschritt">
+    <div class="landing-window-bar">
+      <span><i></i><i></i><i></i></span>
+      <strong>Sortierprojekt</strong>
+      <small>Live gespeichert</small>
     </div>
+    <div class="landing-project-head">
+      <div>
+        <small>SET 10283</small>
+        <strong>NASA Space Shuttle Discovery</strong>
+      </div>
+      <b>78%</b>
+    </div>
+    <div class="landing-progress" role="img" aria-label="Beispielfortschritt 78 Prozent"><span></span></div>
+    <div class="landing-part-card">
+      <div class="landing-part-visual" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <div class="landing-part-copy">
+        <small>AKTUELLES TEIL</small>
+        <strong>Plate 2 × 4</strong>
+        <span>Dark Bluish Gray</span>
+      </div>
+      <div class="landing-counter"><button type="button" tabindex="-1" aria-hidden="true">−</button><strong>6</strong><span>/ 8</span><button type="button" tabindex="-1" aria-hidden="true">+</button></div>
+    </div>
+    <div class="landing-cockpit-bottom">
+      <span><b>1.842</b> Teile geprüft</span>
+      <span><b>12</b> Fehlteile</span>
+      <button type="button" tabindex="-1">Weiteres Teil <span aria-hidden="true">→</span></button>
+    </div>
+    <div class="landing-live-pill"><span></span> Gemeinsam sortieren</div>
   </div>
 </section>
-<div class="row g-4 mt-3">
-  <div class="col-md-4"><div class="feature-card"><h2 class="h5">Alle Sets im Blick</h2><p>Durchsuche deine Setlisten und finde jedes Set schnell wieder – mit Bildern und allen wichtigen Angaben.</p></div></div>
-  <div class="col-md-4"><div class="feature-card"><h2 class="h5">Entspannt Teile sortieren</h2><p>Hake vorhandene Teile ab und setze später genau dort weiter, wo du aufgehört hast.</p></div></div>
-  <div class="col-md-4"><div class="feature-card"><h2 class="h5">Fehlteile sofort erkennen</h2><p>Sieh auf einen Blick, welche Teile noch fehlen, und exportiere eine übersichtliche Einkaufsliste.</p></div></div>
-</div>
 
-<section class="mt-5 pt-lg-4">
-  <div class="text-center mx-auto mb-4" style="max-width: 720px;">
-    <span class="eyebrow">So einfach geht’s</span>
-    <h2 class="display-6 fw-bold mt-2">Mehr Zeit für die Sets, weniger Zeit fürs Suchen</h2>
-    <p class="text-secondary">BrickHoard hilft dir dabei, auch große Sammlungen übersichtlich zu halten – am Computer, Tablet oder Smartphone.</p>
+<section class="landing-value-strip" aria-label="BrickHoard Funktionen im Überblick">
+  <div><strong>Checkliste</strong><span>Teil für Teil abhaken</span></div>
+  <div><strong>Fehlteile</strong><span>Automatisch zusammenfassen</span></div>
+  <div><strong>Teamwork</strong><span>Projekte mit Freunden teilen</span></div>
+  <div><strong>PWA</strong><span>Wie eine App installieren</span></div>
+</section>
+
+<section id="so-funktionierts" class="landing-section">
+  <div class="landing-section-heading">
+    <span class="eyebrow">Einfach anfangen</span>
+    <h2>Deine Sammlung ist schon da.<br>BrickHoard macht sie sortierbar.</h2>
+    <p>Kein Abtippen von Teilelisten: Verbinde Rebrickable, wähle ein Set und leg direkt los.</p>
   </div>
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="card border-0 shadow-sm h-100 p-4">
-        <span class="badge text-bg-warning align-self-start mb-3">1</span>
-        <h3 class="h5">Sammlung verbinden</h3>
-        <p class="text-secondary mb-0">Hinterlege deinen Rebrickable-Zugang und übernimm deine vorhandenen Setlisten.</p>
-      </div>
+  <ol class="landing-steps">
+    <li>
+      <span class="landing-step-number">01</span>
+      <div class="landing-step-icon" aria-hidden="true">↗</div>
+      <h3>Rebrickable verbinden</h3>
+      <p>Das geführte Setup erstellt deinen Token aus den Zugangsdaten – oder du trägst einen vorhandenen Token ein. Dein Rebrickable-Passwort wird nicht gespeichert.</p>
+    </li>
+    <li>
+      <span class="landing-step-number">02</span>
+      <div class="landing-step-icon" aria-hidden="true">✓</div>
+      <h3>Teile zählen</h3>
+      <p>Nutze die kompakte Checkliste oder den großen Sortiermodus. Reihenfolge, Mengen und Status passen sich deinem Workflow an.</p>
+    </li>
+    <li>
+      <span class="landing-step-number">03</span>
+      <div class="landing-step-icon" aria-hidden="true">◎</div>
+      <h3>Lücken schließen</h3>
+      <p>Alle fehlenden Teile landen in einer Übersicht. Exportiere sie als CSV, drucke deine Liste oder teile das Projekt mit Freunden.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="landing-section">
+  <div class="landing-section-heading landing-section-heading-split">
+    <div>
+      <span class="eyebrow">Mehr als eine Teileliste</span>
+      <h2>Für echte Sortierabende gebaut.</h2>
     </div>
-    <div class="col-md-4">
-      <div class="card border-0 shadow-sm h-100 p-4">
-        <span class="badge text-bg-warning align-self-start mb-3">2</span>
-        <h3 class="h5">Set auswählen</h3>
-        <p class="text-secondary mb-0">Öffne ein Set und arbeite dich mit Bildern und Mengen durch die enthaltenen Teile.</p>
+    <p>Ob allein am Schreibtisch oder gemeinsam vor mehreren Kisten: BrickHoard hält alle auf demselben Stand.</p>
+  </div>
+  <div class="landing-bento">
+    <article class="landing-feature landing-feature-sort">
+      <span class="landing-feature-label">Sortieren</span>
+      <h3>Große Bilder. Klare Mengen. Kein Rätselraten.</h3>
+      <p>Der große Sortiermodus konzentriert sich immer auf genau ein Teil. Deine eigene Reihenfolge gilt auch in der Checkliste.</p>
+      <div class="landing-sort-preview" aria-hidden="true">
+        <span>←</span><div><i></i><i></i><i></i><i></i></div><strong>14 <small>/ 16</small></strong><span>→</span>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card border-0 shadow-sm h-100 p-4">
-        <span class="badge text-bg-warning align-self-start mb-3">3</span>
-        <h3 class="h5">Fortschritt behalten</h3>
-        <p class="text-secondary mb-0">Deine Häkchen bleiben erhalten. So kannst du jederzeit eine Pause machen und später weitermachen.</p>
+    </article>
+    <article class="landing-feature landing-feature-missing">
+      <span class="landing-feature-label">Fehlteile</span>
+      <h3>Eine Einkaufsliste für alle Projekte.</h3>
+      <p>BrickHoard fasst Fehlteile setübergreifend zusammen – inklusive Farbe, Menge und Zuordnung.</p>
+      <div class="landing-missing-preview" aria-hidden="true">
+        <span><i class="missing-red"></i><b>Brick 1 × 2</b><small>3 fehlen</small></span>
+        <span><i class="missing-blue"></i><b>Tile 2 × 2</b><small>1 fehlt</small></span>
+        <span><i class="missing-gold"></i><b>Plate Round</b><small>6 fehlen</small></span>
       </div>
-    </div>
+    </article>
+    <article class="landing-feature landing-feature-social">
+      <span class="landing-feature-label">Gemeinsam</span>
+      <h3>Freunde finden. Projekt teilen. Live weitersortieren.</h3>
+      <p>Suche nur nach Usernames, teile Projekte mit Lese- oder Schreibzugriff und erhalte Benachrichtigungen über neue Anfragen.</p>
+      <div class="landing-people" aria-hidden="true"><span>J</span><span>M</span><span>A</span><b>+2</b><small>sortieren gerade mit</small></div>
+    </article>
+    <article class="landing-feature landing-feature-anywhere">
+      <span class="landing-feature-label">Überall</span>
+      <h3>Desktop, Tablet oder Handy.</h3>
+      <p>Installiere BrickHoard als Web-App, nutze Darkmode und arbeite auch bei einer kurzen Verbindungspause weiter.</p>
+      <div class="landing-devices" aria-hidden="true"><span class="device-desktop"></span><span class="device-phone"></span></div>
+    </article>
+  </div>
+</section>
+
+<section class="landing-privacy">
+  <div class="landing-privacy-mark" aria-hidden="true">⌾</div>
+  <div>
+    <span class="eyebrow">Deine Sammlung. Deine Daten.</span>
+    <h2>Privat, bis du etwas teilst.</h2>
+    <p>Andere Nutzer sehen bei der Freundessuche nur deinen Username – niemals deine E-Mail-Adresse. Projekte werden erst sichtbar, wenn du sie bewusst freigibst.</p>
+  </div>
+  <a href="{{ url_for('main.privacy') }}">Datenschutz ansehen <span aria-hidden="true">→</span></a>
+</section>
+
+<section class="landing-section landing-faq">
+  <div class="landing-section-heading">
+    <span class="eyebrow">Kurz erklärt</span>
+    <h2>Häufige Fragen</h2>
+  </div>
+  <div class="landing-faq-list">
+    <details>
+      <summary>Kann ich mit BrickHoard prüfen, ob ein LEGO-Set vollständig ist?</summary>
+      <p>Ja. BrickHoard lädt die Teileliste des Sets über Rebrickable. Du trägst für jedes Teil die gefundene Menge ein und erhältst daraus deinen Fortschritt sowie eine genaue Fehlteileliste.</p>
+    </details>
+    <details>
+      <summary>Brauche ich einen Rebrickable-Account?</summary>
+      <p>Für den Import deiner Setlisten und Inventare brauchst du einen Rebrickable-Zugang. Das optionale Setup führt dich durch die Verbindung und speichert dein Rebrickable-Passwort nicht.</p>
+    </details>
+    <details>
+      <summary>Können mehrere Personen dasselbe Set sortieren?</summary>
+      <p>Ja. Füge die Person über ihren BrickHoard-Username als Freund hinzu und teile das Sortierprojekt mit Schreibzugriff. Änderungen werden für beide Seiten laufend synchronisiert.</p>
+    </details>
+    <details>
+      <summary>Ist BrickHoard kostenlos?</summary>
+      <p>Ja, die Nutzung von BrickHoard ist kostenlos. Auch die installierbare Web-App, Darkmode und die sozialen Funktionen gehören dazu.</p>
+    </details>
+  </div>
+</section>
+
+<section class="landing-final-cta">
+  <span class="eyebrow">Bereit für die nächste Kiste?</span>
+  <h2>Bring Ordnung in deine Steine.</h2>
+  <p>Erstelle deinen Account und starte dein erstes Sortierprojekt.</p>
+  <div class="landing-actions landing-actions-center">
+    <a class="btn btn-accent btn-lg" href="{{ url_for('auth.register') }}">BrickHoard ausprobieren <span aria-hidden="true">→</span></a>
+    <a class="btn btn-outline-light btn-lg" href="{{ url_for('auth.login') }}">Schon dabei? Anmelden</a>
   </div>
 </section>
 {% endblock %}

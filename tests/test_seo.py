@@ -9,13 +9,15 @@ def test_public_home_has_complete_search_metadata(client):
     assert response.status_code == 200
     assert '<meta name="robots" content="index, follow' in response.text
     assert '<link rel="canonical" href="https://brickhoard.julianverse.de/">' in response.text
-    assert '<meta name="description" content="Verwalte deine LEGO-Sammlung' in response.text
-    assert '<meta property="og:title" content="BrickHoard – deine Sets, Teile und Fortschritte">' in response.text
+    assert '<meta name="description" content="Prüfe LEGO-Sets auf Vollständigkeit' in response.text
+    assert '<meta property="og:title" content="BrickHoard – LEGO-Sets sortieren &amp; Fehlteile finden">' in response.text
     assert '<meta name="twitter:card" content="summary">' in response.text
     assert '<script type="application/ld+json">' in response.text
     assert '"WebApplication"' in response.text
     assert 'id="theme-toggle"' in response.text
     assert "localStorage.getItem('brickhoard-theme')" in response.text
+    assert "Vom Teilehaufen zum" in response.text
+    assert "Gemeinsam in Echtzeit sortieren" in response.text
 
 
 def test_private_and_auth_pages_are_noindex(client):

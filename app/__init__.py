@@ -142,8 +142,8 @@ def create_app(test_config: dict | None = None) -> Flask:
                     "operatingSystem": "Web",
                     "inLanguage": "de-DE",
                     "description": (
-                        "Private Web-App zum Verwalten von LEGO-Setlisten, "
-                        "Sortierfortschritten und Fehlteilen mit Rebrickable."
+                        "Web-App zum Prüfen und Sortieren von LEGO-Sets, "
+                        "Verwalten von Fehlteilen und gemeinsamen Arbeiten mit Rebrickable."
                     ),
                     "offers": {
                         "@type": "Offer",
@@ -155,6 +155,9 @@ def create_app(test_config: dict | None = None) -> Flask:
                         "Teile sortieren und Fortschritt speichern",
                         "Fehlteile erkennen und exportieren",
                         "Rebrickable-Sammlungen anbinden",
+                        "Sortierprojekte mit Freunden teilen",
+                        "Gemeinsam in Echtzeit sortieren",
+                        "Als Progressive Web App installieren",
                     ],
                 },
             ]
