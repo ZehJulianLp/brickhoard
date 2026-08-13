@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 
 from app.extensions import db
 from app.main import bp
-from app.models import SetPartProgress
+from app.models import CachedInventoryPart, SetPartProgress
 from app.services.rebrickable import RebrickableAPIError, RebrickableService
 
 
@@ -95,7 +95,9 @@ def dashboard():
         )
     )
     projects_by_set: dict[str, dict] = {}
+    progress_by_set_and_key: dict[tuple[str, str], SetPartProgress] = {}
     for row in progress_rows:
+        progress_by_set_and_key[(row.set_number, row.item_key)] = row
         project = projects_by_set.setdefault(
             row.set_number,
             {
@@ -115,6 +117,37 @@ def dashboard():
             project["updated_at"] is None or row.updated_at > project["updated_at"]
         ):
             project["updated_at"] = row.updated_at
+
+    # Progress rows only exist after a part has been touched. Use the complete
+    # cached inventory so untouched parts still count towards the project total.
+    # The values accumulated above remain a fallback for older projects whose
+    # inventory has not been cached yet.
+    if projects_by_set:
+        cached_by_set: dict[str, list[CachedInventoryPart]] = {}
+        for cached in db.session.scalars(
+            db.select(CachedInventoryPart).where(
+                CachedInventoryPart.set_number.in_(projects_by_set)
+            )
+        ):
+            cached_by_set.setdefault(cached.set_number, []).append(cached)
+        for set_number, cached_parts in cached_by_set.items():
+            project = projects_by_set[set_number]
+            project["found"] = 0
+            project["required"] = 0
+            project["missing"] = 0
+            for cached in cached_parts:
+                required = max(cached.required_quantity, 0)
+                progress = progress_by_set_and_key.get((set_number, cached.item_key))
+                found = 0
+                if progress:
+                    found = (
+                        required
+                        if progress.is_checked and progress.found_quantity == 0
+                        else min(max(progress.found_quantity, 0), required)
+                    )
+                project["required"] += required
+                project["found"] += found
+                project["missing"] += max(required - found, 0)
 
     projects = sorted(
         projects_by_set.values(),

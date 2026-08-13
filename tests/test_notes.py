@@ -224,6 +224,50 @@ def test_part_status_note_and_dashboard_resume_are_saved(logged_in_client, app, 
         assert saved_note.last_sort_item_key == "inventory:88"
 
 
+def test_dashboard_counts_untouched_cached_inventory_parts(
+    logged_in_client, app, user
+):
+    with app.app_context():
+        db.session.add_all(
+            [
+                CachedInventoryPart(
+                    set_number="6761-1",
+                    item_key="inventory:1",
+                    part_number="3001",
+                    part_name="Brick 2 x 4",
+                    color_name="Red",
+                    required_quantity=20,
+                    is_spare=False,
+                    type_group="Steine",
+                ),
+                CachedInventoryPart(
+                    set_number="6761-1",
+                    item_key="inventory:2",
+                    part_number="3002",
+                    part_name="Brick 2 x 3",
+                    color_name="Blue",
+                    required_quantity=80,
+                    is_spare=False,
+                    type_group="Steine",
+                ),
+                SetPartProgress(
+                    user_id=user,
+                    set_number="6761-1",
+                    item_key="inventory:1",
+                    found_quantity=15,
+                    required_quantity=20,
+                ),
+            ]
+        )
+        db.session.commit()
+
+    dashboard = logged_in_client.get("/dashboard")
+
+    assert ">15</strong> von 100 Teilen gefunden" in dashboard.text
+    assert "85 fehlen" in dashboard.text
+    assert "15%" in dashboard.text
+
+
 def test_missing_parts_csv_contains_only_missing_quantities(
     logged_in_client, app, monkeypatch
 ):
