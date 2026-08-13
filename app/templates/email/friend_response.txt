@@ -1,0 +1,9 @@
+Hallo {{ username }},
+
+{{ responder.username }} hat deine Freundschaftsanfrage {{ "angenommen" if accepted else "abgelehnt" }}.
+
+{% if accepted %}Ihr könnt jetzt Sortierprojekte miteinander teilen und gemeinsam bearbeiten.
+
+Freunde und Freigaben öffnen:
+{% for link in social_links %}{{ link }}
+{% endfor %}{% else %}Es sind keine weiteren Schritte erforderlich.{% endif %}

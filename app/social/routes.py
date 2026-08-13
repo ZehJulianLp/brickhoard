@@ -170,16 +170,28 @@ def answer_friend(friendship_id: int, action: str):
     friendship = db.session.get(Friendship, friendship_id)
     if friendship is None or friendship.addressee_id != current_user.id or friendship.status != "pending":
         abort(404)
+    requester = friendship.requester
     if action == "accept":
         friendship.status = "accepted"
         db.session.commit()
         flash(f"Du und {friendship.requester.username} seid jetzt Freunde.", "success")
+        accepted = True
     elif action == "decline":
         db.session.delete(friendship)
         db.session.commit()
         flash("Anfrage abgelehnt.", "info")
+        accepted = False
     else:
         abort(404)
+    try:
+        MailService().send_friend_response(
+            requester,
+            current_user,
+            accepted,
+            url_for("social.center"),
+        )
+    except MailServiceError as error:
+        flash(f"Die Antwort wurde gespeichert. {error}", "warning")
     return redirect(url_for("social.center"))
 
 

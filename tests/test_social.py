@@ -49,6 +49,29 @@ def test_friend_request_acceptance_and_notification(logged_in_client, app, user)
     assert "seid jetzt Freunde" in accepted.text
     with app.app_context():
         assert db.session.get(Friendship, friendship_id).status == "accepted"
+        assert "hat deine Freundschaftsanfrage angenommen" in app.extensions[
+            "mail_outbox"
+        ][-1]["Subject"]
+
+
+def test_declined_friend_request_notifies_requester(client, app, user):
+    friend_id = _create_friend(app)
+    with app.app_context():
+        friendship = Friendship(requester_id=user, addressee_id=friend_id)
+        db.session.add(friendship)
+        db.session.commit()
+        friendship_id = friendship.id
+
+    _login(client, "freund", "freund-passwort")
+    response = client.post(
+        f"/social/friends/{friendship_id}/decline", follow_redirects=True
+    )
+    assert "Anfrage abgelehnt" in response.text
+    with app.app_context():
+        assert db.session.get(Friendship, friendship_id) is None
+        message = app.extensions["mail_outbox"][-1]
+        assert "hat deine Freundschaftsanfrage abgelehnt" in message["Subject"]
+        assert message["To"] == "sammler@example.com"
 
 
 def test_user_search_returns_only_usernames(logged_in_client, app):

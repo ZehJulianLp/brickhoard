@@ -1,0 +1,13 @@
+{% extends 'email/base.html' %}
+{% block title %}Freundschaftsanfrage {{ "angenommen" if accepted else "abgelehnt" }}{% endblock %}
+{% block preheader %}{{ responder.username }} hat deine Freundschaftsanfrage {{ "angenommen" if accepted else "abgelehnt" }}.{% endblock %}
+{% block heading %}Anfrage {{ "angenommen" if accepted else "abgelehnt" }}{% endblock %}
+{% block intro %}Hallo {{ username }}, {{ responder.username }} hat auf deine Freundschaftsanfrage geantwortet.{% endblock %}
+{% block content %}
+{% if accepted %}
+<p style="margin:0 0 20px;line-height:1.6;">Ihr seid jetzt Freunde und könnt Sortierprojekte miteinander teilen, gemeinsam bearbeiten und euch bei Fehlteilen helfen.</p>
+{% for link in social_links %}<p style="margin:0 0 12px;"><a href="{{ link }}" style="display:inline-block;background:#f2ad3e;color:#172026;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:8px;">Freunde & Freigaben öffnen</a></p>{% endfor %}
+{% else %}
+<p style="margin:0;line-height:1.6;">Die Anfrage wurde abgelehnt. Es sind keine weiteren Schritte erforderlich.</p>
+{% endif %}
+{% endblock %}

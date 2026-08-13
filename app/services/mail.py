@@ -112,6 +112,24 @@ class MailService:
             social_links=self._absolute_links(social_path),
         )
 
+    def send_friend_response(
+        self,
+        recipient: Any,
+        responder: Any,
+        accepted: bool,
+        social_path: str,
+    ) -> None:
+        action = "angenommen" if accepted else "abgelehnt"
+        self.send_template(
+            recipient=recipient.email,
+            subject=f"{responder.username} hat deine Freundschaftsanfrage {action}",
+            template="email/friend_response",
+            username=recipient.username,
+            responder=responder,
+            accepted=accepted,
+            social_links=self._absolute_links(social_path),
+        )
+
     def send_project_share(
         self,
         recipient: Any,
