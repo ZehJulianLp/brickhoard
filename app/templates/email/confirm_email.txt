@@ -1,14 +1,14 @@
-Hallo {{ username }},
+{{ _('Hallo %(username)s,', username=username) }}
 
-bitte bestätige deine E-Mail-Adresse für BrickHoard. Der Link ist {{ expires_hours }} Stunden gültig.
+{{ _('Bitte bestätige deine E-Mail-Adresse für BrickHoard. Der Link ist %(hours)s Stunden gültig.', hours=expires_hours) }}
 
-{% for link in confirmation_links %}{{ "Lokale Adresse" if "127.0.0.1" in link or "localhost" in link else "BrickHoard-Server" }}:
+{% for link in confirmation_links %}{{ _('Lokale Adresse') if "127.0.0.1" in link or "localhost" in link else _('BrickHoard-Server') }}:
 {{ link }}
 
-{% endfor %}Falls du diesen Account nicht erstellt hast, kannst du diese Nachricht ignorieren.
+{% endfor %}{{ _('Falls du diesen Account nicht erstellt hast, kannst du diese Nachricht ignorieren.') }}
 
-Dein BrickHoard
+{{ _('Dein BrickHoard') }}
 
-Kontakt: {{ config.LEGAL_CONTACT_EMAIL }}
-Datenschutz: {{ config.PUBLIC_BASE_URL }}/datenschutz
-Impressum: {{ config.PUBLIC_BASE_URL }}/impressum
+{{ _('Kontakt') }}: {{ config.LEGAL_CONTACT_EMAIL }}
+{{ _('Datenschutz') }}: {{ config.PUBLIC_BASE_URL }}/datenschutz
+{{ _('Impressum') }}: {{ config.PUBLIC_BASE_URL }}/impressum

@@ -6,14 +6,26 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 import click
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import Flask, current_app, flash, redirect, render_template, request, session, url_for
+from flask_babel import get_locale, gettext, lazy_gettext
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
 from dotenv import load_dotenv
 from sqlalchemy import func, inspect, or_, text
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from app.extensions import csrf, db, login_manager
+from app.extensions import babel, csrf, db, login_manager
+from app.i18n import localize_html
+
+
+def select_locale() -> str:
+    supported = current_app.config["LANGUAGES"]
+    if current_user.is_authenticated and current_user.preferred_locale in supported:
+        return current_user.preferred_locale
+    selected = session.get("locale")
+    if selected in supported:
+        return selected
+    return request.accept_languages.best_match(supported) or current_app.config["BABEL_DEFAULT_LOCALE"]
 
 
 def create_app(test_config: dict | None = None) -> Flask:
@@ -71,6 +83,9 @@ def create_app(test_config: dict | None = None) -> Flask:
         PRIVACY_LAST_UPDATED=os.getenv(
             "PRIVACY_LAST_UPDATED", "13. August 2026"
         ),
+        LANGUAGES={"de": "Deutsch", "en": "English"},
+        BABEL_DEFAULT_LOCALE="de",
+        BABEL_TRANSLATION_DIRECTORIES="translations",
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_SECURE=os.getenv("FLASK_ENV") == "production",
@@ -86,8 +101,9 @@ def create_app(test_config: dict | None = None) -> Flask:
     db.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+    babel.init_app(app, locale_selector=select_locale)
     login_manager.login_view = "auth.login"
-    login_manager.login_message = "Bitte melde dich an, um diese Seite aufzurufen."
+    login_manager.login_message = lazy_gettext("Bitte melde dich an, um diese Seite aufzurufen.")
     login_manager.login_message_category = "warning"
 
     from app.auth import bp as auth_bp
@@ -162,6 +178,22 @@ def create_app(test_config: dict | None = None) -> Flask:
                 },
             ]
         return {
+            "current_locale": str(get_locale()),
+            "available_languages": app.config["LANGUAGES"],
+            "js_translations": {
+                key: gettext(key)
+                for key in (
+                    "Bereits befreundet", "Anfrage gesendet",
+                    "Anfrage von diesem Nutzer erhalten", "BrickHoard-Nutzer",
+                    "Keine passenden Benutzernamen gefunden.", "Hinzufügen",
+                    "Ab zwei Zeichen erscheinen passende Nutzer automatisch.",
+                    "Suche …", "Suche momentan nicht möglich.", "Noch suchen",
+                    "Gefunden", "Fehlt sicher", "Falsche Farbe",
+                    "Alternative vorhanden", "Sonstige", "Wird gespeichert …",
+                    "Offline vorgemerkt", "Gespeichert ✓", "Normalansicht",
+                    "Großansicht", "Hellmodus", "Darkmode",
+                )
+            },
             "seo_canonical_url": canonical_url,
             "seo_is_indexable": is_indexable,
             "seo_public_base_url": public_base_url,
@@ -183,6 +215,12 @@ def create_app(test_config: dict | None = None) -> Flask:
             response.headers.setdefault("X-Robots-Tag", "noindex, nofollow")
         return response
 
+    @app.after_request
+    def localize_html_response(response):
+        if response.mimetype == "text/html" and str(get_locale()) != "de":
+            response.set_data(localize_html(response.get_data(as_text=True)))
+        return response
+
     @app.before_request
     def require_forced_password_change():
         allowed = {
@@ -190,6 +228,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             "account.change_password",
             "auth.logout",
             "main.service_worker",
+            "main.set_language",
             "static",
         }
         if (
@@ -208,6 +247,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             "auth.resend_confirmation",
             "auth.verification_required",
             "main.service_worker",
+            "main.set_language",
             "static",
         }
         if (
@@ -266,6 +306,7 @@ def register_cli(app: Flask) -> None:
             "email_verified_at": "DATETIME",
             "confirmation_sent_at": "DATETIME",
             "password_reset_sent_at": "DATETIME",
+            "preferred_locale": "VARCHAR(10) NOT NULL DEFAULT 'de'",
         }
         for name, definition in user_additions.items():
             if name not in user_columns:

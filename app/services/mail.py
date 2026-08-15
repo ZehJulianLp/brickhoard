@@ -9,7 +9,10 @@ from email.utils import parseaddr
 from typing import Any
 
 from flask import current_app, render_template
+from flask_babel import force_locale, gettext
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+
+from app.i18n import localize_html
 
 
 class MailServiceError(Exception):
@@ -82,35 +85,36 @@ class MailService:
 
     def send_confirmation(self, user: Any, confirmation_path: str) -> None:
         links = self._absolute_links(confirmation_path)
-        self.send_template(
-            recipient=user.email,
-            subject="E-Mail-Adresse für BrickHoard bestätigen",
-            template="email/confirm_email",
-            username=user.username,
-            confirmation_links=links,
-            expires_hours=current_app.config["EMAIL_CONFIRM_TOKEN_MAX_AGE"] // 3600,
-        )
+        with force_locale(user.preferred_locale or "de"):
+            self.send_template(
+                recipient=user.email,
+                subject=gettext("E-Mail-Adresse für BrickHoard bestätigen"),
+                template="email/confirm_email",
+                username=user.username,
+                confirmation_links=links,
+                expires_hours=current_app.config["EMAIL_CONFIRM_TOKEN_MAX_AGE"] // 3600,
+            )
 
     def send_password_reset(self, user: Any, reset_path: str) -> None:
         links = self._absolute_links(reset_path)
-        self.send_template(
-            recipient=user.email,
-            subject="BrickHoard-Passwort zurücksetzen",
-            template="email/reset_password",
-            username=user.username,
-            reset_links=links,
-            expires_minutes=current_app.config["PASSWORD_RESET_TOKEN_MAX_AGE"] // 60,
-        )
+        with force_locale(user.preferred_locale or "de"):
+            self.send_template(
+                recipient=user.email,
+                subject=gettext("BrickHoard-Passwort zurücksetzen"),
+                template="email/reset_password",
+                username=user.username,
+                reset_links=links,
+                expires_minutes=current_app.config["PASSWORD_RESET_TOKEN_MAX_AGE"] // 60,
+            )
 
     def send_friend_request(self, recipient: Any, requester: Any, social_path: str) -> None:
-        self.send_template(
-            recipient=recipient.email,
-            subject=f"{requester.username} möchte dich auf BrickHoard hinzufügen",
-            template="email/friend_request",
-            username=recipient.username,
-            requester=requester,
-            social_links=self._absolute_links(social_path),
-        )
+        with force_locale(recipient.preferred_locale or "de"):
+            self.send_template(
+                recipient=recipient.email,
+                subject=gettext("%(username)s möchte dich auf BrickHoard hinzufügen", username=requester.username),
+                template="email/friend_request", username=recipient.username,
+                requester=requester, social_links=self._absolute_links(social_path),
+            )
 
     def send_friend_response(
         self,
@@ -119,16 +123,15 @@ class MailService:
         accepted: bool,
         social_path: str,
     ) -> None:
-        action = "angenommen" if accepted else "abgelehnt"
-        self.send_template(
-            recipient=recipient.email,
-            subject=f"{responder.username} hat deine Freundschaftsanfrage {action}",
-            template="email/friend_response",
-            username=recipient.username,
-            responder=responder,
-            accepted=accepted,
-            social_links=self._absolute_links(social_path),
-        )
+        with force_locale(recipient.preferred_locale or "de"):
+            action = gettext("angenommen") if accepted else gettext("abgelehnt")
+            self.send_template(
+                recipient=recipient.email,
+                subject=gettext("%(username)s hat deine Freundschaftsanfrage %(action)s", username=responder.username, action=action),
+                template="email/friend_response", username=recipient.username,
+                responder=responder, accepted=accepted,
+                social_links=self._absolute_links(social_path),
+            )
 
     def send_project_share(
         self,
@@ -138,16 +141,14 @@ class MailService:
         permission: str,
         project_path: str,
     ) -> None:
-        self.send_template(
-            recipient=recipient.email,
-            subject=f"{owner.username} teilt LEGO-Set {set_number} mit dir",
-            template="email/project_share",
-            username=recipient.username,
-            owner=owner,
-            set_number=set_number,
-            permission=permission,
-            project_links=self._absolute_links(project_path),
-        )
+        with force_locale(recipient.preferred_locale or "de"):
+            self.send_template(
+                recipient=recipient.email,
+                subject=gettext("%(username)s teilt LEGO-Set %(set_number)s mit dir", username=owner.username, set_number=set_number),
+                template="email/project_share", username=recipient.username,
+                owner=owner, set_number=set_number, permission=permission,
+                project_links=self._absolute_links(project_path),
+            )
 
     def _absolute_links(self, path: str) -> list[str]:
         normalized_path = "/" + path.lstrip("/")
@@ -157,7 +158,7 @@ class MailService:
         self, *, recipient: str, subject: str, template: str, **context: Any
     ) -> None:
         text_body = render_template(f"{template}.txt", **context)
-        html_body = render_template(f"{template}.html", **context)
+        html_body = localize_html(render_template(f"{template}.html", **context))
         self.send(
             recipient=recipient,
             subject=subject,

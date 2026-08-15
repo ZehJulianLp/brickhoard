@@ -1,5 +1,6 @@
-from flask import Response, current_app, flash, redirect, render_template, send_from_directory, url_for
+from flask import Response, abort, current_app, flash, redirect, render_template, request, send_from_directory, session, url_for
 from flask_login import current_user, login_required
+from flask_babel import refresh
 
 from app.extensions import db
 from app.main import bp
@@ -19,6 +20,21 @@ def index():
     if current_user.is_authenticated:
         return redirect(url_for("main.dashboard"))
     return render_template("main/index.html")
+
+
+@bp.post("/language/<locale>")
+def set_language(locale: str):
+    if locale not in current_app.config["LANGUAGES"]:
+        abort(404)
+    session["locale"] = locale
+    if current_user.is_authenticated:
+        current_user.preferred_locale = locale
+        db.session.commit()
+    refresh()
+    target = request.form.get("next") or url_for("main.index")
+    if not target.startswith("/") or target.startswith("//"):
+        target = url_for("main.index")
+    return redirect(target)
 
 
 @bp.get("/kontakt")

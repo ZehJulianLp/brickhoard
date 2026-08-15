@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urljoin, urlparse
 
-from flask import current_app, flash, redirect, render_template, request, url_for
+from flask import current_app, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import func, or_
 
@@ -73,6 +73,7 @@ def register():
                 is_admin=is_first_user,
                 onboarding_pending=True,
                 email_verified_at=None,
+                preferred_locale=session.get("locale", current_app.config["BABEL_DEFAULT_LOCALE"]),
             )
             user.set_password(form.password.data)
             db.session.add(user)
@@ -108,6 +109,10 @@ def login():
         )
         if user and user.is_enabled and user.check_password(form.password.data):
             login_user(user, remember=form.remember.data)
+            selected_locale = session.get("locale")
+            if selected_locale in current_app.config["LANGUAGES"] and user.preferred_locale != selected_locale:
+                user.preferred_locale = selected_locale
+                db.session.commit()
             if user.must_change_password:
                 flash("Bitte ändere jetzt dein temporäres Passwort.", "warning")
                 return redirect(url_for("account.account_settings"))

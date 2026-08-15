@@ -35,6 +35,7 @@ BrickHoard ist ein unabhängiges Fanprojekt und steht in keiner Verbindung zur L
 - gespeicherte Zustände wie „fehlt sicher“, „falsche Farbe“ und „Alternative vorhanden“
 - globale Großansicht, Wiedereinstieg ins letzte Projekt und druckbare Sortierbögen
 - responsive Bootstrap-5-Oberfläche, persistenter Darkmode und benutzerfreundliche Fehlerseiten
+- deutsche und englische Oberfläche mit Browsererkennung, Sprachumschalter und dauerhaft gespeicherter Kontosprache
 - Freundschaftsanfragen mit Rolling-Usersuche ausschließlich über Benutzernamen
 - E-Mail-Benachrichtigungen bei Anfrage, Annahme, Ablehnung und Projektfreigabe
 - optionale öffentliche Sammlerprofile mit zusammengefassten Statistiken
@@ -47,7 +48,7 @@ BrickHoard ist ein unabhängiges Fanprojekt und steht in keiner Verbindung zur L
 
 ## Technik und Architektur
 
-Die Anwendung benötigt Python 3.12 oder neuer und verwendet Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF/WTForms, SQLite, Requests, Jinja2, Bootstrap 5, Cryptography und Pillow. Eine Application Factory initialisiert die Erweiterungen und registriert getrennte Blueprints für Authentifizierung, Konten, Administration, Hauptseiten, Sets und Social-Funktionen. Sämtliche HTTP-Kommunikation mit Rebrickable liegt zentral in `app/services/rebrickable.py`.
+Die Anwendung benötigt Python 3.12 oder neuer und verwendet Flask, Flask-Babel, Flask-SQLAlchemy, Flask-Login, Flask-WTF/WTForms, SQLite, Requests, Jinja2, Bootstrap 5, Cryptography und Pillow. Eine Application Factory initialisiert die Erweiterungen und registriert getrennte Blueprints für Authentifizierung, Konten, Administration, Hauptseiten, Sets und Social-Funktionen. Sämtliche HTTP-Kommunikation mit Rebrickable liegt zentral in `app/services/rebrickable.py`.
 
 Es gibt bewusst keine vollständige lokale Kopie des Rebrickable-Katalogs. Listen und Setdaten werden bei Bedarf von der API geladen. Teileinventare können für Fehlteileübersichten zwischengespeichert werden; persönliche Ergänzungen und Fortschritte werden dauerhaft lokal gespeichert.
 
@@ -122,6 +123,21 @@ flask --app run.py run --debug
 ```
 
 Die Standard-SQLite-Datenbank und das rotierende Anwendungslog liegen im Flask-`instance`-Verzeichnis. Die Anwendung ist anschließend unter <http://127.0.0.1:5000> erreichbar.
+
+## Sprachen und Übersetzungen
+
+Deutsch ist die Standardsprache, Englisch liegt als gettext-Katalog unter `app/translations/en/LC_MESSAGES/messages.po`. Gäste erhalten zunächst die passendste unterstützte Browsersprache und können sie in der Navigation wechseln. Bei angemeldeten Benutzern wird die Auswahl im Konto gespeichert und auch für Bestätigungs-, Reset- und Social-Mails verwendet.
+
+Für eine weitere Sprache wird sie zuerst in `LANGUAGES` in `app/__init__.py` ergänzt. Anschließend kann ein neuer Katalog angelegt und kompiliert werden:
+
+```bash
+pybabel extract -F babel.cfg -k _ -k gettext -k ngettext -k _l -o messages.pot .
+pybabel init -i messages.pot -d app/translations -l fr
+# app/translations/fr/LC_MESSAGES/messages.po übersetzen
+pybabel compile -d app/translations
+```
+
+Neue Python- und Template-Texte sollten mit `gettext`, `lazy_gettext` beziehungsweise `_()` markiert werden. Der zentrale Locale-Selector, Formulare, gerenderte HTML-Texte und JavaScript-Livezustände greifen auf denselben Katalog zurück.
 
 ## Rebrickable einrichten
 

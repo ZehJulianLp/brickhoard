@@ -1,8 +1,8 @@
-Hallo {{ username }},
+{{ _('Hallo %(username)s,', username=username) }}
 
-{{ owner.username }} hat das Sortierprojekt für LEGO-Set {{ set_number }} mit dir geteilt.
-Berechtigung: {{ "Gemeinsam sortieren" if permission == "edit" else "Nur ansehen" }}
+{{ _('%(username)s hat das Sortierprojekt für LEGO-Set %(set_number)s mit dir geteilt.', username=owner.username, set_number=set_number) }}
+{{ _('Berechtigung') }}: {{ _('Gemeinsam sortieren') if permission == 'edit' else _('Nur ansehen') }}
 
-Projekt öffnen:
+{{ _('Projekt öffnen') }}:
 {% for link in project_links %}{{ link }}
 {% endfor %}

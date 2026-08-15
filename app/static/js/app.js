@@ -1,3 +1,7 @@
+const i18nMessages = JSON.parse(document.querySelector('#i18n-messages')?.textContent || '{}');
+const t = (message) => i18nMessages[message] || message;
+const activeLocale = document.body.dataset.locale || 'de';
+
 document.querySelectorAll('form').forEach((form) => {
   form.addEventListener('submit', () => {
     form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach((button) => {
@@ -11,10 +15,10 @@ if (friendSearch) {
   const results = document.querySelector('#friend-search-results');
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
   const stateLabels = {
-    friends: 'Bereits befreundet',
-    outgoing: 'Anfrage gesendet',
-    incoming: 'Anfrage von diesem Nutzer erhalten',
-    available: 'BrickHoard-Nutzer',
+    friends: t('Bereits befreundet'),
+    outgoing: t('Anfrage gesendet'),
+    incoming: t('Anfrage von diesem Nutzer erhalten'),
+    available: t('BrickHoard-Nutzer'),
   };
   let searchTimer;
   let searchRequest;
@@ -28,7 +32,7 @@ if (friendSearch) {
   const renderUsers = (users) => {
     results.replaceChildren();
     if (!users.length) {
-      showMessage('Keine passenden Benutzernamen gefunden.');
+      showMessage(t('Keine passenden Benutzernamen gefunden.'));
       return;
     }
     users.forEach((user) => {
@@ -56,7 +60,7 @@ if (friendSearch) {
         const button = document.createElement('button');
         button.type = 'submit';
         button.className = 'btn btn-sm btn-outline-success';
-        button.textContent = 'Hinzufügen';
+        button.textContent = t('Hinzufügen');
         form.append(csrf, target, button);
         row.append(form);
       }
@@ -68,12 +72,12 @@ if (friendSearch) {
     searchRequest?.abort();
     const query = friendSearch.value.trim();
     if (query.length < 2) {
-      showMessage('Ab zwei Zeichen erscheinen passende Nutzer automatisch.');
+      showMessage(t('Ab zwei Zeichen erscheinen passende Nutzer automatisch.'));
       return;
     }
     searchTimer = window.setTimeout(async () => {
       searchRequest = new AbortController();
-      showMessage('Suche …');
+      showMessage(t('Suche …'));
       try {
         const url = new URL(friendSearch.dataset.searchUrl, window.location.origin);
         url.searchParams.set('q', query);
@@ -81,7 +85,7 @@ if (friendSearch) {
         if (!response.ok) throw new Error('search failed');
         renderUsers((await response.json()).results || []);
       } catch (error) {
-        if (error.name !== 'AbortError') showMessage('Suche momentan nicht möglich.');
+        if (error.name !== 'AbortError') showMessage(t('Suche momentan nicht möglich.'));
       }
     }, 250);
   });
@@ -229,8 +233,8 @@ if (checklist) {
   });
 
   const partsList = checklist.querySelector('.parts-list');
-  const naturalCompare = new Intl.Collator('de', {numeric: true, sensitivity: 'base'}).compare;
-  const groupLabels = {pending: 'Noch suchen', found: 'Gefunden', missing: 'Fehlt sicher', wrong_color: 'Falsche Farbe', alternative: 'Alternative vorhanden'};
+  const naturalCompare = new Intl.Collator(activeLocale, {numeric: true, sensitivity: 'base'}).compare;
+  const groupLabels = {pending: t('Noch suchen'), found: t('Gefunden'), missing: t('Fehlt sicher'), wrong_color: t('Falsche Farbe'), alternative: t('Alternative vorhanden')};
   const applyGrouping = () => {
     partsList.querySelectorAll('.part-group-heading').forEach((heading) => heading.remove());
     const criterion = document.querySelector('#part-group')?.value || 'none';
@@ -241,7 +245,7 @@ if (checklist) {
       if (group !== lastGroup) {
         const heading = document.createElement('div');
         heading.className = 'part-group-heading';
-        heading.textContent = group || 'Sonstige';
+        heading.textContent = group || t('Sonstige');
         partsList.insertBefore(heading, row);
         lastGroup = group;
       }
@@ -300,7 +304,7 @@ if (checklist) {
       return {item_key: count.dataset.itemKey, found_quantity: complete ? required : 0, required_quantity: required, status: statusSelect.value};
     });
     updateProgress();
-    state.textContent = 'Wird gespeichert …';
+    state.textContent = t('Wird gespeichert …');
     try {
       const response = await fetch(checklist.dataset.bulkUrl, {
         method: 'POST',
@@ -322,7 +326,7 @@ if (checklist) {
         queue[`${count.dataset.url}::${count.dataset.itemKey}`] = {...items[index], url: count.dataset.url};
       });
       writeQueue(queue);
-      state.textContent = 'Offline vorgemerkt';
+      state.textContent = t('Offline vorgemerkt');
     }
   };
   document.querySelector('#check-all-visible')?.addEventListener('click', () => bulkUpdate(true));
@@ -346,7 +350,7 @@ if (sortAssistant) {
   const projectStorageSuffix = `${sortAssistant.dataset.ownerId}:${sortAssistant.dataset.setNumber}`;
   const orderSelect = document.querySelector('#sort-assistant-order');
   const orderStorageKey = `brickshelf-sort-order:${projectStorageSuffix}`;
-  const naturalCompare = new Intl.Collator('de', {numeric: true, sensitivity: 'base'}).compare;
+  const naturalCompare = new Intl.Collator(activeLocale, {numeric: true, sensitivity: 'base'}).compare;
   const applyCardOrder = (order, preserveCurrent = true) => {
     const currentItemKey = cards[currentIndex]?.dataset.itemKey;
     const [criterion, direction = 'asc'] = order.split('-');
@@ -427,20 +431,20 @@ if (sortAssistant) {
       status: card.dataset.status,
       part_note: card.querySelector('.sort-note').value,
     };
-    indicator.textContent = navigator.onLine ? 'Wird gespeichert …' : 'Offline vorgemerkt';
+    indicator.textContent = navigator.onLine ? t('Wird gespeichert …') : t('Offline vorgemerkt');
     try {
       const response = await fetch(card.dataset.url, {method: 'POST', headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken}, body: JSON.stringify(change)});
       if (!response.ok) throw new Error('save failed');
       const queue = JSON.parse(localStorage.getItem('brickshelf-progress-queue') || '{}');
       delete queue[`${card.dataset.url}::${card.dataset.itemKey}`];
       localStorage.setItem('brickshelf-progress-queue', JSON.stringify(queue));
-      indicator.textContent = 'Gespeichert ✓';
+      indicator.textContent = t('Gespeichert ✓');
       navigator.vibrate?.(35);
     } catch (_error) {
       const queue = JSON.parse(localStorage.getItem('brickshelf-progress-queue') || '{}');
       queue[`${card.dataset.url}::${card.dataset.itemKey}`] = {...change, url: card.dataset.url};
       localStorage.setItem('brickshelf-progress-queue', JSON.stringify(queue));
-      indicator.textContent = 'Offline vorgemerkt';
+      indicator.textContent = t('Offline vorgemerkt');
     }
   };
   const pendingSortChanges = JSON.parse(localStorage.getItem('brickshelf-progress-queue') || '{}');
@@ -452,7 +456,7 @@ if (sortAssistant) {
       input.value = String(pendingChange.found_quantity);
       card.dataset.status = pendingChange.status || card.dataset.status;
       if (pendingChange.part_note !== undefined) card.querySelector('.sort-note').value = pendingChange.part_note;
-      card.querySelector('.sort-save-state').textContent = 'Offline vorgemerkt';
+      card.querySelector('.sort-save-state').textContent = t('Offline vorgemerkt');
     }
     setActiveStatus(card, card.dataset.status);
     let timer;
@@ -521,7 +525,7 @@ if (sortAssistant) {
 const setAccessibilityMode = (enabled) => {
   document.body.classList.toggle('accessibility-mode', enabled);
   localStorage.setItem('brickshelf-accessibility', enabled ? '1' : '0');
-  document.querySelectorAll('#display-mode-toggle, #accessibility-toggle').forEach((button) => { button.textContent = enabled ? 'Normalansicht' : 'Großansicht'; });
+  document.querySelectorAll('#display-mode-toggle, #accessibility-toggle').forEach((button) => { button.textContent = enabled ? t('Normalansicht') : t('Großansicht'); });
 };
 setAccessibilityMode(localStorage.getItem('brickshelf-accessibility') === '1');
 document.querySelectorAll('#display-mode-toggle, #accessibility-toggle').forEach((button) => button.addEventListener('click', () => setAccessibilityMode(!document.body.classList.contains('accessibility-mode'))));
@@ -536,7 +540,7 @@ const applyTheme = (theme, persist = false) => {
   if (themeToggle) {
     themeToggle.setAttribute('aria-pressed', dark ? 'true' : 'false');
     themeToggle.querySelector('.theme-toggle-icon').textContent = dark ? '☀' : '◐';
-    themeToggle.querySelector('.theme-toggle-label').textContent = dark ? 'Hellmodus' : 'Darkmode';
+    themeToggle.querySelector('.theme-toggle-label').textContent = dark ? t('Hellmodus') : t('Darkmode');
   }
   if (persist) localStorage.setItem('brickhoard-theme', dark ? 'dark' : 'light');
 };

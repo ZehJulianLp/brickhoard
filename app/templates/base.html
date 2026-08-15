@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="{{ current_locale }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,7 +44,7 @@
   {% if seo_structured_data %}<script type="application/ld+json">{{ seo_structured_data|tojson }}</script>{% endif %}
   {% block styles %}{% endblock %}
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" data-locale="{{ current_locale }}">
   <nav class="navbar navbar-expand-lg navbar-dark shelf-nav">
     <div class="container">
       <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
@@ -82,6 +82,14 @@
             <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Anmelden</a></li>
             <li class="nav-item ms-lg-2"><a class="btn btn-sm btn-accent" href="{{ url_for('auth.register') }}">Registrieren</a></li>
           {% endif %}
+          <li class="nav-item dropdown">
+            <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ _('Sprache auswählen') }}">{{ current_locale|upper }}</button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              {% for locale, language_name in available_languages.items() %}
+                <li><form method="post" action="{{ url_for('main.set_language', locale=locale) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}"><button class="dropdown-item{% if locale == current_locale %} active{% endif %}" type="submit" lang="{{ locale }}">{{ language_name }}</button></form></li>
+              {% endfor %}
+            </ul>
+          </li>
           <li class="nav-item"><button id="theme-toggle" class="btn btn-sm btn-outline-light theme-toggle" type="button" aria-label="Farbschema wechseln" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">◐</span><span class="theme-toggle-label">Darkmode</span></button></li>
         </ul>
       </div>
@@ -114,6 +122,7 @@
     </div>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script id="i18n-messages" type="application/json">{{ js_translations|tojson }}</script>
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>

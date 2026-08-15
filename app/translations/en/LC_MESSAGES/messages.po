@@ -1,0 +1,1244 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: BrickHoard\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Sprache auswählen"
+msgstr "Choose language"
+
+msgid "Bitte melde dich an, um diese Seite aufzurufen."
+msgstr "Please sign in to access this page."
+
+msgid "Benutzername"
+msgstr "Username"
+
+msgid "E-Mail-Adresse"
+msgstr "Email address"
+
+msgid "Passwort"
+msgstr "Password"
+
+msgid "Passwort wiederholen"
+msgstr "Repeat password"
+
+msgid "Account erstellen"
+msgstr "Create account"
+
+msgid "E-Mail-Adresse oder Benutzername"
+msgstr "Email address or username"
+
+msgid "Angemeldet bleiben"
+msgstr "Keep me signed in"
+
+msgid "Anmelden"
+msgstr "Sign in"
+
+msgid "Registrieren"
+msgstr "Register"
+
+msgid "Abmelden"
+msgstr "Sign out"
+
+msgid "Reset-Link anfordern"
+msgstr "Request reset link"
+
+msgid "Neues Passwort"
+msgstr "New password"
+
+msgid "Neues Passwort wiederholen"
+msgstr "Repeat new password"
+
+msgid "Passwort speichern"
+msgstr "Save password"
+
+msgid "Profildaten speichern"
+msgstr "Save profile details"
+
+msgid "Neues Profilbild"
+msgstr "New profile picture"
+
+msgid "Profilbild speichern"
+msgstr "Save profile picture"
+
+msgid "Profilbild entfernen"
+msgstr "Remove profile picture"
+
+msgid "Aktuelles Passwort"
+msgstr "Current password"
+
+msgid "Passwort ändern"
+msgstr "Change password"
+
+msgid "Benutzername zur Bestätigung"
+msgstr "Username for confirmation"
+
+msgid "Ich verstehe, dass meine lokalen Daten unwiderruflich gelöscht werden."
+msgstr "I understand that my local data will be permanently deleted."
+
+msgid "Konto endgültig löschen"
+msgstr "Permanently delete account"
+
+msgid "Rebrickable-Benutzername (optional)"
+msgstr "Rebrickable username (optional)"
+
+msgid "Dein persönlicher Rebrickable API-Key"
+msgstr "Your personal Rebrickable API key"
+
+msgid "Dein persönlicher Rebrickable User Token"
+msgstr "Your personal Rebrickable user token"
+
+msgid "Rebrickable-Benutzername oder E-Mail"
+msgstr "Rebrickable username or email"
+
+msgid "Rebrickable-Passwort"
+msgstr "Rebrickable password"
+
+msgid "Gespeicherten persönlichen API-Key entfernen"
+msgstr "Remove saved personal API key"
+
+msgid "Gespeicherten User Token entfernen"
+msgstr "Remove saved user token"
+
+msgid "Einstellungen speichern"
+msgstr "Save settings"
+
+msgid "Verbindung testen"
+msgstr "Test connection"
+
+msgid "User Token automatisch erzeugen"
+msgstr "Generate user token automatically"
+
+msgid "Notiz"
+msgstr "Note"
+
+msgid "Lagerort"
+msgstr "Storage location"
+
+msgid "Kaufdatum"
+msgstr "Purchase date"
+
+msgid "Kaufpreis"
+msgstr "Purchase price"
+
+msgid "Set ist vollständig"
+msgstr "Set is complete"
+
+msgid "Set ist aufgebaut"
+msgstr "Set is built"
+
+msgid "Lokale Angaben speichern"
+msgstr "Save local details"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Setlisten"
+msgstr "Set lists"
+
+msgid "Fehlteile"
+msgstr "Missing parts"
+
+msgid "Freunde"
+msgstr "Friends"
+
+msgid "Konto"
+msgstr "Account"
+
+msgid "Rebrickable"
+msgstr "Rebrickable"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Großansicht"
+msgstr "Large view"
+
+msgid "App installieren"
+msgstr "Install app"
+
+msgid "Darkmode"
+msgstr "Dark mode"
+
+msgid "Farbschema wechseln"
+msgstr "Change color scheme"
+
+msgid "Alle Setlisten durchsuchen"
+msgstr "Search all set lists"
+
+msgid "Suchen"
+msgstr "Search"
+
+msgid "Kontakt"
+msgstr "Contact"
+
+msgid "Datenschutz"
+msgstr "Privacy"
+
+msgid "Impressum"
+msgstr "Legal notice"
+
+msgid "Rechtliches"
+msgstr "Legal"
+
+msgid "BrickHoard ist ein unabhängiges Fanprojekt und steht in keiner Verbindung zur LEGO Group oder zu Rebrickable."
+msgstr "BrickHoard is an independent fan project and is not affiliated with the LEGO Group or Rebrickable."
+
+msgid "Willkommen zurück"
+msgstr "Welcome back"
+
+msgid "Melde dich bei deinem BrickHoard-Account an."
+msgstr "Sign in to your BrickHoard account."
+
+msgid "Passwort vergessen?"
+msgstr "Forgot your password?"
+
+msgid "Noch kein Account?"
+msgstr "No account yet?"
+
+msgid "Dein BrickHoard"
+msgstr "Your BrickHoard"
+
+msgid "Erstelle deinen Account für deine Sammlung. Anschließend bestätigst du deine E-Mail-Adresse."
+msgstr "Create an account for your collection, then confirm your email address."
+
+msgid "Mindestens 8 Zeichen."
+msgstr "At least 8 characters."
+
+msgid "Datenschutzerklärung"
+msgstr "privacy policy"
+
+msgid "Kontozugang"
+msgstr "Account access"
+
+msgid "Passwort vergessen?"
+msgstr "Forgot your password?"
+
+msgid "Gib deine E-Mail-Adresse ein. Wenn ein aktives Konto dazu gehört, erhältst du einen zeitlich begrenzten Reset-Link."
+msgstr "Enter your email address. If it belongs to an active account, you will receive a time-limited reset link."
+
+msgid "Zurück zur Anmeldung"
+msgstr "Back to sign in"
+
+msgid "Neues Passwort festlegen"
+msgstr "Set a new password"
+
+msgid "Neuen Link anfordern"
+msgstr "Request a new link"
+
+msgid "Wähle ein neues Passwort mit mindestens acht Zeichen."
+msgstr "Choose a new password with at least eight characters."
+
+msgid "Fast geschafft"
+msgstr "Almost there"
+
+msgid "Bestätige deine E-Mail-Adresse"
+msgstr "Confirm your email address"
+
+msgid "Bestätigung erneut senden"
+msgstr "Resend confirmation"
+
+msgid "E-Mail-Adresse korrigieren"
+msgstr "Correct email address"
+
+msgid "Dein digitaler Sortiertisch"
+msgstr "Your digital sorting table"
+
+msgid "Vom Teilehaufen zum"
+msgstr "From a pile of parts to a"
+
+msgid "vollständigen Set."
+msgstr "complete set."
+
+msgid "BrickHoard macht aus deiner Rebrickable-Sammlung klare Sortierprojekte. Zähle Teile, speichere jeden Fortschritt und sieh sofort, was am Ende wirklich fehlt."
+msgstr "BrickHoard turns your Rebrickable collection into clear sorting projects. Count parts, save every step and instantly see what is actually missing."
+
+msgid "Kostenlos loslegen"
+msgstr "Get started for free"
+
+msgid "So funktioniert’s"
+msgstr "How it works"
+
+msgid "Kostenlos nutzbar"
+msgstr "Free to use"
+
+msgid "Auf jedem Gerät"
+msgstr "On every device"
+
+msgid "Fortschritt bleibt gespeichert"
+msgstr "Progress is saved"
+
+msgid "Sortierprojekt"
+msgstr "Sorting project"
+
+msgid "Live gespeichert"
+msgstr "Saved live"
+
+msgid "Gemeinsam sortieren"
+msgstr "Sort together"
+
+msgid "Teile geprüft"
+msgstr "Parts checked"
+
+msgid "Weiteres Teil"
+msgstr "Next part"
+
+msgid "Checkliste"
+msgstr "Checklist"
+
+msgid "Teil für Teil abhaken"
+msgstr "Check off part by part"
+
+msgid "Automatisch zusammenfassen"
+msgstr "Automatically summarize"
+
+msgid "Teamwork"
+msgstr "Teamwork"
+
+msgid "Projekte mit Freunden teilen"
+msgstr "Share projects with friends"
+
+msgid "Wie eine App installieren"
+msgstr "Install like an app"
+
+msgid "Einfach anfangen"
+msgstr "Easy to start"
+
+msgid "Deine Sammlung ist schon da."
+msgstr "Your collection is already there."
+
+msgid "BrickHoard macht sie sortierbar."
+msgstr "BrickHoard makes it sortable."
+
+msgid "Kein Abtippen von Teilelisten: Verbinde Rebrickable, wähle ein Set und leg direkt los."
+msgstr "No typing out part lists: connect Rebrickable, choose a set and get started."
+
+msgid "Rebrickable verbinden"
+msgstr "Connect Rebrickable"
+
+msgid "Teile zählen"
+msgstr "Count parts"
+
+msgid "Lücken schließen"
+msgstr "Close the gaps"
+
+msgid "Mehr als eine Teileliste"
+msgstr "More than a parts list"
+
+msgid "Für echte Sortierabende gebaut."
+msgstr "Built for real sorting sessions."
+
+msgid "Sortieren"
+msgstr "Sorting"
+
+msgid "Große Bilder. Klare Mengen. Kein Rätselraten."
+msgstr "Large images. Clear quantities. No guesswork."
+
+msgid "Eine Einkaufsliste für alle Projekte."
+msgstr "One shopping list for every project."
+
+msgid "Gemeinsam"
+msgstr "Together"
+
+msgid "Freunde finden. Projekt teilen. Live weitersortieren."
+msgstr "Find friends. Share a project. Keep sorting live."
+
+msgid "Überall"
+msgstr "Anywhere"
+
+msgid "Desktop, Tablet oder Handy."
+msgstr "Desktop, tablet or phone."
+
+msgid "Deine Sammlung. Deine Daten."
+msgstr "Your collection. Your data."
+
+msgid "Privat, bis du etwas teilst."
+msgstr "Private until you share something."
+
+msgid "Datenschutz ansehen"
+msgstr "View privacy information"
+
+msgid "Kurz erklärt"
+msgstr "Quick answers"
+
+msgid "Häufige Fragen"
+msgstr "Frequently asked questions"
+
+msgid "Kann ich mit BrickHoard prüfen, ob ein LEGO-Set vollständig ist?"
+msgstr "Can I use BrickHoard to check whether a LEGO set is complete?"
+
+msgid "Brauche ich einen Rebrickable-Account?"
+msgstr "Do I need a Rebrickable account?"
+
+msgid "Können mehrere Personen dasselbe Set sortieren?"
+msgstr "Can several people sort the same set?"
+
+msgid "Ist BrickHoard kostenlos?"
+msgstr "Is BrickHoard free?"
+
+msgid "Bereit für die nächste Kiste?"
+msgstr "Ready for the next box?"
+
+msgid "Bring Ordnung in deine Steine."
+msgstr "Bring order to your bricks."
+
+msgid "BrickHoard ausprobieren"
+msgstr "Try BrickHoard"
+
+msgid "Schon dabei? Anmelden"
+msgstr "Already joined? Sign in"
+
+msgid "Collection Cockpit"
+msgstr "Collection cockpit"
+
+msgid "Deine Sammlung, Sortierprojekte und Fehlteile auf einen Blick."
+msgstr "Your collection, sorting projects and missing parts at a glance."
+
+msgid "Weitersortieren"
+msgstr "Continue sorting"
+
+msgid "Set suchen"
+msgstr "Find a set"
+
+msgid "Rebrickable verbunden"
+msgstr "Rebrickable connected"
+
+msgid "Deine Setlisten sind erreichbar."
+msgstr "Your set lists are available."
+
+msgid "Verbindung gestört"
+msgstr "Connection issue"
+
+msgid "Lokale Fortschritte bleiben verfügbar."
+msgstr "Local progress remains available."
+
+msgid "Rebrickable einrichten"
+msgstr "Set up Rebrickable"
+
+msgid "Verbinde deine persönliche Sammlung."
+msgstr "Connect your personal collection."
+
+msgid "Sets in Listen"
+msgstr "Sets in lists"
+
+msgid "Sortierprojekte"
+msgstr "Sorting projects"
+
+msgid "Teile gefunden"
+msgstr "Parts found"
+
+msgid "Noch fehlend"
+msgstr "Still missing"
+
+msgid "Zuletzt bearbeitet"
+msgstr "Last edited"
+
+msgid "Bereit, wenn du es bist"
+msgstr "Ready when you are"
+
+msgid "Starte dein erstes Sortierprojekt"
+msgstr "Start your first sorting project"
+
+msgid "Set auswählen"
+msgstr "Choose a set"
+
+msgid "Dein Teilefortschritt"
+msgstr "Your parts progress"
+
+msgid "Vollständig"
+msgstr "Complete"
+
+msgid "In Arbeit"
+msgstr "In progress"
+
+msgid "Deine Werkbank"
+msgstr "Your workbench"
+
+msgid "Letzte Projekte"
+msgstr "Recent projects"
+
+msgid "Alle Sets →"
+msgstr "All sets →"
+
+msgid "Direkt loslegen"
+msgstr "Jump right in"
+
+msgid "Schnelle Aktionen"
+msgstr "Quick actions"
+
+msgid "Sammlung durchsuchen"
+msgstr "Search collection"
+
+msgid "Fehlteile öffnen"
+msgstr "Open missing parts"
+
+msgid "Setlisten ansehen"
+msgstr "View set lists"
+
+msgid "Verbindung prüfen"
+msgstr "Check connection"
+
+msgid "Deine Setlisten"
+msgstr "Your set lists"
+
+msgid "Alle Setlisten"
+msgstr "All set lists"
+
+msgid "Set öffnen"
+msgstr "Open set"
+
+msgid "Keine Setlisten gefunden"
+msgstr "No set lists found"
+
+msgid "Was suchst du?"
+msgstr "What are you looking for?"
+
+msgid "Setname oder Setnummer"
+msgstr "Set name or set number"
+
+msgid "Kein passendes Set gefunden"
+msgstr "No matching set found"
+
+msgid "← Alle Setlisten"
+msgstr "← All set lists"
+
+msgid "Teile-Checkliste"
+msgstr "Parts checklist"
+
+msgid "Großen Sortiermodus starten"
+msgstr "Start large sorting mode"
+
+msgid "Fehlteile anzeigen"
+msgstr "Show missing parts"
+
+msgid "Teile vorhanden"
+msgstr "Parts available"
+
+msgid "Teile durchsuchen"
+msgstr "Search parts"
+
+msgid "Teile gruppieren"
+msgstr "Group parts"
+
+msgid "Reihenfolge"
+msgstr "Order"
+
+msgid "Noch suchen"
+msgstr "Still searching"
+
+msgid "Gefunden"
+msgstr "Found"
+
+msgid "Fehlt sicher"
+msgstr "Definitely missing"
+
+msgid "Falsche Farbe"
+msgstr "Wrong color"
+
+msgid "Alternative vorhanden"
+msgstr "Alternative available"
+
+msgid "Bemerkung"
+msgstr "Note"
+
+msgid "Ersatzteil"
+msgstr "Spare part"
+
+msgid "← Zur Teile-Checkliste"
+msgstr "← Back to parts checklist"
+
+msgid "Nächstes offenes Teil"
+msgstr "Next open part"
+
+msgid "Fehlteilezentrale"
+msgstr "Missing parts hub"
+
+msgid "Inventare aktualisieren"
+msgstr "Refresh inventories"
+
+msgid "CSV exportieren"
+msgstr "Export CSV"
+
+msgid "Alle drucken"
+msgstr "Print all"
+
+msgid "Keine Fehlteile 🎉"
+msgstr "No missing parts 🎉"
+
+msgid "Benötigt"
+msgstr "Required"
+
+msgid "Vorhanden"
+msgstr "Available"
+
+msgid "Fehlt"
+msgstr "Missing"
+
+msgid "Gesamt fehlt"
+msgstr "Total missing"
+
+msgid "Freunde & Freigaben"
+msgstr "Friends & sharing"
+
+msgid "Leute suchen"
+msgstr "Find people"
+
+msgid "Benutzername suchen"
+msgstr "Search username"
+
+msgid "Meine Freunde"
+msgstr "My friends"
+
+msgid "Öffentliches Profil"
+msgstr "Public profile"
+
+msgid "Privates Profil"
+msgstr "Private profile"
+
+msgid "Entfernen"
+msgstr "Remove"
+
+msgid "Projekt teilen"
+msgstr "Share project"
+
+msgid "Setnummer"
+msgstr "Set number"
+
+msgid "Freund"
+msgstr "Friend"
+
+msgid "Berechtigung"
+msgstr "Permission"
+
+msgid "Nur ansehen"
+msgstr "View only"
+
+msgid "Teilen & Mail senden"
+msgstr "Share & send email"
+
+msgid "Mit mir geteilt"
+msgstr "Shared with me"
+
+msgid "Von mir geteilt"
+msgstr "Shared by me"
+
+msgid "Aufheben"
+msgstr "Revoke"
+
+msgid "Annehmen"
+msgstr "Accept"
+
+msgid "Ablehnen"
+msgstr "Decline"
+
+msgid "Zur Startseite"
+msgstr "Back to home"
+
+msgid "Dieses Fach ist leer."
+msgstr "This compartment is empty."
+
+msgid "Die gesuchte Seite wurde nicht gefunden."
+msgstr "The requested page was not found."
+
+msgid "Hier fehlt dir der Zugriff."
+msgstr "You do not have access here."
+
+msgid "Du darfst diese Seite nicht aufrufen."
+msgstr "You are not allowed to open this page."
+
+msgid "Da ist etwas auseinandergefallen."
+msgstr "Something fell apart."
+
+msgid "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut."
+msgstr "An unexpected error occurred. Please try again later."
+
+msgid "Die Anfrage ist nicht mehr gültig."
+msgstr "This request is no longer valid."
+
+msgid "Bitte lade die Seite neu und versuche es erneut."
+msgstr "Reload the page and try again."
+
+msgid "Wie deine Kontodaten verarbeitet werden, erfährst du in der"
+msgstr "Learn how your account data is processed in the"
+
+msgid "Wir haben einen Bestätigungslink an"
+msgstr "We sent a confirmation link to"
+
+msgid "geschickt. Danach kannst du deine Sammlung vollständig verwenden."
+msgstr ". After confirming, you can use your full collection."
+
+msgid "BrickHoard einrichten"
+msgstr "Set up BrickHoard"
+
+msgid "Setup überspringen"
+msgstr "Skip setup"
+
+msgid "Setup starten"
+msgstr "Start setup"
+
+msgid "Setup abschließen →"
+msgstr "Finish setup →"
+
+msgid "Starthilfe"
+msgstr "Getting started"
+
+msgid "Einstellungen"
+msgstr "Settings"
+
+msgid "Mein Konto"
+msgstr "My account"
+
+msgid "Profildaten"
+msgstr "Profile details"
+
+msgid "Profilbild"
+msgstr "Profile picture"
+
+msgid "Konto löschen"
+msgstr "Delete account"
+
+msgid "Zur Bestätigung"
+msgstr "For confirmation"
+
+msgid "Temporäres Passwort aktiv."
+msgstr "Temporary password active."
+
+msgid "Ändere es jetzt, bevor du BrickHoard weiterverwendest."
+msgstr "Change it now before continuing to use BrickHoard."
+
+msgid "E-Mail bestätigt."
+msgstr "Email confirmed."
+
+msgid "E-Mail noch nicht bestätigt."
+msgstr "Email not confirmed yet."
+
+msgid "Verbindung vorhanden."
+msgstr "Connection available."
+
+msgid "Noch nicht verbunden."
+msgstr "Not connected yet."
+
+msgid "Dein Passwort wird nicht gespeichert."
+msgstr "Your password is not stored."
+
+msgid "Trage deine normalen Rebrickable-Zugangsdaten ein."
+msgstr "Enter your regular Rebrickable credentials."
+
+msgid "Optional: vorhandenen User Token eintragen"
+msgstr "Optional: enter an existing user token"
+
+msgid "Wenn du bereits einen Token hast, kannst du ihn optional direkt eintragen."
+msgstr "If you already have a token, you can enter it directly instead."
+
+msgid "BrickHoard erzeugt daraus automatisch den benötigten User Token."
+msgstr "BrickHoard automatically generates the required user token from them."
+
+msgid "Es wird nur einmal an Rebrickable gesendet und sofort verworfen. API-Key und User Token werden verschlüsselt abgelegt."
+msgstr "It is sent to Rebrickable once and immediately discarded. The API key and user token are stored encrypted."
+
+msgid "Das ist kein Problem – du kannst das Setup trotzdem fortsetzen und die Verbindung später nachholen."
+msgstr "That is no problem – you can continue setup and connect later."
+
+msgid "Du kannst deine Setlisten jetzt öffnen."
+msgstr "You can now open your set lists."
+
+msgid "Setlisten in neuem Tab öffnen ↗"
+msgstr "Open set lists in a new tab ↗"
+
+msgid "Wähle ein Set aus, um Details und Teileinventar zu laden."
+msgstr "Choose a set to load its details and parts inventory."
+
+msgid "Großsortierung"
+msgstr "Large sorting mode"
+
+msgid "Ein Teil nach dem anderen mit großer Abbildung bearbeiten."
+msgstr "Work through one part at a time with a large image."
+
+msgid "Gefundene Mengen und Teilestatus direkt am Set pflegen."
+msgstr "Update found quantities and part statuses directly in the set."
+
+msgid "Offene Teile über einzelne Sets oder die ganze Sammlung bündeln."
+msgstr "Combine open parts across individual sets or the whole collection."
+
+msgid "Dein Fortschritt wird automatisch in deinem BrickHoard-Konto gespeichert. Du bist bereit."
+msgstr "Your progress is saved automatically in your BrickHoard account. You are ready."
+
+msgid "BrickHoard-Setup erneut ansehen"
+msgstr "Open BrickHoard setup again"
+
+msgid "Gehe Rebrickable, Setlisten und Sortierfunktionen noch einmal Schritt für Schritt durch."
+msgstr "Walk through Rebrickable, set lists and sorting features again step by step."
+
+msgid "JPG, PNG oder WebP, maximal 5 MB. Das Bild wird automatisch quadratisch zugeschnitten."
+msgstr "JPG, PNG or WebP, up to 5 MB. The image is cropped to a square automatically."
+
+msgid "Hierdurch werden dein lokaler Account, Notizen, Sortierfortschritte und Zugangsdaten endgültig gelöscht. Rebrickable selbst wird nicht verändert."
+msgstr "This permanently deletes your local account, notes, sorting progress and credentials. Rebrickable itself is not changed."
+
+msgid "Alle begonnenen Sets"
+msgstr "All started sets"
+
+msgid "Alle sichtbaren abwählen"
+msgstr "Clear all visible"
+
+msgid "Alle sichtbaren vollständig"
+msgstr "Mark all visible complete"
+
+msgid "Alternative"
+msgstr "Alternative"
+
+msgid "Bei Rebrickable anmelden."
+msgstr "Sign in to Rebrickable."
+
+msgid "Bei Rebrickable ansehen"
+msgstr "View on Rebrickable"
+
+msgid "Bezeichnung"
+msgstr "Name"
+
+msgid "Bezeichnung A–Z"
+msgstr "Name A–Z"
+
+msgid "Bezeichnung Z–A"
+msgstr "Name Z–A"
+
+msgid "Deine lokalen Angaben"
+msgstr "Your local details"
+
+msgid "Details"
+msgstr "Details"
+
+msgid "Die Suche berücksichtigt alle Sets aus sämtlichen deiner Rebrickable-Setlisten."
+msgstr "The search covers all sets in all of your Rebrickable set lists."
+
+msgid "Diese Liste ist leer"
+msgstr "This list is empty"
+
+msgid "Drucken"
+msgstr "Print"
+
+msgid "Erledigte zuerst"
+msgstr "Completed first"
+
+msgid "Farbe"
+msgstr "Color"
+
+msgid "Farbe A–Z"
+msgstr "Color A–Z"
+
+msgid "Farbe Z–A"
+msgstr "Color Z–A"
+
+msgid "Für diesen Rebrickable-Benutzer wurden keine Setlisten gefunden."
+msgstr "No set lists were found for this Rebrickable user."
+
+msgid "Geheimnisse werden verschlüsselt gespeichert und niemals vollständig im Formular angezeigt."
+msgstr "Secrets are stored encrypted and are never displayed in full in the form."
+
+msgid "Gespeichert: ••••••••••••"
+msgstr "Saved: ••••••••••••"
+
+msgid "Gleiche Teile und Farben werden über alle Sets hinweg zusammengefasst."
+msgstr "Matching parts and colors are combined across all sets."
+
+msgid "Gruppieren"
+msgstr "Group"
+
+msgid "Höchste Fehlmenge zuerst"
+msgstr "Largest missing quantity first"
+
+msgid "Niedrigste Fehlmenge zuerst"
+msgstr "Smallest missing quantity first"
+
+msgid "In den bisher begonnenen Sets fehlen nach dem gespeicherten Stand keine Teile."
+msgstr "Based on the saved progress, no parts are missing from the sets you have started."
+
+msgid "In den meisten Sets benötigt"
+msgstr "Required in most sets"
+
+msgid "Innerhalb der Gruppen sortieren"
+msgstr "Sort within groups"
+
+msgid "Jahr"
+msgstr "Year"
+
+msgid "Kann ich abgeben"
+msgstr "I can offer this"
+
+msgid "Kein Bild"
+msgstr "No image"
+
+msgid "Keine Gruppierung"
+msgstr "No grouping"
+
+msgid "Keine Setdaten verfügbar"
+msgstr "No set data available"
+
+msgid "Liste"
+msgstr "List"
+
+msgid "Liste drucken"
+msgstr "Print list"
+
+msgid "Lokaler Baufortschritt"
+msgstr "Local build progress"
+
+msgid "Menge"
+msgstr "Quantity"
+
+msgid "Menge: höchste zuerst"
+msgstr "Quantity: highest first"
+
+msgid "Menge: niedrigste zuerst"
+msgstr "Quantity: lowest first"
+
+msgid "Mit Freund teilen"
+msgstr "Share with a friend"
+
+msgid "Nach Farbe"
+msgstr "By color"
+
+msgid "Nach Farbe gruppieren"
+msgstr "Group by color"
+
+msgid "Nach Teileart"
+msgstr "By part type"
+
+msgid "Nach Teileart gruppieren"
+msgstr "Group by part type"
+
+msgid "Nach Zustand"
+msgstr "By status"
+
+msgid "Nach Zustand gruppieren"
+msgstr "Group by status"
+
+msgid "Nach deinem aktuellen Fortschritt ist das Set vollständig."
+msgstr "Based on your current progress, the set is complete."
+
+msgid "Noch keinen User Token?"
+msgstr "No user token yet?"
+
+msgid "Offene zuerst"
+msgstr "Open first"
+
+msgid "Prüfe die Schreibweise oder suche nach einem Teil des Namens beziehungsweise der Setnummer."
+msgstr "Check the spelling or search for part of the name or set number."
+
+msgid "Rebrickable hat keine Sets für diese Liste geliefert."
+msgstr "Rebrickable returned no sets for this list."
+
+msgid "Rebrickable-Reihenfolge"
+msgstr "Rebrickable order"
+
+msgid "Sortierbogen"
+msgstr "Sorting sheet"
+
+msgid "Sortiermodus"
+msgstr "Sorting mode"
+
+msgid "Teile"
+msgstr "Parts"
+
+msgid "Teile sortieren"
+msgstr "Sort parts"
+
+msgid "Teilenummer"
+msgstr "Part number"
+
+msgid "Teilenummer absteigend"
+msgstr "Part number descending"
+
+msgid "Teilenummer aufsteigend"
+msgstr "Part number ascending"
+
+msgid "Thema"
+msgstr "Theme"
+
+msgid "Trage vorhandene Mengen ein. Änderungen werden sofort gespeichert."
+msgstr "Enter the quantities you have. Changes are saved immediately."
+
+msgid "Weiter"
+msgstr "Continue"
+
+msgid "Weiter →"
+msgstr "Continue →"
+
+msgid "Wie in der Teile-Checkliste"
+msgstr "Same as the parts checklist"
+
+msgid "Wo finde ich die Werte?"
+msgstr "Where do I find these values?"
+
+msgid "Zurück"
+msgstr "Back"
+
+msgid "Öffnen"
+msgstr "Open"
+
+msgid "← Setdetails"
+msgstr "← Set details"
+
+msgid "← Zurück"
+msgstr "← Back"
+
+msgid "Kontakte"
+msgstr "Contacts"
+
+msgid "Ab zwei Zeichen erscheinen passende Nutzer automatisch."
+msgstr "Matching users appear automatically after two characters."
+
+msgid "Als Freund hinzufügen"
+msgstr "Add as friend"
+
+msgid "Angebotene Fehlteile"
+msgstr "Offered missing parts"
+
+msgid "BrickHoard-Sammlerprofil"
+msgstr "BrickHoard collector profile"
+
+msgid "Füge zuerst einen Freund hinzu, um Projekte zu teilen."
+msgstr "Add a friend before sharing projects."
+
+msgid "Neue Freundschaftsanfragen"
+msgstr "New friend requests"
+
+msgid "Noch keine Freunde hinzugefügt."
+msgstr "No friends added yet."
+
+msgid "Noch keine Projekte geteilt."
+msgstr "No projects shared yet."
+
+msgid "Noch keine eingehenden Freigaben."
+msgstr "No incoming shares yet."
+
+msgid "Profil speichern"
+msgstr "Save profile"
+
+msgid "Profil über einen öffentlichen Link sichtbar machen"
+msgstr "Make profile visible through a public link"
+
+msgid "Sichtbarkeit"
+msgstr "Visibility"
+
+msgid "Teile einzelne Projekte, sortiert gemeinsam und helft euch bei Fehlteilen."
+msgstr "Share individual projects, sort together and help each other with missing parts."
+
+msgid "Teiletausch"
+msgstr "Part exchange"
+
+msgid "Zusammenarbeit"
+msgstr "Collaboration"
+
+msgid "möchte dich als Freund hinzufügen"
+msgstr "wants to add you as a friend"
+
+msgid "vollständig"
+msgstr "complete"
+
+msgid "Öffentliches Profil ansehen"
+msgstr "View public profile"
+
+msgid "Über mich"
+msgstr "About me"
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid "Administrator"
+msgstr "Administrator"
+
+msgid "Benutzerverwaltung"
+msgstr "User management"
+
+msgid "BrickHoard-Konten, Rollen und Zugänge verwalten."
+msgstr "Manage BrickHoard accounts, roles and access."
+
+msgid "Bestätigung senden"
+msgstr "Send confirmation"
+
+msgid "Du"
+msgstr "You"
+
+msgid "Einmalige Anzeige"
+msgstr "Shown once"
+
+msgid "Kopieren"
+msgstr "Copy"
+
+msgid "Löschen"
+msgstr "Delete"
+
+msgid "Manuell bestätigen"
+msgstr "Confirm manually"
+
+msgid "Passwortwechsel erforderlich"
+msgstr "Password change required"
+
+msgid "Reset-Link senden"
+msgstr "Send reset link"
+
+msgid "Temporäres Passwort"
+msgstr "Temporary password"
+
+msgid "Zur Benutzerverwaltung"
+msgstr "Back to user management"
+
+msgid "Übermittle dieses temporäre Passwort sicher. Es wird nach Verlassen dieser Seite nicht erneut angezeigt."
+msgstr "Share this temporary password securely. It will not be shown again after leaving this page."
+
+msgid "Beim nächsten Login muss der Benutzer ein eigenes neues Passwort setzen."
+msgstr "The user must choose a new password at the next sign-in."
+
+msgid "Bereits befreundet"
+msgstr "Already friends"
+
+msgid "Anfrage gesendet"
+msgstr "Request sent"
+
+msgid "Anfrage von diesem Nutzer erhalten"
+msgstr "Request received from this user"
+
+msgid "BrickHoard-Nutzer"
+msgstr "BrickHoard user"
+
+msgid "Keine passenden Benutzernamen gefunden."
+msgstr "No matching usernames found."
+
+msgid "Hinzufügen"
+msgstr "Add"
+
+msgid "Suche …"
+msgstr "Searching …"
+
+msgid "Suche momentan nicht möglich."
+msgstr "Search is currently unavailable."
+
+msgid "Sonstige"
+msgstr "Other"
+
+msgid "Wird gespeichert …"
+msgstr "Saving …"
+
+msgid "Offline vorgemerkt"
+msgstr "Queued offline"
+
+msgid "Gespeichert ✓"
+msgstr "Saved ✓"
+
+msgid "Normalansicht"
+msgstr "Normal view"
+
+msgid "Hellmodus"
+msgstr "Light mode"
+
+msgid "E-Mail-Adresse für BrickHoard bestätigen"
+msgstr "Confirm your email address for BrickHoard"
+
+msgid "BrickHoard-Passwort zurücksetzen"
+msgstr "Reset your BrickHoard password"
+
+msgid "%(username)s möchte dich auf BrickHoard hinzufügen"
+msgstr "%(username)s wants to add you on BrickHoard"
+
+msgid "%(username)s hat deine Freundschaftsanfrage %(action)s"
+msgstr "%(username)s %(action)s your friend request"
+
+msgid "%(username)s teilt LEGO-Set %(set_number)s mit dir"
+msgstr "%(username)s shared LEGO set %(set_number)s with you"
+
+msgid "angenommen"
+msgstr "accepted"
+
+msgid "abgelehnt"
+msgstr "declined"
+
+msgid "Dein digitales Setregal"
+msgstr "Your digital set shelf"
+
+msgid "Diese Nachricht wurde automatisch versendet. Bitte antworte nicht darauf."
+msgstr "This message was sent automatically. Please do not reply."
+
+msgid "Neue Freundschaftsanfrage"
+msgstr "New friend request"
+
+msgid "Anfrage ansehen"
+msgstr "View request"
+
+msgid "Wenn du diese Person nicht kennst, kannst du die Anfrage einfach ablehnen."
+msgstr "If you do not know this person, you can simply decline the request."
+
+msgid "Als Freunde könnt ihr einzelne Sortierprojekte miteinander teilen und euch bei Fehlteilen helfen."
+msgstr "As friends, you can share sorting projects and help each other with missing parts."
+
+msgid "Freunde & Freigaben öffnen"
+msgstr "Open friends & sharing"
+
+msgid "Die Anfrage wurde abgelehnt. Es sind keine weiteren Schritte erforderlich."
+msgstr "The request was declined. No further action is required."
+
+msgid "Sortierprojekt geteilt"
+msgstr "Sorting project shared"
+
+msgid "Berechtigung:"
+msgstr "Permission:"
+
+msgid "Projekt öffnen"
+msgstr "Open project"
+
+msgid "Neues Passwort anfordern"
+msgstr "Request a new password"
+
+msgid "Über den folgenden Button kannst du jetzt ein neues Passwort wählen:"
+msgstr "Use the following button to choose a new password:"
+
+msgid "Neues Passwort festlegen&nbsp; →"
+msgstr "Set a new password&nbsp; →"
+
+msgid "Sicherheitshinweis"
+msgstr "Security notice"
+
+msgid "Hallo %(username)s,"
+msgstr "Hello %(username)s,"
+
+msgid "Bitte bestätige deine E-Mail-Adresse für BrickHoard. Der Link ist %(hours)s Stunden gültig."
+msgstr "Please confirm your email address for BrickHoard. The link is valid for %(hours)s hours."
+
+msgid "Lokale Adresse"
+msgstr "Local address"
+
+msgid "BrickHoard-Server"
+msgstr "BrickHoard server"
+
+msgid "Falls du diesen Account nicht erstellt hast, kannst du diese Nachricht ignorieren."
+msgstr "If you did not create this account, you can ignore this message."
+
+msgid "Dein BrickHoard"
+msgstr "Your BrickHoard"
+
+msgid "Über einen der folgenden Links kannst du dein BrickHoard-Passwort neu setzen. Der Link ist %(minutes)s Minuten gültig und wird nach einer Passwortänderung automatisch ungültig."
+msgstr "Use one of the following links to reset your BrickHoard password. The link is valid for %(minutes)s minutes and becomes invalid after a password change."
+
+msgid "Falls du keinen Passwort-Reset angefordert hast, kannst du diese Nachricht ignorieren."
+msgstr "If you did not request a password reset, you can ignore this message."
+
+msgid "%(username)s möchte dich auf BrickHoard als Freund hinzufügen."
+msgstr "%(username)s wants to add you as a friend on BrickHoard."
+
+msgid "%(username)s hat deine Freundschaftsanfrage %(action)s."
+msgstr "%(username)s %(action)s your friend request."
+
+msgid "Ihr könnt jetzt Sortierprojekte miteinander teilen und gemeinsam bearbeiten."
+msgstr "You can now share sorting projects and work on them together."
+
+msgid "Freunde und Freigaben öffnen"
+msgstr "Open friends and sharing"
+
+msgid "Es sind keine weiteren Schritte erforderlich."
+msgstr "No further action is required."
+
+msgid "%(username)s hat das Sortierprojekt für LEGO-Set %(set_number)s mit dir geteilt."
+msgstr "%(username)s shared the sorting project for LEGO set %(set_number)s with you."

@@ -1,9 +1,9 @@
-Hallo {{ username }},
+{{ _('Hallo %(username)s,', username=username) }}
 
-{{ requester.username }} möchte dich auf BrickHoard als Freund hinzufügen.
+{{ _('%(username)s möchte dich auf BrickHoard als Freund hinzufügen.', username=requester.username) }}
 
-Anfrage ansehen:
+{{ _('Anfrage ansehen') }}:
 {% for link in social_links %}{{ link }}
 {% endfor %}
 
-Wenn du diese Person nicht kennst, kannst du die Anfrage einfach ablehnen.
+{{ _('Wenn du diese Person nicht kennst, kannst du die Anfrage einfach ablehnen.') }}

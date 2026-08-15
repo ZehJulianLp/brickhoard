@@ -58,6 +58,7 @@ class User(UserMixin, db.Model):
     email_verified_at = db.Column(db.DateTime(timezone=True), nullable=True)
     confirmation_sent_at = db.Column(db.DateTime(timezone=True))
     password_reset_sent_at = db.Column(db.DateTime(timezone=True))
+    preferred_locale = db.Column(db.String(10), default="de", nullable=False)
     rebrickable_username = db.Column(db.String(120))
     _rebrickable_api_key = db.Column("rebrickable_api_key", db.Text)
     _rebrickable_user_token = db.Column("rebrickable_user_token", db.Text)
