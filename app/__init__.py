@@ -134,6 +134,7 @@ def create_app(test_config: dict | None = None) -> Flask:
     @app.context_processor
     def inject_seo_metadata():
         endpoint = request.endpoint or ""
+        locale = str(get_locale())
         is_indexable = endpoint in indexable_endpoints
         public_base_url = app.config["PUBLIC_BASE_URL"]
         canonical_url = (
@@ -147,7 +148,7 @@ def create_app(test_config: dict | None = None) -> Flask:
                     "@type": "WebSite",
                     "name": "BrickHoard",
                     "url": f"{public_base_url}/",
-                    "inLanguage": "de-DE",
+                    "inLanguage": "de-DE" if locale == "de" else "en-US",
                 },
                 {
                     "@context": "https://schema.org",
@@ -156,25 +157,21 @@ def create_app(test_config: dict | None = None) -> Flask:
                     "url": f"{public_base_url}/",
                     "applicationCategory": "LifestyleApplication",
                     "operatingSystem": "Web",
-                    "inLanguage": "de-DE",
-                    "description": (
-                        "Web-App zum Prüfen und Sortieren von LEGO-Sets, "
-                        "Verwalten von Fehlteilen und gemeinsamen Arbeiten mit Rebrickable."
+                    "inLanguage": "de-DE" if locale == "de" else "en-US",
+                    "description": gettext(
+                        "Web-App zum Prüfen und Sortieren von LEGO-Sets, Verwalten von Fehlteilen und gemeinsamen Arbeiten mit Rebrickable."
                     ),
                     "offers": {
                         "@type": "Offer",
                         "price": "0",
                         "priceCurrency": "EUR",
                     },
-                    "featureList": [
-                        "LEGO-Setlisten verwalten",
-                        "Teile sortieren und Fortschritt speichern",
-                        "Fehlteile erkennen und exportieren",
-                        "Rebrickable-Sammlungen anbinden",
-                        "Sortierprojekte mit Freunden teilen",
-                        "Gemeinsam in Echtzeit sortieren",
+                    "featureList": [gettext(feature) for feature in [
+                        "LEGO-Setlisten verwalten", "Teile sortieren und Fortschritt speichern",
+                        "Fehlteile erkennen und exportieren", "Rebrickable-Sammlungen anbinden",
+                        "Sortierprojekte mit Freunden teilen", "Gemeinsam in Echtzeit sortieren",
                         "Als Progressive Web App installieren",
-                    ],
+                    ]],
                 },
             ]
         return {

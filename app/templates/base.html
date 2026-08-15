@@ -22,7 +22,7 @@
   <meta name="robots" content="{{ 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' if seo_is_indexable else 'noindex, nofollow' }}">
   <title>{% block title %}BrickHoard{% endblock %}</title>
   {% if seo_canonical_url %}<link rel="canonical" href="{{ seo_canonical_url }}">{% endif %}
-  <meta property="og:locale" content="de_DE">
+  <meta property="og:locale" content="{{ 'de_DE' if current_locale == 'de' else 'en_US' }}">
   <meta property="og:site_name" content="BrickHoard">
   <meta property="og:type" content="website">
   <meta property="og:title" content="{{ self.title()|striptags|trim }}">

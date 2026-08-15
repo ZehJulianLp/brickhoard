@@ -10,6 +10,9 @@ def test_browser_language_selects_english_for_guests(client):
     assert "Your digital sorting table" in response.text
     assert "Get started for free" in response.text
     assert "Frequently asked questions" in response.text
+    assert "BrickHoard – Sort LEGO Sets & Find Missing Parts" in response.text
+    assert '<meta property="og:locale" content="en_US">' in response.text
+    assert '"inLanguage": "en-US"' in response.text
 
 
 def test_language_switch_is_kept_in_session(client):
@@ -21,6 +24,9 @@ def test_language_switch_is_kept_in_session(client):
     assert "Welcome back" in login.text
     assert "Email address or username" in login.text
     assert "Keep me signed in" in login.text
+    assert 'name="identity"' in login.text
+    assert 'name="identity" required type="text" value=""' in login.text
+    assert "Project-Id-Version" not in login.text
 
     client.post("/language/de", data={"next": "/login"})
     german = client.get("/login")

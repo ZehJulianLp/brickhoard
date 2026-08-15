@@ -8,7 +8,7 @@ from flask_babel import gettext
 _PROTECTED_BLOCKS = re.compile(r"(<(?:script|style)\b.*?</(?:script|style)>)", re.I | re.S)
 _TEXT_NODE = re.compile(r">([^<>]+)<")
 _TRANSLATABLE_ATTRIBUTE = re.compile(
-    r'\b(aria-label|alt|placeholder|title|value)=(?P<quote>["\'])(?P<value>.*?)(?P=quote)',
+    r'\b(aria-label|alt|placeholder|title)=(?P<quote>["\'])(?P<value>.*?)(?P=quote)',
     re.I,
 )
 
@@ -30,6 +30,8 @@ def localize_html(markup: str) -> str:
 
         def translate_attribute(match: re.Match[str]) -> str:
             value = match.group("value")
+            if not value:
+                return match.group(0)
             translated = gettext(value)
             return f'{match.group(1)}={match.group("quote")}{translated}{match.group("quote")}'
 

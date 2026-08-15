@@ -1093,6 +1093,108 @@ msgstr "Share this temporary password securely. It will not be shown again after
 msgid "Beim nächsten Login muss der Benutzer ein eigenes neues Passwort setzen."
 msgstr "The user must choose a new password at the next sign-in."
 
+msgid "AKTUELLES TEIL"
+msgstr "CURRENT PART"
+
+msgid "Alle fehlenden Teile landen in einer Übersicht. Exportiere sie als CSV, drucke deine Liste oder teile das Projekt mit Freunden."
+msgstr "All missing parts appear in one overview. Export them as CSV, print your list or share the project with friends."
+
+msgid "Andere Nutzer sehen bei der Freundessuche nur deinen Username – niemals deine E-Mail-Adresse. Projekte werden erst sichtbar, wenn du sie bewusst freigibst."
+msgstr "Other users only see your username when searching for friends – never your email address. Projects only become visible when you explicitly share them."
+
+msgid "BrickHoard fasst Fehlteile setübergreifend zusammen – inklusive Farbe, Menge und Zuordnung."
+msgstr "BrickHoard combines missing parts across sets, including color, quantity and assignment."
+
+msgid "Das geführte Setup erstellt deinen Token aus den Zugangsdaten – oder du trägst einen vorhandenen Token ein. Dein Rebrickable-Passwort wird nicht gespeichert."
+msgstr "The guided setup creates your token from your credentials, or you can enter an existing token. Your Rebrickable password is not stored."
+
+msgid "Der große Sortiermodus konzentriert sich immer auf genau ein Teil. Deine eigene Reihenfolge gilt auch in der Checkliste."
+msgstr "Large sorting mode focuses on one part at a time. Your custom order also applies to the checklist."
+
+msgid "Erstelle deinen Account und starte dein erstes Sortierprojekt."
+msgstr "Create your account and start your first sorting project."
+
+msgid "Für den Import deiner Setlisten und Inventare brauchst du einen Rebrickable-Zugang. Das optionale Setup führt dich durch die Verbindung und speichert dein Rebrickable-Passwort nicht."
+msgstr "You need a Rebrickable account to import set lists and inventories. The optional setup guides you through connecting and does not store your Rebrickable password."
+
+msgid "Installiere BrickHoard als Web-App, nutze Darkmode und arbeite auch bei einer kurzen Verbindungspause weiter."
+msgstr "Install BrickHoard as a web app, use dark mode and keep working through short connection interruptions."
+
+msgid "Ja, die Nutzung von BrickHoard ist kostenlos. Auch die installierbare Web-App, Darkmode und die sozialen Funktionen gehören dazu."
+msgstr "Yes, BrickHoard is free to use. The installable web app, dark mode and social features are included."
+
+msgid "Ja. BrickHoard lädt die Teileliste des Sets über Rebrickable. Du trägst für jedes Teil die gefundene Menge ein und erhältst daraus deinen Fortschritt sowie eine genaue Fehlteileliste."
+msgstr "Yes. BrickHoard loads the set inventory through Rebrickable. Enter the quantity found for each part to get your progress and an exact missing-parts list."
+
+msgid "Ja. Füge die Person über ihren BrickHoard-Username als Freund hinzu und teile das Sortierprojekt mit Schreibzugriff. Änderungen werden für beide Seiten laufend synchronisiert."
+msgstr "Yes. Add the person by their BrickHoard username and share the sorting project with edit access. Changes are continuously synchronized for both of you."
+
+msgid "Nutze die kompakte Checkliste oder den großen Sortiermodus. Reihenfolge, Mengen und Status passen sich deinem Workflow an."
+msgstr "Use the compact checklist or large sorting mode. Order, quantities and statuses adapt to your workflow."
+
+msgid "Ob allein am Schreibtisch oder gemeinsam vor mehreren Kisten: BrickHoard hält alle auf demselben Stand."
+msgstr "Whether alone at your desk or together around several boxes, BrickHoard keeps everyone in sync."
+
+msgid "Suche nur nach Usernames, teile Projekte mit Lese- oder Schreibzugriff und erhalte Benachrichtigungen über neue Anfragen."
+msgstr "Search by username only, share projects with view or edit access and receive notifications for new requests."
+
+msgid "sortieren gerade mit"
+msgstr "are sorting with you"
+
+msgid "API-Key und Token verwalten"
+msgstr "Manage API key and token"
+
+msgid "Bedarf bündeln und exportieren"
+msgstr "Combine demand and export"
+
+msgid "Noch keine lokalen Projekte. Dein zuletzt bearbeitetes Set erscheint hier automatisch."
+msgstr "No local projects yet. Your most recently edited set will appear here automatically."
+
+msgid "Rebrickable-Sammlung öffnen"
+msgstr "Open Rebrickable collection"
+
+msgid "Sets über alle Listen finden"
+msgstr "Find sets across all lists"
+
+msgid "Öffne ein Set aus deiner Sammlung und beginne, die vorhandenen Teile abzuhaken."
+msgstr "Open a set from your collection and start checking off the parts you have."
+
+msgid "gefunden"
+msgstr "found"
+
+msgid "über alle lokalen Projekte"
+msgstr "across all local projects"
+
+msgid "BrickHoard – LEGO-Sets sortieren & Fehlteile finden"
+msgstr "BrickHoard – Sort LEGO Sets & Find Missing Parts"
+
+msgid "Prüfe LEGO-Sets auf Vollständigkeit, sortiere Teile mit digitaler Checkliste und finde Fehlteile. Mit Rebrickable, Freunden und gemeinsamem Sortieren."
+msgstr "Check LEGO sets for completeness, sort parts with a digital checklist and find missing pieces. With Rebrickable, friends and collaborative sorting."
+
+msgid "Web-App zum Prüfen und Sortieren von LEGO-Sets, Verwalten von Fehlteilen und gemeinsamen Arbeiten mit Rebrickable."
+msgstr "Web app for checking and sorting LEGO sets, managing missing parts and collaborating with Rebrickable."
+
+msgid "LEGO-Setlisten verwalten"
+msgstr "Manage LEGO set lists"
+
+msgid "Teile sortieren und Fortschritt speichern"
+msgstr "Sort parts and save progress"
+
+msgid "Fehlteile erkennen und exportieren"
+msgstr "Find and export missing parts"
+
+msgid "Rebrickable-Sammlungen anbinden"
+msgstr "Connect Rebrickable collections"
+
+msgid "Sortierprojekte mit Freunden teilen"
+msgstr "Share sorting projects with friends"
+
+msgid "Gemeinsam in Echtzeit sortieren"
+msgstr "Sort together in real time"
+
+msgid "Als Progressive Web App installieren"
+msgstr "Install as a Progressive Web App"
+
 msgid "Bereits befreundet"
 msgstr "Already friends"
 
