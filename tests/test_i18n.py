@@ -45,6 +45,17 @@ def test_authenticated_language_is_saved_to_profile(logged_in_client, app, user)
         assert db.session.get(User, user).preferred_locale == "en"
 
 
+def test_authenticated_navigation_groups_secondary_actions(logged_in_client):
+    response = logged_in_client.get("/dashboard")
+
+    assert response.text.count('id="theme-toggle"') == 1
+    assert 'class="dropdown-menu dropdown-menu-end nav-account-menu"' in response.text
+    assert ">Sammlung</button>" in response.text
+    assert "Profil und Sicherheit" in response.text
+    assert "API-Zugang verwalten" in response.text
+    assert 'id="logout-form"' in response.text
+
+
 def test_unknown_language_is_rejected(client):
     assert client.post("/language/fr").status_code == 404
 

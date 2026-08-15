@@ -45,7 +45,7 @@
   {% block styles %}{% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100" data-locale="{{ current_locale }}">
-  <nav class="navbar navbar-expand-lg navbar-dark shelf-nav">
+  <nav class="navbar navbar-expand-xl navbar-dark shelf-nav">
     <div class="container">
       <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
         <span class="brand-brick" aria-hidden="true"></span>BrickHoard
@@ -55,42 +55,58 @@
       </button>
       <div class="collapse navbar-collapse" id="mainNav">
         {% if current_user.is_authenticated %}
-          <form class="collection-search ms-lg-4 my-3 my-lg-0" method="get" action="{{ url_for('sets.search') }}" role="search">
+          <form class="collection-search ms-xl-4 my-3 my-xl-0" method="get" action="{{ url_for('sets.search') }}" role="search">
             <label class="visually-hidden" for="global-set-search">Alle Setlisten durchsuchen</label>
             <input id="global-set-search" class="form-control form-control-sm" type="search" name="q" value="{{ request.args.get('q', '') if request.endpoint == 'sets.search' else '' }}" maxlength="100" placeholder="Alle Setlisten durchsuchen …" required>
             <button class="btn btn-sm btn-accent" type="submit" aria-label="Suchen">Suchen</button>
           </form>
         {% endif %}
-        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <ul class="navbar-nav nav-primary ms-auto align-items-xl-center">
           {% if current_user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('sets.lists') }}">Setlisten</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('sets.all_missing_parts') }}">Fehlteile</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('social.center') }}">Freunde</a></li>
-            <li class="nav-item"><a class="nav-link nav-profile-link" href="{{ url_for('account.account_settings') }}">{% if current_user.profile_picture %}<img class="profile-avatar profile-avatar-nav" src="{{ url_for('account.profile_picture', v=current_user.profile_picture_updated_at.isoformat()) }}" alt="">{% else %}<span class="profile-avatar profile-avatar-nav profile-avatar-fallback" aria-hidden="true">{{ current_user.username[:1]|upper }}</span>{% endif %}<span>Konto</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('sets.rebrickable_settings') }}">Rebrickable</a></li>
-            {% if current_user.is_admin %}<li class="nav-item"><a class="nav-link admin-nav-link" href="{{ url_for('admin.users') }}">Admin</a></li>{% endif %}
-            <li class="nav-item"><button id="display-mode-toggle" class="btn btn-sm btn-outline-light" type="button">Großansicht</button></li>
-            <li class="nav-item ms-lg-2">
-              <form id="logout-form" method="post" action="{{ url_for('auth.logout') }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="btn btn-sm btn-outline-light" type="submit">Abmelden</button>
-              </form>
+            <li class="nav-item"><a class="nav-link{% if request.endpoint == 'main.dashboard' %} active{% endif %}" href="{{ url_for('main.dashboard') }}"{% if request.endpoint == 'main.dashboard' %} aria-current="page"{% endif %}>Dashboard</a></li>
+            <li class="nav-item dropdown">
+              <button class="nav-link dropdown-toggle{% if request.blueprint == 'sets' %} active{% endif %}" type="button" data-bs-toggle="dropdown" aria-expanded="false">Sammlung</button>
+              <ul class="dropdown-menu nav-dropdown-menu">
+                <li><a class="dropdown-item nav-menu-link" href="{{ url_for('sets.lists') }}"><span class="nav-menu-icon" aria-hidden="true">▦</span><span><strong>Setlisten</strong><small>Deine Rebrickable-Sammlung</small></span></a></li>
+                <li><a class="dropdown-item nav-menu-link" href="{{ url_for('sets.search') }}"><span class="nav-menu-icon" aria-hidden="true">⌕</span><span><strong>Sammlung durchsuchen</strong><small>Sets über alle Listen finden</small></span></a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item nav-menu-link" href="{{ url_for('sets.all_missing_parts') }}"><span class="nav-menu-icon nav-menu-icon-alert" aria-hidden="true">!</span><span><strong>Fehlteile</strong><small>Bedarf bündeln und exportieren</small></span></a></li>
+              </ul>
             </li>
-            <li class="nav-item"><button id="install-app" class="btn btn-sm btn-outline-light d-none" type="button">App installieren</button></li>
+            <li class="nav-item"><a class="nav-link{% if request.blueprint == 'social' %} active{% endif %}" href="{{ url_for('social.center') }}"{% if request.blueprint == 'social' %} aria-current="page"{% endif %}>Freunde</a></li>
+            <li class="nav-item dropdown nav-account ms-xl-2">
+              <button class="nav-profile-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Kontomenü öffnen">{% if current_user.profile_picture %}<img class="profile-avatar profile-avatar-nav" src="{{ url_for('account.profile_picture', v=current_user.profile_picture_updated_at.isoformat()) }}" alt="">{% else %}<span class="profile-avatar profile-avatar-nav profile-avatar-fallback" aria-hidden="true">{{ current_user.username[:1]|upper }}</span>{% endif %}<span>{{ current_user.username }}</span></button>
+              <div class="dropdown-menu dropdown-menu-end nav-account-menu">
+                <div class="nav-account-heading"><strong>{{ current_user.username }}</strong><small>Mein BrickHoard</small></div>
+                <a class="dropdown-item nav-menu-link" href="{{ url_for('account.account_settings') }}"><span class="nav-menu-icon" aria-hidden="true">●</span><span><strong>Konto</strong><small>Profil und Sicherheit</small></span></a>
+                <a class="dropdown-item nav-menu-link" href="{{ url_for('sets.rebrickable_settings') }}"><span class="nav-menu-icon" aria-hidden="true">↻</span><span><strong>Rebrickable</strong><small>API-Zugang verwalten</small></span></a>
+                {% if current_user.is_admin %}<a class="dropdown-item nav-menu-link admin-nav-link" href="{{ url_for('admin.users') }}"><span class="nav-menu-icon" aria-hidden="true">◆</span><span><strong>Administration</strong><small>Benutzer verwalten</small></span></a>{% endif %}
+                <div class="dropdown-divider"></div>
+                <div class="nav-utility-section">
+                  <span class="nav-utility-label">Sprache</span>
+                  <div class="nav-language-switch" role="group" aria-label="{{ _('Sprache auswählen') }}">{% for locale, language_name in available_languages.items() %}<form method="post" action="{{ url_for('main.set_language', locale=locale) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}"><button class="{{ 'active' if locale == current_locale }}" type="submit" lang="{{ locale }}">{{ locale|upper }}</button></form>{% endfor %}</div>
+                </div>
+                <button id="theme-toggle" class="dropdown-item nav-action-item theme-toggle" type="button" aria-label="Farbschema wechseln" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">◐</span><span class="theme-toggle-label">Darkmode</span></button>
+                <button id="display-mode-toggle" class="dropdown-item nav-action-item" type="button"><span aria-hidden="true">↔</span><span>Großansicht</span></button>
+                <button id="install-app" class="dropdown-item nav-action-item d-none" type="button"><span aria-hidden="true">↓</span><span>App installieren</span></button>
+                <div class="dropdown-divider"></div>
+                <form id="logout-form" method="post" action="{{ url_for('auth.logout') }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="dropdown-item nav-action-item nav-logout" type="submit"><span aria-hidden="true">↪</span><span>Abmelden</span></button>
+                </form>
+              </div>
+            </li>
           {% else %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Anmelden</a></li>
-            <li class="nav-item ms-lg-2"><a class="btn btn-sm btn-accent" href="{{ url_for('auth.register') }}">Registrieren</a></li>
+            <li class="nav-item ms-xl-2"><a class="btn btn-sm btn-accent" href="{{ url_for('auth.register') }}">Registrieren</a></li>
+            <li class="nav-item dropdown ms-xl-2">
+              <button class="nav-guest-settings dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Darstellung und Sprache"><span aria-hidden="true">◐</span><span>{{ current_locale|upper }}</span></button>
+              <div class="dropdown-menu dropdown-menu-end nav-account-menu">
+                <div class="nav-utility-section"><span class="nav-utility-label">Sprache</span><div class="nav-language-switch" role="group" aria-label="{{ _('Sprache auswählen') }}">{% for locale, language_name in available_languages.items() %}<form method="post" action="{{ url_for('main.set_language', locale=locale) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}"><button class="{{ 'active' if locale == current_locale }}" type="submit" lang="{{ locale }}">{{ locale|upper }}</button></form>{% endfor %}</div></div>
+                <button id="theme-toggle" class="dropdown-item nav-action-item theme-toggle" type="button" aria-label="Farbschema wechseln" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">◐</span><span class="theme-toggle-label">Darkmode</span></button>
+              </div>
+            </li>
           {% endif %}
-          <li class="nav-item dropdown">
-            <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ _('Sprache auswählen') }}">{{ current_locale|upper }}</button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              {% for locale, language_name in available_languages.items() %}
-                <li><form method="post" action="{{ url_for('main.set_language', locale=locale) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="next" value="{{ request.full_path if request.query_string else request.path }}"><button class="dropdown-item{% if locale == current_locale %} active{% endif %}" type="submit" lang="{{ locale }}">{{ language_name }}</button></form></li>
-              {% endfor %}
-            </ul>
-          </li>
-          <li class="nav-item"><button id="theme-toggle" class="btn btn-sm btn-outline-light theme-toggle" type="button" aria-label="Farbschema wechseln" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">◐</span><span class="theme-toggle-label">Darkmode</span></button></li>
         </ul>
       </div>
     </div>

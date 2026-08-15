@@ -525,7 +525,11 @@ if (sortAssistant) {
 const setAccessibilityMode = (enabled) => {
   document.body.classList.toggle('accessibility-mode', enabled);
   localStorage.setItem('brickshelf-accessibility', enabled ? '1' : '0');
-  document.querySelectorAll('#display-mode-toggle, #accessibility-toggle').forEach((button) => { button.textContent = enabled ? t('Normalansicht') : t('Großansicht'); });
+  document.querySelectorAll('#display-mode-toggle, #accessibility-toggle').forEach((button) => {
+    const label = button.querySelector('span:last-child');
+    if (label) label.textContent = enabled ? t('Normalansicht') : t('Großansicht');
+    else button.textContent = enabled ? t('Normalansicht') : t('Großansicht');
+  });
 };
 setAccessibilityMode(localStorage.getItem('brickshelf-accessibility') === '1');
 document.querySelectorAll('#display-mode-toggle, #accessibility-toggle').forEach((button) => button.addEventListener('click', () => setAccessibilityMode(!document.body.classList.contains('accessibility-mode'))));

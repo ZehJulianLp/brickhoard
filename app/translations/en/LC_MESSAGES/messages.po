@@ -1195,6 +1195,36 @@ msgstr "Sort together in real time"
 msgid "Als Progressive Web App installieren"
 msgstr "Install as a Progressive Web App"
 
+msgid "Sammlung"
+msgstr "Collection"
+
+msgid "Deine Rebrickable-Sammlung"
+msgstr "Your Rebrickable collection"
+
+msgid "Mein BrickHoard"
+msgstr "My BrickHoard"
+
+msgid "Profil und Sicherheit"
+msgstr "Profile and security"
+
+msgid "API-Zugang verwalten"
+msgstr "Manage API access"
+
+msgid "Benutzer verwalten"
+msgstr "Manage users"
+
+msgid "Sprache"
+msgstr "Language"
+
+msgid "Kontomenü öffnen"
+msgstr "Open account menu"
+
+msgid "Darstellung und Sprache"
+msgstr "Appearance and language"
+
+msgid "Navigation öffnen"
+msgstr "Open navigation"
+
 msgid "Bereits befreundet"
 msgstr "Already friends"
 
