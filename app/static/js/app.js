@@ -562,17 +562,32 @@ if ('serviceWorker' in navigator) {
 
 let installPrompt;
 const installButton = document.querySelector('#install-app');
+const installHelpModal = document.querySelector('#install-help-modal');
+const standaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+if (installButton && !standaloneMode) installButton.classList.remove('d-none');
 window.addEventListener('beforeinstallprompt', (event) => {
   event.preventDefault();
   installPrompt = event;
   installButton?.classList.remove('d-none');
 });
 installButton?.addEventListener('click', async () => {
-  if (!installPrompt) return;
-  await installPrompt.prompt();
-  installPrompt = null;
-  installButton.classList.add('d-none');
+  if (installPrompt) {
+    await installPrompt.prompt();
+    installPrompt = null;
+    installButton.classList.add('d-none');
+    return;
+  }
+  if (!installHelpModal) return;
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isFirefoxLinux = userAgent.includes('firefox') && userAgent.includes('linux');
+  const isIos = /iphone|ipad|ipod/.test(userAgent);
+  const helpType = isFirefoxLinux ? 'firefox-linux' : (isIos ? 'ios' : 'generic');
+  installHelpModal.querySelectorAll('[data-install-help]').forEach((panel) => {
+    panel.classList.toggle('d-none', panel.dataset.installHelp !== helpType);
+  });
+  bootstrap.Modal.getOrCreateInstance(installHelpModal).show();
 });
+window.addEventListener('appinstalled', () => installButton?.classList.add('d-none'));
 
 document.querySelector('#logout-form')?.addEventListener('submit', () => {
   localStorage.removeItem('brickshelf-progress-queue');

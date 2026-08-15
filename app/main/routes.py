@@ -1,6 +1,6 @@
 from flask import Response, abort, current_app, flash, redirect, render_template, request, send_from_directory, session, url_for
 from flask_login import current_user, login_required
-from flask_babel import refresh
+from flask_babel import gettext, refresh
 
 from app.extensions import db
 from app.main import bp
@@ -35,6 +35,31 @@ def set_language(locale: str):
     if not target.startswith("/") or target.startswith("//"):
         target = url_for("main.index")
     return redirect(target)
+
+
+@bp.get("/install/brickhoard.desktop")
+def linux_desktop_launcher():
+    public_url = current_app.config["PUBLIC_BASE_URL"]
+    body = "\n".join(
+        [
+            "[Desktop Entry]",
+            "Type=Application",
+            "Version=1.0",
+            "Name=BrickHoard",
+            f"Comment={gettext('LEGO-Sets sortieren und Fehlteile verwalten')}",
+            f"Exec=xdg-open {public_url}/",
+            "Icon=applications-internet",
+            "Terminal=false",
+            "Categories=Utility;",
+            "StartupNotify=true",
+            "",
+        ]
+    )
+    return Response(
+        body,
+        mimetype="application/x-desktop",
+        headers={"Content-Disposition": 'attachment; filename="brickhoard.desktop"'},
+    )
 
 
 @bp.get("/kontakt")

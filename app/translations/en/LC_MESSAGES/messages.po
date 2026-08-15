@@ -1225,6 +1225,57 @@ msgstr "Appearance and language"
 msgid "Navigation öffnen"
 msgstr "Open navigation"
 
+msgid "BrickHoard installieren"
+msgstr "Install BrickHoard"
+
+msgid "Firefox unter Linux"
+msgstr "Firefox on Linux"
+
+msgid "Keine native PWA-Installation verfügbar"
+msgstr "Native PWA installation is unavailable"
+
+msgid "Firefox unterstützt installierbare Web-Apps unter Linux derzeit nicht direkt. BrickHoard funktioniert trotzdem vollständig im Browser und offline."
+msgstr "Firefox currently does not directly support installable web apps on Linux. BrickHoard still works fully in the browser and offline."
+
+msgid "Als praktischen Ersatz kannst du einen Linux-Starter herunterladen und anschließend im Anwendungsmenü installieren:"
+msgstr "As a practical alternative, download a Linux launcher and install it in your application menu:"
+
+msgid "Linux-Starter herunterladen"
+msgstr "Download Linux launcher"
+
+msgid "Danach im Terminal ausführen:"
+msgstr "Then run in a terminal:"
+
+msgid "Für ein echtes separates PWA-Fenster kannst du BrickHoard alternativ einmal mit Chrome, Chromium oder Edge öffnen und dort installieren."
+msgstr "For a true standalone PWA window, you can alternatively open BrickHoard once in Chrome, Chromium or Edge and install it there."
+
+msgid "Öffne das Teilen-Menü deines Browsers und wähle"
+msgstr "Open your browser's share menu and choose"
+
+msgid "„Zum Home-Bildschirm“"
+msgstr "“Add to Home Screen”"
+
+msgid "Danach startet BrickHoard wie eine App."
+msgstr "BrickHoard will then launch like an app."
+
+msgid "Dein Browser stellt keinen direkten Install-Dialog bereit. Suche im Browsermenü oder in der Adressleiste nach"
+msgstr "Your browser does not provide a direct installation dialog. Look in the browser menu or address bar for"
+
+msgid "„App installieren“"
+msgstr "“Install app”"
+
+msgid "beziehungsweise"
+msgstr "or"
+
+msgid "Unter Linux unterstützen Chrome, Chromium und Edge die direkte PWA-Installation."
+msgstr "On Linux, Chrome, Chromium and Edge support direct PWA installation."
+
+msgid "Schließen"
+msgstr "Close"
+
+msgid "LEGO-Sets sortieren und Fehlteile verwalten"
+msgstr "Sort LEGO sets and manage missing parts"
+
 msgid "Bereits befreundet"
 msgstr "Already friends"
 

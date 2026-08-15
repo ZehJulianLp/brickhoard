@@ -112,6 +112,32 @@
     </div>
   </nav>
 
+  {% if current_user.is_authenticated %}
+  <div class="modal fade" id="install-help-modal" tabindex="-1" aria-labelledby="install-help-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content install-help-card">
+      <div class="modal-header"><div><span class="eyebrow">Progressive Web App</span><h2 class="modal-title h4 mt-1" id="install-help-title">BrickHoard installieren</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button></div>
+      <div class="modal-body">
+        <section class="d-none" data-install-help="firefox-linux">
+          <div class="install-browser-note"><strong>Firefox unter Linux</strong><span>Keine native PWA-Installation verfügbar</span></div>
+          <p>Firefox unterstützt installierbare Web-Apps unter Linux derzeit nicht direkt. BrickHoard funktioniert trotzdem vollständig im Browser und offline.</p>
+          <p>Als praktischen Ersatz kannst du einen Linux-Starter herunterladen und anschließend im Anwendungsmenü installieren:</p>
+          <a class="btn btn-accent" href="{{ url_for('main.linux_desktop_launcher') }}" download>Linux-Starter herunterladen</a>
+          <div class="install-command mt-3"><span>Danach im Terminal ausführen:</span><code>install -Dm755 ~/Downloads/brickhoard.desktop ~/.local/share/applications/brickhoard.desktop</code></div>
+          <p class="small text-secondary mt-3 mb-0">Für ein echtes separates PWA-Fenster kannst du BrickHoard alternativ einmal mit Chrome, Chromium oder Edge öffnen und dort installieren.</p>
+        </section>
+        <section class="d-none" data-install-help="ios">
+          <p>Öffne das Teilen-Menü deines Browsers und wähle <strong>„Zum Home-Bildschirm“</strong>. Danach startet BrickHoard wie eine App.</p>
+        </section>
+        <section class="d-none" data-install-help="generic">
+          <p>Dein Browser stellt keinen direkten Install-Dialog bereit. Suche im Browsermenü oder in der Adressleiste nach <strong>„App installieren“</strong> beziehungsweise <strong>„Zum Home-Bildschirm“</strong>.</p>
+          <p class="small text-secondary mb-0">Unter Linux unterstützen Chrome, Chromium und Edge die direkte PWA-Installation.</p>
+        </section>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Schließen</button></div>
+    </div></div>
+  </div>
+  {% endif %}
+
   <main class="flex-grow-1 py-4 py-md-5">
     <div class="container">
       {% with messages = get_flashed_messages(with_categories=true) %}

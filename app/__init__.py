@@ -226,6 +226,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             "auth.logout",
             "main.service_worker",
             "main.set_language",
+            "main.linux_desktop_launcher",
             "static",
         }
         if (
@@ -245,6 +246,7 @@ def create_app(test_config: dict | None = None) -> Flask:
             "auth.verification_required",
             "main.service_worker",
             "main.set_language",
+            "main.linux_desktop_launcher",
             "static",
         }
         if (

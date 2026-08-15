@@ -54,10 +54,22 @@ def test_authenticated_navigation_groups_secondary_actions(logged_in_client):
     assert "Profil und Sicherheit" in response.text
     assert "API-Zugang verwalten" in response.text
     assert 'id="logout-form"' in response.text
+    assert 'id="install-help-modal"' in response.text
+    assert "Firefox unter Linux" in response.text
 
 
 def test_unknown_language_is_rejected(client):
     assert client.post("/language/fr").status_code == 404
+
+
+def test_linux_desktop_launcher_is_downloadable(client):
+    response = client.get("/install/brickhoard.desktop")
+
+    assert response.status_code == 200
+    assert response.mimetype == "application/x-desktop"
+    assert 'filename="brickhoard.desktop"' in response.headers["Content-Disposition"]
+    assert "Exec=xdg-open https://brickhoard.julianverse.de/" in response.text
+    assert "Terminal=false" in response.text
 
 
 def test_registration_email_uses_selected_english_locale(client, app):
